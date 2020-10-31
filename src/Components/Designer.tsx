@@ -4,12 +4,11 @@ import ComponentList from "./ComponentList";
 
 import { ComponentSchema } from "appitsy/dist/types/ComponentSchema";
 
-import { DndProvider } from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import { DroppableRenderer } from "./DroppableRenderer";
 import { getDefaultPropsForType } from "../Utilities/ComponentTypes";
-import cloneDeep from 'lodash-es/cloneDeep';
-import unset from 'lodash-es/unset';
+import cloneDeep from "lodash-es/cloneDeep";
 
 const DesignerPage = styled.div`
   display: flex;
@@ -41,32 +40,46 @@ const Designer = () => {
   const [schema, setSchema] = useState<ComponentSchema[]>([]);
 
   const onDrop = (component: any) => {
-    let newComponent = getDefaultPropsForType(component.type, '1');
+    if (component.operation === "drop") {
+      let newComponent = getDefaultPropsForType(component.type, "1");
 
-    if (newComponent === null) {
+      if (newComponent === null) {
         return;
-    }
+      }
 
-    setSchema([...schema, newComponent])
-  }
+      setSchema([...schema, newComponent]);
+    } else if (component.operation === 'move') {
+        const targetComponentIndex = schema.findIndex(c => c.name === component.name);
+        let schemaCopy = cloneDeep(schema);
+        let targetComponent = schemaCopy.splice(targetComponentIndex, 1)[0];
+        schemaCopy.unshift(targetComponent);
+
+        setSchema(schemaCopy);
+    }
+  };
 
   const onDelete = (path: any) => {
     /// TODO: NESTED with splitting dots
-    const schemaCopy = schema.filter(component => component.name !== path);
+    const schemaCopy = schema.filter((component) => component.name !== path);
     setSchema(schemaCopy);
-  }
+  };
 
   return (
     <DesignerPage>
-        <DndProvider backend={HTML5Backend}>
-            <ComponentListContainer className="bg-light">
-                <ComponentList />
-            </ComponentListContainer>
+      <DndProvider backend={HTML5Backend}>
+        <ComponentListContainer className="bg-light">
+          <ComponentList />
+        </ComponentListContainer>
 
-            <DesignerPreview>
-                <DroppableRenderer schema={schema} data={data} onDrop={onDrop} onDelete={onDelete}/>
-            </DesignerPreview>
-        </DndProvider>
+        <DesignerPreview>
+          <DroppableRenderer
+            schema={schema}
+            data={data}
+            onDrop={onDrop}
+            onDelete={onDelete}
+          />
+        </DesignerPreview>
+      </DndProvider>
     </DesignerPage>
   );
 };
