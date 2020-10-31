@@ -2,9 +2,10 @@ import React from 'react';
 import { Renderer, RendererProps } from "appitsy/dist/components/Renderer/Renderer";
 import Styled from '@emotion/styled';
 import { ComponentSchema } from 'appitsy/dist/types/ComponentSchema';
-import { DraggableComponent } from './DraggableComponent';
 import { Types } from 'appitsy/dist/types/Types';
 import { DroppableComponent } from './DroppableComponent';
+import { DraggableDroppableComponent } from './DraggableDroppableComponent';
+import styled from '@emotion/styled';
 
 const StyledPage = Styled.div`
     display: flex;
@@ -16,24 +17,33 @@ const StyledPage = Styled.div`
     }
 `;
 
+const StyledDraggableDroppableComponent = styled(DraggableDroppableComponent)`
+    background-color: white;
+    margin: 10px 10px 0px 10px;
+`;
+
+export type ComponentSchemaWithId = ComponentSchema & {
+  id: string;
+}
+
 interface DesignerRendererProps extends RendererProps {
+  schema: ComponentSchemaWithId[];
   onDelete(path: string): void;
   onDrop(component: any): void;
+  moveComponent: (id: string, atIndex: number) => void;
+  findComponent: (id: string) => number;
 }
 
 export class DesignerRenderer extends Renderer<DesignerRendererProps> {
-
-  renderDesignerComponent = (component: ComponentSchema, key: string) => {
+  renderDesignerComponent = (component: ComponentSchemaWithId, key: string, index: number) => {
     let renderedComponent;
     switch (component.type) {
       case Types.Panel: 
         let panel = super.renderComponent(component, key);
         renderedComponent = (
-            <DraggableComponent name={component.name} type={component.type} operation='move'>
-              <DroppableComponent onDrop={this.props.onDrop}>
-                { panel }
-              </DroppableComponent>
-            </DraggableComponent>
+          <DroppableComponent onDrop={this.props.onDrop}>
+            { panel }
+          </DroppableComponent>
         );
         break;
       default:
@@ -42,15 +52,17 @@ export class DesignerRenderer extends Renderer<DesignerRendererProps> {
     }
 
     return (
-      <DraggableComponent name={component.name} type={component.type} operation='move'>
-        <button onClick={() => this.props.onDelete(component.name)}>Delete</button>
-        { renderedComponent }
-      </DraggableComponent>
+      <StyledDraggableDroppableComponent type={component.type} operation='move' id={component.id} key={component.id} moveComponent={this.props.moveComponent} findComponent={this.props.findComponent}>
+        <>
+          <button onClick={() => this.props.onDelete(component.name)}>Delete</button>
+          { renderedComponent }
+        </>
+      </StyledDraggableDroppableComponent>
     );
   }
 
   renderChildren() {
-    return this.props.schema.map((component, index) => this.renderDesignerComponent(component, `root-${index}`)
+    return this.props.schema.map((component, index) => this.renderDesignerComponent(component, `root-${index}`, index)
     );
   }
 

@@ -15,10 +15,10 @@ export interface ComponentListItemProps {
   type: string;
 }
 
-export const ComponentListItem: React.FC<ComponentListItemProps> = ({ name, type }) => {
+export const ComponentListItem: React.FC<ComponentListItemProps> = (props) => {
   return (
-    <StyledDraggableComponent name={name} type={type} operation='drop'>
-      {name}
+    <StyledDraggableComponent name={props.name} type={props.type} operation='drop'>
+      {props.name}
     </StyledDraggableComponent>
   )
 }

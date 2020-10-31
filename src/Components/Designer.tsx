@@ -2,13 +2,12 @@ import styled from "@emotion/styled";
 import React, { useState } from "react";
 import ComponentList from "./ComponentList";
 
-import { ComponentSchema } from "appitsy/dist/types/ComponentSchema";
-
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DroppableRenderer } from "./DroppableRenderer";
 import { getDefaultPropsForType } from "../Utilities/ComponentTypes";
 import cloneDeep from "lodash-es/cloneDeep";
+import { ComponentSchemaWithId } from "./DesignerRenderer";
 
 const DesignerPage = styled.div`
   display: flex;
@@ -37,7 +36,7 @@ const DesignerPreview = styled.div`
 
 const Designer = () => {
   const [data] = useState<Object>({});
-  const [schema, setSchema] = useState<ComponentSchema[]>([]);
+  const [schema, setSchema] = useState<ComponentSchemaWithId[]>([]);
 
   const onDrop = (component: any) => {
     if (component.operation === "drop") {
@@ -47,15 +46,8 @@ const Designer = () => {
         return;
       }
 
-      setSchema([...schema, newComponent]);
-    } else if (component.operation === 'move') {
-        const targetComponentIndex = schema.findIndex(c => c.name === component.name);
-        let schemaCopy = cloneDeep(schema);
-        let targetComponent = schemaCopy.splice(targetComponentIndex, 1)[0];
-        schemaCopy.unshift(targetComponent);
-
-        setSchema(schemaCopy);
-    }
+      setSchema([...schema, { ...newComponent, id: new Date().getMilliseconds().toString() }]);
+    } 
   };
 
   const onDelete = (path: any) => {
@@ -63,6 +55,19 @@ const Designer = () => {
     const schemaCopy = schema.filter((component) => component.name !== path);
     setSchema(schemaCopy);
   };
+
+  const moveComponent = (id: string, atIndex: number) => {
+    const index = findComponent(id);
+    const schemaCopy = cloneDeep(schema);
+    const component = schemaCopy.splice(index, 1)[0];
+    schemaCopy.splice(atIndex, 0, component);
+    setSchema(schemaCopy);
+  };
+
+  const findComponent = (id: string) => {
+    const component = schema.filter((c) => `${c.id}` === id)[0];
+    return schema.indexOf(component);
+  }
 
   return (
     <DesignerPage>
@@ -77,6 +82,8 @@ const Designer = () => {
             data={data}
             onDrop={onDrop}
             onDelete={onDelete}
+            moveComponent={moveComponent}
+            findComponent={findComponent}
           />
         </DesignerPreview>
       </DndProvider>
