@@ -47,7 +47,28 @@ const Designer = () => {
       }
 
       setSchema([...schema, { ...newComponent, id: new Date().getMilliseconds().toString() }]);
-    } 
+    }
+    else if (component.operation === 'move') {
+      if (!component.parent) {
+        return;
+      }
+
+      const index = findComponent(component.id);
+      const schemaCopy = cloneDeep(schema);
+      const movingComponent = schemaCopy.splice(index, 1)[0];
+      const parentComponent = schemaCopy.find(x => x.id === component.parent) as any;
+      
+      if (!parentComponent) {
+        return;
+      }
+
+      if (!parentComponent.components) {
+        parentComponent.components = [];
+      }
+
+      parentComponent.components.splice(0, 0, movingComponent);
+      setSchema(schemaCopy);
+    }
   };
 
   const onDelete = (path: any) => {

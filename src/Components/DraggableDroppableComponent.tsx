@@ -16,7 +16,7 @@ export interface DraggableDroppableComponentProps {
 
 interface DragItem {
   id: string;
-  originalIndex: string;
+  originalPath: string;
   type: string;
 }
 
@@ -26,22 +26,23 @@ export const DraggableDroppableComponent: React.FC<DraggableDroppableComponentPr
     hover({ id: draggedId }: DragItem) {
       if (draggedId !== props.id) {
         const overIndex = props.findComponent(props.id)
+        console.log(overIndex);
         props.moveComponent(draggedId, overIndex)
       }
     },
   })
 
-  const originalIndex = props.findComponent(props.id);
+  const originalPath = props.findComponent(props.id);
   const [{ isDragging }, drag, preview] = useDrag({
-    item: { type: props.type, id: props.id, operation: props.operation, originalIndex },
+    item: { type: props.type, id: props.id, operation: props.operation, originalPath },
     collect: (monitor: DragSourceMonitor) => ({
       isDragging: monitor.isDragging(),
     }),
     end: (dropResult, monitor) => {
-      const { id: droppedId, originalIndex } = monitor.getItem()
+      const { id: droppedId, originalPath } = monitor.getItem()
       const didDrop = monitor.didDrop()
       if (!didDrop) {
-        props.moveComponent(droppedId, originalIndex)
+        props.moveComponent(droppedId, originalPath)
       }
     },
   })

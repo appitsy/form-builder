@@ -27,7 +27,7 @@ interface DroppableRendererProps {
 export const DroppableRenderer: React.FC<DroppableRendererProps> = (props) => {
   return (
     <RendererAndProperties>
-      <DroppableComponent onDrop={props.onDrop}>
+      <DroppableComponent onDrop={props.onDrop} id="root">
           <DesignerRenderer schema={props.schema} data={props.data} onDelete={props.onDelete} onDrop={props.onDrop} moveComponent={props.moveComponent} findComponent={props.findComponent} />
       </DroppableComponent>
       <StyledComponentProperties />

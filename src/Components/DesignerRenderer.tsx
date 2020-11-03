@@ -39,12 +39,10 @@ export class DesignerRenderer extends Renderer<DesignerRendererProps> {
     let renderedComponent;
     switch (component.type) {
       case Types.Panel: 
-        let panel = super.renderComponent(component, key);
-        renderedComponent = (
-          <DroppableComponent onDrop={this.props.onDrop}>
-            { panel }
-          </DroppableComponent>
-        );
+        let panelComponentSchema = component as any;
+        panelComponentSchema.display = { ...panelComponentSchema.display, expandable: false };
+        let panel = super.renderComponent(panelComponentSchema, key);
+        renderedComponent = panel;
         break;
       default:
         renderedComponent = super.renderComponent(component, key);
@@ -64,6 +62,16 @@ export class DesignerRenderer extends Renderer<DesignerRendererProps> {
   renderChildren() {
     return this.props.schema.map((component, index) => this.renderDesignerComponent(component, `root-${index}`, index)
     );
+  }
+
+  renderLayoutChildren(childComponents: ComponentSchemaWithId[], parentComponent: ComponentSchemaWithId) {
+    return [(
+      <DroppableComponent id={parentComponent.id} onDrop={this.props.onDrop}>
+        <div style={{minWidth: '100px'}}>
+          {childComponents.map((panelChild, childIndex) => this.renderDesignerComponent(panelChild, parentComponent.name + '-child-' + childIndex, childIndex))}
+        </div>
+      </DroppableComponent>
+    )];
   }
 
   renderRoot() {

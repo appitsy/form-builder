@@ -22,6 +22,7 @@ const DroppableArea = styled.div<any>`
 
 interface DroppableComponentProps {
     children: JSX.Element;
+    id: string;
     onDrop(component: any): void;
 }
 
@@ -29,7 +30,7 @@ export const DroppableComponent: React.FC<DroppableComponentProps> = (props) => 
     const [{ canDrop, isOver }, drop] = useDrop({
       accept: ComponentTypes,
       drop: (component) => {
-          props.onDrop({...component, parent: null});
+          props.onDrop({...component, parent: props.id});
       },
       collect: (monitor: any) => ({
         isOver: monitor.isOver({ shallow: true }),
