@@ -8,7 +8,8 @@ export interface DraggableDroppableComponentProps {
   operation: string;
   type: string;
   id: string;
-  moveComponent: (id: string, toPath: string) => void;
+  moveComponent: (id: string, newParentId: string) => void;
+  moveAdjacent: (id: string, adjacentComponentId: string) => void;
   children: JSX.Element;
   className?: string;
 }
@@ -24,7 +25,7 @@ export const DraggableDroppableComponent: React.FC<DraggableDroppableComponentPr
     accept: ComponentTypes,
     hover({ id: draggedId }: DragItem) {
       if (draggedId !== props.id) {
-        props.moveComponent(draggedId, props.id)
+        props.moveAdjacent(draggedId, props.id)
       }
     },
   })
@@ -35,8 +36,12 @@ export const DraggableDroppableComponent: React.FC<DraggableDroppableComponentPr
       isDragging: monitor.isDragging(),
     }),
     end: (dropResult, monitor) => {
-      const { id: droppedId } = monitor.getItem()
-      const didDrop = monitor.didDrop()
+      const { id: droppedId } = monitor.getItem();
+      const didDrop = monitor.didDrop();
+      if (droppedId === props.id) {
+        return;
+      }
+
       if (!didDrop) {
         props.moveComponent(droppedId, props.id)
       }

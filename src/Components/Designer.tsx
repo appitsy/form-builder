@@ -144,6 +144,42 @@ const Designer = () => {
     setSchema(schemaCopy);
   };
 
+  const moveAdjacent = (id: string, adjacentComponentId: string) => {
+    const schemaCopy = cloneDeep(schema);
+    const { component, parent: oldParentComponent } = findComponentById(id, schemaCopy);
+
+    if(!component) {
+      return;
+    }
+
+    if (!oldParentComponent) {
+      removeComponent(schemaCopy, id);
+    } else {
+      removeComponent(oldParentComponent.components!, id);
+    }
+
+    const { component: adjacentComponent, parent: newParent } = findComponentById(adjacentComponentId, schemaCopy);
+    if (!adjacentComponent) {
+      return;
+    }
+
+    if (!newParent) {
+      // parent is not there but found adjacent component
+      // means the adjacent component is in the root
+      insertComponent(schemaCopy, schemaCopy.indexOf(adjacentComponent), component);
+    } else {
+      if (!newParent.components) {
+        // shouldn't be the case
+        alert('meh?');
+        return;
+      }
+
+      insertComponent(newParent.components, newParent.components.indexOf(adjacentComponent), component); 
+    }
+    
+    setSchema(schemaCopy);
+  }
+
   const findComponentById = (id: string, findInSchema: ComponentSchemaWithId[]): { component: ComponentSchemaWithId | undefined, parent: ComponentSchemaWithId | undefined } => {
     let component = findInSchema.find(c => c.id === id);
     let parent: any = undefined;
@@ -164,7 +200,7 @@ const Designer = () => {
         parent = cx;
       }
 
-      return !component;
+      return !!component;
     });
 
     return { component, parent };
@@ -196,6 +232,7 @@ const Designer = () => {
             onDrop={onDrop}
             onDelete={onDelete}
             moveComponent={moveComponent}
+            moveAdjacent={moveAdjacent}
           />
         </DesignerPreview>
       </DndProvider>

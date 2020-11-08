@@ -3,27 +3,25 @@ import React from 'react';
 import { useDrop } from 'react-dnd';
 import { ComponentTypes } from '../Utilities/ComponentTypes';
 
-const selectBackgroundColor = (isActive: boolean, canDrop: boolean) => {
+const selectBorder = (isActive: boolean, canDrop: boolean) => {
     if (isActive) {
-      return 'lightgrey'
-    } else if (canDrop) {
-      return 'lightkhaki'
-    } else {
-      return '#eee'
-    }
-  }
+      return 'dashed 1px gray';
+    } 
+    // else if (canDrop) {
+}
 
 const DroppableArea = styled.div<any>`
   padding: 10px 20px;
-  width: 70%;
-  background-color: ${({backgroundColor}) => backgroundColor};
+  width: 100%;
+  overflow-y: auto;
+  border: ${({border}) => border};
 `;
-
 
 interface DroppableComponentProps {
     children: JSX.Element;
     id: string;
     onDrop(component: any): void;
+    className?: string;
 }
 
 export const DroppableComponent: React.FC<DroppableComponentProps> = (props) => {
@@ -40,10 +38,10 @@ export const DroppableComponent: React.FC<DroppableComponentProps> = (props) => 
       }),
     })
   
-    const isActive = canDrop && isOver
-    const backgroundColor = selectBackgroundColor(isActive, canDrop)
+    const isActive = canDrop && isOver;
+    const border = selectBorder(isActive, canDrop);
     return (
-        <DroppableArea ref={drop} backgroundColor={backgroundColor} >
+        <DroppableArea border={border} ref={drop} className={props.className}>
             { props.children }
         </DroppableArea>
     )

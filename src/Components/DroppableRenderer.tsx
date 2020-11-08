@@ -15,20 +15,27 @@ const StyledComponentProperties = styled(ComponentProperties)`
   flex: 1;
 `;
 
+const StyledDroppableComponent = styled(DroppableComponent)`
+  width: 70%;
+  margin: 10px;
+  overflow: 
+`;
+
 interface DroppableRendererProps {
   schema: ComponentSchemaWithId[];
   data: any;
   onDrop(component: any): void;
   onDelete(componentId: string): void;
   moveComponent: (id: string, newPath: string) => void;
+  moveAdjacent: (id: string, adjacentComponentId: string) => void;
 }
 
 export const DroppableRenderer: React.FC<DroppableRendererProps> = (props) => {
   return (
     <RendererAndProperties>
-      <DroppableComponent onDrop={props.onDrop} id="root">
-          <DesignerRenderer schema={props.schema} data={props.data} onDelete={props.onDelete} onDrop={props.onDrop} moveComponent={props.moveComponent} />
-      </DroppableComponent>
+      <StyledDroppableComponent onDrop={props.onDrop} id="root">
+          <DesignerRenderer schema={props.schema} data={props.data} onDelete={props.onDelete} onDrop={props.onDrop} moveComponent={props.moveComponent} moveAdjacent={props.moveAdjacent} />
+      </StyledDroppableComponent>
       <StyledComponentProperties />
     </RendererAndProperties>
   )

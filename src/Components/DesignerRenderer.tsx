@@ -33,6 +33,7 @@ interface DesignerRendererProps extends RendererProps {
   onDelete(componentId: string): void;
   onDrop(component: any): void;
   moveComponent: (id: string, newPath: string) => void;
+  moveAdjacent: (id: string, adjacentComponentId: string) => void;
 }
 
 export class DesignerRenderer extends Renderer<DesignerRendererProps> {
@@ -59,6 +60,7 @@ export class DesignerRenderer extends Renderer<DesignerRendererProps> {
         type={component.type} 
         operation='move' 
         moveComponent={this.props.moveComponent} 
+        moveAdjacent={this.props.moveAdjacent}
       >
         <>
           <button onClick={() => this.props.onDelete(component.id)}>Delete</button>
