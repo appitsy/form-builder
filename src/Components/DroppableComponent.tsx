@@ -29,8 +29,10 @@ interface DroppableComponentProps {
 export const DroppableComponent: React.FC<DroppableComponentProps> = (props) => {
     const [{ canDrop, isOver }, drop] = useDrop({
       accept: ComponentTypes,
-      drop: (component) => {
+      drop: (component, monitor) => {
+        if (monitor.isOver()) {
           props.onDrop({...component, parent: props.id});
+        }
       },
       collect: (monitor: any) => ({
         isOver: monitor.isOver({ shallow: true }),

@@ -11,7 +11,7 @@ export const ComponentTypes = [
   Types.Panel,
 ]
 
-export const getDefaultPropsForType = (componentType: string, nameSuffix: string): ComponentSchema | null => {
+export const getDefaultPropsForType = (componentType: string, nameSuffix: string): ComponentSchema | undefined => {
   switch (componentType) {
     case Types.TextField:
       return { type: Types.TextField, name: 'textField' + nameSuffix, display: { label: 'Text Field ' + nameSuffix } }
@@ -28,6 +28,6 @@ export const getDefaultPropsForType = (componentType: string, nameSuffix: string
     case Types.Panel:
       return { type: Types.Panel, name: 'panel' + nameSuffix, display: { label: 'Panel ' + nameSuffix } }
 
-    default: return null;
+    default: return undefined;
   }
 }

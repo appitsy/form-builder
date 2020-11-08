@@ -19,16 +19,15 @@ interface DroppableRendererProps {
   schema: ComponentSchemaWithId[];
   data: any;
   onDrop(component: any): void;
-  onDelete(component: any): void;
-  moveComponent: (id: string, atIndex: number) => void;
-  findComponent: (id: string) => number;
+  onDelete(componentId: string): void;
+  moveComponent: (id: string, newPath: string) => void;
 }
 
 export const DroppableRenderer: React.FC<DroppableRendererProps> = (props) => {
   return (
     <RendererAndProperties>
       <DroppableComponent onDrop={props.onDrop} id="root">
-          <DesignerRenderer schema={props.schema} data={props.data} onDelete={props.onDelete} onDrop={props.onDrop} moveComponent={props.moveComponent} findComponent={props.findComponent} />
+          <DesignerRenderer schema={props.schema} data={props.data} onDelete={props.onDelete} onDrop={props.onDrop} moveComponent={props.moveComponent} />
       </DroppableComponent>
       <StyledComponentProperties />
     </RendererAndProperties>

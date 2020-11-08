@@ -8,6 +8,9 @@ import { DroppableRenderer } from "./DroppableRenderer";
 import { getDefaultPropsForType } from "../Utilities/ComponentTypes";
 import cloneDeep from "lodash-es/cloneDeep";
 import { ComponentSchemaWithId } from "./DesignerRenderer";
+import { remove } from "lodash-es";
+import { ComponentSchema } from "appitsy/dist/types/ComponentSchema";
+import { v4 as uuidv4 } from 'uuid';
 
 const DesignerPage = styled.div`
   display: flex;
@@ -22,6 +25,9 @@ const ComponentListContainer = styled.div`
 const DesignerPreview = styled.div`
   flex: 1;
 `;
+
+export const ROOT_ID = 'root';
+export const ROOT_PATH = '';
 
 // const getTextField = () => ({
 //   name: "text-" + new Date().getMilliseconds(),
@@ -38,56 +44,142 @@ const Designer = () => {
   const [data] = useState<Object>({});
   const [schema, setSchema] = useState<ComponentSchemaWithId[]>([]);
 
-  const onDrop = (component: any) => {
-    if (component.operation === "drop") {
-      let newComponent = getDefaultPropsForType(component.type, "1");
+  const onDrop = (componentEl: any) => {
+    if (componentEl.operation === "drop") {
+      let newComponentProps: ComponentSchema | undefined = getDefaultPropsForType(componentEl.type, "1");
 
-      if (newComponent === null) {
+      if (!newComponentProps) {
+        return
+      }
+
+      let newComponent: ComponentSchemaWithId = { ...newComponentProps,  id: uuidv4() } as any;
+
+      if (!newComponent) {
         return;
       }
 
-      setSchema([...schema, { ...newComponent, id: new Date().getMilliseconds().toString() }]);
-    }
-    else if (component.operation === 'move') {
-      if (!component.parent) {
-        return;
-      }
-
-      const index = findComponent(component.id);
       const schemaCopy = cloneDeep(schema);
-      const movingComponent = schemaCopy.splice(index, 1)[0];
-      const parentComponent = schemaCopy.find(x => x.id === component.parent) as any;
-      
-      if (!parentComponent) {
+
+      if (componentEl.parent === ROOT_PATH) {
+        insertNewComponentAtEndOfParent(schemaCopy, newComponent);
+      } else {
+        const parentComponent = findComponentById(componentEl.parent, schemaCopy);
+        insertNewComponentAtEndOfParent((parentComponent as any)?.components || schemaCopy, newComponent);
+      }
+
+      setSchema(schemaCopy);
+    }
+    else if (componentEl.operation === 'move') {
+      const schemaCopy = cloneDeep(schema);
+      const { component, parent: oldParentComponent } = findComponentById(componentEl.id, schemaCopy);
+
+      if (!component) {
         return;
       }
 
-      if (!parentComponent.components) {
-        parentComponent.components = [];
-      }
+      removeComponent(oldParentComponent?.components || schemaCopy, component.id);
 
-      parentComponent.components.splice(0, 0, movingComponent);
+      if (componentEl.parent === ROOT_ID) {
+        insertNewComponentAtEndOfParent(schemaCopy, component);
+      } else {
+        const { component: newParent } = findComponentById(componentEl.parent, schemaCopy);
+
+        if (!newParent) {
+          return;
+        }
+  
+        if (!newParent?.components) {
+          newParent.components = [];
+        }
+  
+        insertNewComponentAtEndOfParent(newParent.components, component);
+      }
       setSchema(schemaCopy);
     }
   };
 
-  const onDelete = (path: any) => {
-    /// TODO: NESTED with splitting dots
-    const schemaCopy = schema.filter((component) => component.name !== path);
-    setSchema(schemaCopy);
-  };
-
-  const moveComponent = (id: string, atIndex: number) => {
-    const index = findComponent(id);
+  const onDelete = (componentId: string) => {
     const schemaCopy = cloneDeep(schema);
-    const component = schemaCopy.splice(index, 1)[0];
-    schemaCopy.splice(atIndex, 0, component);
+    const { component, parent } = findComponentById(componentId, schemaCopy);
+
+    if (!component) {
+      return;
+    }
+
+    if (parent) {
+      if (parent.components) {
+        removeComponent(parent.components, component.id);
+      }
+    } else {
+      removeComponent(schemaCopy, component.id);
+    }
+    
     setSchema(schemaCopy);
   };
 
-  const findComponent = (id: string) => {
-    const component = schema.filter((c) => `${c.id}` === id)[0];
-    return schema.indexOf(component);
+  const moveComponent = (id: string, newParentId: string) => {
+    const schemaCopy = cloneDeep(schema);
+    const { component, parent: oldParentComponent } = findComponentById(id, schemaCopy);
+
+    if(!component) {
+      return;
+    }
+
+    if (!oldParentComponent) {
+      removeComponent(schemaCopy, id);
+    } else {
+      removeComponent(oldParentComponent.components!, id);
+    }
+
+    const { parent: newParent } = findComponentById(newParentId, schemaCopy);
+    if (!newParent) {
+      return;
+    }
+
+    if (!newParent.components) {
+      newParent.components = [];
+    }
+
+    insertComponent(newParent.components, newParent.components.length, component);
+    setSchema(schemaCopy);
+  };
+
+  const findComponentById = (id: string, findInSchema: ComponentSchemaWithId[]): { component: ComponentSchemaWithId | undefined, parent: ComponentSchemaWithId | undefined } => {
+    let component = findInSchema.find(c => c.id === id);
+    let parent: any = undefined;
+    if (component) {
+      return { component, parent: undefined };
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    let _ = findInSchema.some(c => {
+      let cx = c as any;
+
+      if (!cx.components) {
+        return false;
+      }
+
+      ({ component } = findComponentById(id, cx.components));
+      if (component) {
+        parent = cx;
+      }
+
+      return !component;
+    });
+
+    return { component, parent };
+  }
+
+  const removeComponent = (componentArray: ComponentSchemaWithId[], componentId: string) => {
+    remove(componentArray, x => x.id === componentId);
+  }
+
+  const insertComponent = (componentArray: ComponentSchemaWithId[], atIndex: number, component: ComponentSchemaWithId) => {
+    componentArray.splice(atIndex, 0, component);
+  }
+
+  const insertNewComponentAtEndOfParent = (componentArray: ComponentSchemaWithId[], component: ComponentSchemaWithId) => {
+      componentArray.push(component);
   }
 
   return (
@@ -104,7 +196,6 @@ const Designer = () => {
             onDrop={onDrop}
             onDelete={onDelete}
             moveComponent={moveComponent}
-            findComponent={findComponent}
           />
         </DesignerPreview>
       </DndProvider>

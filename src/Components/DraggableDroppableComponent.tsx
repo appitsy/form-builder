@@ -8,8 +8,7 @@ export interface DraggableDroppableComponentProps {
   operation: string;
   type: string;
   id: string;
-  moveComponent: (id: string, toIndex: number) => void;
-  findComponent: (id: string) => number;
+  moveComponent: (id: string, toPath: string) => void;
   children: JSX.Element;
   className?: string;
 }
@@ -25,24 +24,21 @@ export const DraggableDroppableComponent: React.FC<DraggableDroppableComponentPr
     accept: ComponentTypes,
     hover({ id: draggedId }: DragItem) {
       if (draggedId !== props.id) {
-        const overIndex = props.findComponent(props.id)
-        console.log(overIndex);
-        props.moveComponent(draggedId, overIndex)
+        props.moveComponent(draggedId, props.id)
       }
     },
   })
 
-  const originalPath = props.findComponent(props.id);
   const [{ isDragging }, drag, preview] = useDrag({
-    item: { type: props.type, id: props.id, operation: props.operation, originalPath },
+    item: { type: props.type, id: props.id, operation: props.operation },
     collect: (monitor: DragSourceMonitor) => ({
       isDragging: monitor.isDragging(),
     }),
     end: (dropResult, monitor) => {
-      const { id: droppedId, originalPath } = monitor.getItem()
+      const { id: droppedId } = monitor.getItem()
       const didDrop = monitor.didDrop()
       if (!didDrop) {
-        props.moveComponent(droppedId, originalPath)
+        props.moveComponent(droppedId, props.id)
       }
     },
   })
