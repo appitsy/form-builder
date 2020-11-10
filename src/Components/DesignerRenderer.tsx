@@ -32,7 +32,7 @@ const DropFieldsHere = styled.div`
 
 export type ComponentSchemaWithId = ComponentSchema & {
   id: string;
-  components?: ComponentSchemaWithId[];
+  components? : ComponentSchemaWithId[];
 }
 
 interface DesignerRendererProps extends RendererProps {
@@ -70,6 +70,7 @@ export class DesignerRenderer extends Renderer<DesignerRendererProps> {
         key={component.id} 
         type={component.type} 
         operation='move' 
+        onDrop={this.props.onDrop}
         moveComponent={this.props.moveComponent} 
         moveAdjacent={this.props.moveAdjacent}
         deleteAction={deleteAction}
@@ -89,9 +90,7 @@ export class DesignerRenderer extends Renderer<DesignerRendererProps> {
     if (childComponents.length > 0) {
       inner = (
         <div>
-        <div>--------</div>
         {childComponents.map((panelChild) => this.renderDesignerComponent(panelChild, parentComponent))}
-        <div>--------</div>
         </div>
       );
     } else {

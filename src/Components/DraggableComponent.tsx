@@ -12,6 +12,9 @@ export const DraggableComponent: React.FC<DraggableComponentProps> = (props) => 
     const item = { name: props.name, type: props.type, operation: props.operation }
     const [{ opacity }, drag] = useDrag({
       item,
+      options: {
+        dropEffect: 'copy',
+      },
       collect: (monitor: any) => ({
         opacity: monitor.isDragging() ? 0.6 : 1,
       }),

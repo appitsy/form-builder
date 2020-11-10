@@ -9,8 +9,6 @@ import { getDefaultPropsForType } from "../Utilities/ComponentTypes";
 import cloneDeep from "lodash-es/cloneDeep";
 import { ComponentSchemaWithId } from "./DesignerRenderer";
 import { remove } from "lodash-es";
-import { ComponentSchema } from "appitsy/dist/types/ComponentSchema";
-import { v4 as uuidv4 } from 'uuid';
 
 const DesignerPage = styled.div`
   display: flex;
@@ -46,13 +44,7 @@ const Designer = () => {
 
   const onDrop = (componentEl: any) => {
     if (componentEl.operation === "drop") {
-      let newComponentProps: ComponentSchema | undefined = getDefaultPropsForType(componentEl.type, "1");
-
-      if (!newComponentProps) {
-        return
-      }
-
-      let newComponent: ComponentSchemaWithId = { ...newComponentProps,  id: uuidv4() } as any;
+      let newComponent: ComponentSchemaWithId | undefined = getDefaultPropsForType(componentEl.type, "1");
 
       if (!newComponent) {
         return;
@@ -61,10 +53,21 @@ const Designer = () => {
       const schemaCopy = cloneDeep(schema);
 
       if (componentEl.parent === ROOT_PATH) {
-        insertNewComponentAtEndOfParent(schemaCopy, newComponent);
+        insertNewComponentAtIndex(schemaCopy, newComponent, -1);
       } else {
-        const parentComponent = findComponentById(componentEl.parent, schemaCopy);
-        insertNewComponentAtEndOfParent((parentComponent as any)?.components || schemaCopy, newComponent);
+        const { component: parentComponent, parent: grandParentComponent } = findComponentById(componentEl.parent, schemaCopy);
+
+        if (parentComponent && parentComponent.components) {
+          insertNewComponentAtIndex(parentComponent.components, newComponent, -1);
+        } else if (grandParentComponent) {
+          // grand parents children should obviously be there
+          // otherwise we would have not got this
+          const parentIndex = grandParentComponent.components!.findIndex((x: ComponentSchemaWithId) => x.id === parentComponent?.id);
+          insertNewComponentAtIndex(grandParentComponent.components!, newComponent, parentIndex);
+        } else {
+          const parentIndex = schemaCopy.findIndex((x: ComponentSchemaWithId) => x.id === parentComponent?.id);
+          insertNewComponentAtIndex(schemaCopy, newComponent, parentIndex);
+        }
       }
 
       setSchema(schemaCopy);
@@ -80,19 +83,23 @@ const Designer = () => {
       removeComponent(oldParentComponent?.components || schemaCopy, component.id);
 
       if (componentEl.parent === ROOT_ID) {
-        insertNewComponentAtEndOfParent(schemaCopy, component);
+        insertNewComponentAtIndex(schemaCopy, component, -1);
       } else {
-        const { component: newParent } = findComponentById(componentEl.parent, schemaCopy);
+        const { component: newParent, parent: newGrandParentComponent } = findComponentById(componentEl.parent, schemaCopy);
 
         if (!newParent) {
           return;
         }
-  
-        if (!newParent?.components) {
-          newParent.components = [];
+
+        if (newParent.components) {
+          insertNewComponentAtIndex(newParent.components!, component, -1);
+        } else if (newGrandParentComponent) {
+          const parentIndex = newGrandParentComponent.components!.findIndex((x: ComponentSchemaWithId) => x.id === newParent.id);
+          insertNewComponentAtIndex(newGrandParentComponent.components!, component, parentIndex);
+        } else {
+          const parentIndex = schemaCopy.findIndex((x: ComponentSchemaWithId) => x.id === newParent.id);
+          insertNewComponentAtIndex(newParent.components!, component, parentIndex);
         }
-  
-        insertNewComponentAtEndOfParent(newParent.components, component);
       }
       setSchema(schemaCopy);
     }
@@ -136,11 +143,7 @@ const Designer = () => {
       return;
     }
 
-    if (!newParent.components) {
-      newParent.components = [];
-    }
-
-    insertComponent(newParent.components, newParent.components.length, component);
+    insertComponent(newParent.components!, newParent.components!.length, component);
     setSchema(schemaCopy);
   };
 
@@ -214,8 +217,13 @@ const Designer = () => {
     componentArray.splice(atIndex, 0, component);
   }
 
-  const insertNewComponentAtEndOfParent = (componentArray: ComponentSchemaWithId[], component: ComponentSchemaWithId) => {
+  const insertNewComponentAtIndex = (componentArray: ComponentSchemaWithId[], component: ComponentSchemaWithId, atIndex: number) => {
+    if(atIndex === -1) {
       componentArray.push(component);
+      return;
+    }
+      
+    componentArray.splice(atIndex, 0, component);
   }
 
   return (
