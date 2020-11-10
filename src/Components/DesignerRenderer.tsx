@@ -7,6 +7,7 @@ import { DroppableComponent } from './DroppableComponent';
 import { DraggableDroppableComponent } from './DraggableDroppableComponent';
 import styled from '@emotion/styled';
 import { ROOT_ID } from './Designer';
+import Icon from 'appitsy/dist/components/BasicComponents/Icon';
 
 const StyledPage = Styled.div`
     display: flex;
@@ -21,6 +22,12 @@ const StyledPage = Styled.div`
 const StyledDraggableDroppableComponent = styled(DraggableDroppableComponent)`
     background-color: white;
     margin: 10px 10px 0px 10px;
+`;
+
+const DropFieldsHere = styled.div`
+  background-color: lightgrey;
+  padding: 10px;
+  margin: 0px;
 `;
 
 export type ComponentSchemaWithId = ComponentSchema & {
@@ -53,6 +60,10 @@ export class DesignerRenderer extends Renderer<DesignerRendererProps> {
         break;
     }
 
+    const deleteAction = (
+      <div onClick={() => this.props.onDelete(component.id)}><Icon icon='trash-alt'/></div>
+    );
+
     return (
       <StyledDraggableDroppableComponent 
         id={component.id} 
@@ -61,11 +72,9 @@ export class DesignerRenderer extends Renderer<DesignerRendererProps> {
         operation='move' 
         moveComponent={this.props.moveComponent} 
         moveAdjacent={this.props.moveAdjacent}
+        deleteAction={deleteAction}
       >
-        <>
-          <button onClick={() => this.props.onDelete(component.id)}>Delete</button>
-          { renderedComponent }
-        </>
+        { renderedComponent }
       </StyledDraggableDroppableComponent>
     );
   }
@@ -76,10 +85,24 @@ export class DesignerRenderer extends Renderer<DesignerRendererProps> {
   }
 
   renderLayoutChildren(childComponents: ComponentSchemaWithId[], parentComponent: ComponentSchemaWithId) {
+    var inner = undefined;
+    if (childComponents.length > 0) {
+      inner = (
+        <div>
+        <div>--------</div>
+        {childComponents.map((panelChild) => this.renderDesignerComponent(panelChild, parentComponent))}
+        <div>--------</div>
+        </div>
+      );
+    } else {
+      inner = (
+        <DropFieldsHere>Drop fields here!</DropFieldsHere>
+      );
+    }
     return [(
       <DroppableComponent id={parentComponent.id} onDrop={this.props.onDrop}>
         <div style={{minWidth: '100px'}}>
-          {childComponents.map((panelChild) => this.renderDesignerComponent(panelChild, parentComponent))}
+          {inner}
         </div>
       </DroppableComponent>
     )];

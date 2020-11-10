@@ -6,12 +6,13 @@ import { ComponentTypes } from '../Utilities/ComponentTypes';
 const selectBorder = (isActive: boolean, canDrop: boolean) => {
     if (isActive) {
       return 'dashed 1px gray';
-    } 
+    } else {
+      return 'dashed 1px transparent';
+    }
     // else if (canDrop) {
 }
 
 const DroppableArea = styled.div<any>`
-  padding: 10px 20px;
   width: 100%;
   overflow-y: auto;
   border: ${({border}) => border};

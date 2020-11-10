@@ -3,6 +3,12 @@ import { useDrag, useDrop, DragSourceMonitor } from 'react-dnd'
 import { ComponentTypes } from '../Utilities/ComponentTypes';
 
 import Icon from 'appitsy/dist/components/BasicComponents/Icon';
+import styled from '@emotion/styled';
+
+const Actions = styled.div`
+  display: flex; 
+  flex-direction: row;
+`;
 
 export interface DraggableDroppableComponentProps {
   operation: string;
@@ -12,6 +18,7 @@ export interface DraggableDroppableComponentProps {
   moveAdjacent: (id: string, adjacentComponentId: string) => void;
   children: JSX.Element;
   className?: string;
+  deleteAction: JSX.Element;
 }
 
 interface DragItem {
@@ -49,10 +56,18 @@ export const DraggableDroppableComponent: React.FC<DraggableDroppableComponentPr
   })
 
   const opacity = isDragging ? 0.5 : 1;
+  const moveAction = (
+    <div ref={(node) => drag(node)}><Icon icon='arrows-alt'/></div>
+  );
+
   return (
-    <div className={props.className} style={{ opacity }}>
+    <div ref={(node) => drop(node)} className={props.className} style={{ opacity }}>
       <div ref={preview}></div>
-      <div ref={(node) => drag(drop(node))}><Icon icon='arrows-alt'/></div>
+      <Actions>
+        {moveAction}
+        {props.deleteAction}
+      </Actions>
+      
       {props.children}
     </div>
   )
