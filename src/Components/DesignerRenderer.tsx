@@ -6,7 +6,7 @@ import { Types } from 'appitsy/dist/types/Types';
 import { DroppableComponent } from './DroppableComponent';
 import { DraggableDroppableComponent } from './DraggableDroppableComponent';
 import styled from '@emotion/styled';
-import { ROOT_ID } from './Designer';
+import { PREVIEW_COMPONENT_TYPE, ROOT_ID } from './Designer';
 import Icon from 'appitsy/dist/components/BasicComponents/Icon';
 
 const StyledPage = Styled.div`
@@ -20,8 +20,16 @@ const StyledPage = Styled.div`
 `;
 
 const StyledDraggableDroppableComponent = styled(DraggableDroppableComponent)`
-    background-color: white;
     margin: 10px 10px 0px 10px;
+`;
+
+const PreviewComponent = styled.div`
+    margin: 10px 10px 0px 10px;
+    border-radius: 10px;
+    background-color: darkgrey;
+    opacity: 50%;
+    font-weight: 500;
+    padding: 5px 10px;
 `;
 
 const DropFieldsHere = styled.div`
@@ -39,8 +47,9 @@ interface DesignerRendererProps extends RendererProps {
   schema: ComponentSchemaWithId[];
   onDelete(componentId: string): void;
   onDrop(component: any): void;
+  addPreview(componentType: string, adjacentComponentId: string): void;
   moveComponent: (id: string, newPath: string) => void;
-  moveAdjacent: (id: string, adjacentComponentId: string) => void;
+  moveAdjacent: (id: string, adjacentComponentId: string, after: boolean) => void;
 }
 
 export class DesignerRenderer extends Renderer<DesignerRendererProps> {
@@ -55,6 +64,10 @@ export class DesignerRenderer extends Renderer<DesignerRendererProps> {
         let panel = super.renderComponent(panelComponentSchema, key);
         renderedComponent = panel;
         break;
+      case PREVIEW_COMPONENT_TYPE:
+        return (
+          <PreviewComponent className='unselectable-text'>{component.name}</PreviewComponent>
+        );
       default:
         renderedComponent = super.renderComponent(component, key);
         break;
@@ -71,6 +84,7 @@ export class DesignerRenderer extends Renderer<DesignerRendererProps> {
         type={component.type} 
         operation='move' 
         onDrop={this.props.onDrop}
+        addPreview={this.props.addPreview}
         moveComponent={this.props.moveComponent} 
         moveAdjacent={this.props.moveAdjacent}
         deleteAction={deleteAction}
@@ -99,7 +113,11 @@ export class DesignerRenderer extends Renderer<DesignerRendererProps> {
       );
     }
     return [(
-      <DroppableComponent id={parentComponent.id} onDrop={this.props.onDrop}>
+      <DroppableComponent 
+        id={parentComponent.id} 
+        onDrop={this.props.onDrop}
+        addPreview={this.props.addPreview}
+      >
         <div style={{minWidth: '100px'}}>
           {inner}
         </div>

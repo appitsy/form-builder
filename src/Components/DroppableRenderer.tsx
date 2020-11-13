@@ -26,15 +26,28 @@ interface DroppableRendererProps {
   data: any;
   onDrop(component: any): void;
   onDelete(componentId: string): void;
+  addPreview(componentType: string, adjacentComponentId: string): void;
   moveComponent: (id: string, newPath: string) => void;
-  moveAdjacent: (id: string, adjacentComponentId: string) => void;
+  moveAdjacent: (id: string, adjacentComponentId: string, after: boolean) => void;
 }
 
 export const DroppableRenderer: React.FC<DroppableRendererProps> = (props) => {
   return (
     <RendererAndProperties>
-      <StyledDroppableComponent onDrop={props.onDrop} id="root">
-          <DesignerRenderer schema={props.schema} data={props.data} onDelete={props.onDelete} onDrop={props.onDrop} moveComponent={props.moveComponent} moveAdjacent={props.moveAdjacent} />
+      <StyledDroppableComponent 
+        id="root"
+        onDrop={props.onDrop} 
+        addPreview={props.addPreview}
+      >
+          <DesignerRenderer 
+            schema={props.schema} 
+            data={props.data} 
+            onDelete={props.onDelete} 
+            onDrop={props.onDrop} 
+            addPreview={props.addPreview}
+            moveComponent={props.moveComponent} 
+            moveAdjacent={props.moveAdjacent} 
+          />
       </StyledDroppableComponent>
       <StyledComponentProperties />
     </RendererAndProperties>

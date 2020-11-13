@@ -26,6 +26,8 @@ const DesignerPreview = styled.div`
 
 export const ROOT_ID = 'root';
 export const ROOT_PATH = '';
+export const PREVIEW_COMPONENT_TYPE = 'preview-component';
+export const PREVIEW_COMPONENT_ID = 'preview-component-id';
 
 // const getTextField = () => ({
 //   name: "text-" + new Date().getMilliseconds(),
@@ -147,7 +149,7 @@ const Designer = () => {
     setSchema(schemaCopy);
   };
 
-  const moveAdjacent = (id: string, adjacentComponentId: string) => {
+  const moveAdjacent = (id: string, adjacentComponentId: string, after: boolean) => {
     const schemaCopy = cloneDeep(schema);
     const { component, parent: oldParentComponent } = findComponentById(id, schemaCopy);
 
@@ -169,7 +171,7 @@ const Designer = () => {
     if (!newParent) {
       // parent is not there but found adjacent component
       // means the adjacent component is in the root
-      insertComponent(schemaCopy, schemaCopy.indexOf(adjacentComponent), component);
+      insertComponent(schemaCopy, schemaCopy.indexOf(adjacentComponent) + (after ? 1 : 0), component);
     } else {
       if (!newParent.components) {
         // shouldn't be the case
@@ -177,9 +179,61 @@ const Designer = () => {
         return;
       }
 
-      insertComponent(newParent.components, newParent.components.indexOf(adjacentComponent), component); 
+      insertComponent(newParent.components, newParent.components.indexOf(adjacentComponent) + (after ? 1 : 0), component); 
     }
     
+    setSchema(schemaCopy);
+  }
+
+  const removeOldPreviewComponent = (componentsArray: ComponentSchemaWithId[]) => {
+    const { component: oldPreviewComponent, parent: previewComponentParent } = findComponentById(PREVIEW_COMPONENT_ID, componentsArray);
+    if (!oldPreviewComponent) {
+      return;
+    }
+
+    if (previewComponentParent) {
+      removeComponent(previewComponentParent.components!, PREVIEW_COMPONENT_ID);
+    } else {
+      removeComponent(componentsArray, PREVIEW_COMPONENT_ID);
+    }
+  }
+
+  const resetDragDropPreview = () => {
+    const schemaCopy = cloneDeep(schema);
+    removeOldPreviewComponent(schemaCopy);
+    setSchema(schemaCopy);
+  }
+
+  const addPreview = (componentType: string, adjacentComponentId: string) => {
+    const schemaCopy = cloneDeep(schema);
+    
+    removeOldPreviewComponent(schemaCopy);
+    
+    const component: ComponentSchemaWithId = { id: PREVIEW_COMPONENT_ID, type: PREVIEW_COMPONENT_TYPE, name: componentType };
+
+    if (adjacentComponentId === 'root') {
+      insertComponent(schemaCopy, 0, component);
+    } else {
+      const { component: adjacentComponent, parent } = findComponentById(adjacentComponentId, schemaCopy);
+      if (!adjacentComponent) {
+        return;
+      }
+  
+      if (!parent) {
+        // parent is not there but found adjacent component
+        // means the adjacent component is in the root
+        insertComponent(schemaCopy, schemaCopy.indexOf(adjacentComponent), component);
+      } else {
+        if (!parent.components) {
+          // shouldn't be the case
+          alert('meh?');
+          return;
+        }
+  
+        insertComponent(parent.components, parent.components.indexOf(adjacentComponent), component); 
+      }
+    }
+
     setSchema(schemaCopy);
   }
 
@@ -230,7 +284,7 @@ const Designer = () => {
     <DesignerPage>
       <DndProvider backend={HTML5Backend}>
         <ComponentListContainer className="bg-light">
-          <ComponentList />
+          <ComponentList resetPreview={resetDragDropPreview}/>
         </ComponentListContainer>
 
         <DesignerPreview>
@@ -239,6 +293,7 @@ const Designer = () => {
             data={data}
             onDrop={onDrop}
             onDelete={onDelete}
+            addPreview={addPreview}
             moveComponent={moveComponent}
             moveAdjacent={moveAdjacent}
           />

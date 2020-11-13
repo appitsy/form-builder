@@ -7,15 +7,19 @@ const StackList = styled.div`
   flex-direction: column;
 `;
 
-const ComponentList = () => (
+interface ComponentListProps {
+  resetPreview(): void;
+}
+
+const ComponentList = (props: ComponentListProps) => (
   <StackList style={{ overflow: "hidden", clear: "both" }}>
-    <ComponentListItem name="Text Field" type="text" />
-    <ComponentListItem name="Text Area" type="textarea" />
-    <ComponentListItem name="Password" type="password" />
-    <ComponentListItem name="Email" type="email" />
-    <ComponentListItem name="Number" type="number" />
-    <ComponentListItem name="Button" type="button" />
-    <ComponentListItem name="Panel" type="panel" />
+    <ComponentListItem name="Text Field" type="text" resetPreview={props.resetPreview} />
+    <ComponentListItem name="Text Area" type="textarea" resetPreview={props.resetPreview} />
+    <ComponentListItem name="Password" type="password" resetPreview={props.resetPreview} />
+    <ComponentListItem name="Email" type="email" resetPreview={props.resetPreview} />
+    <ComponentListItem name="Number" type="number" resetPreview={props.resetPreview} />
+    <ComponentListItem name="Button" type="button" resetPreview={props.resetPreview} />
+    <ComponentListItem name="Panel" type="panel" resetPreview={props.resetPreview} />
   </StackList>
 );
 

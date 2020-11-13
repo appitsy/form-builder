@@ -13,11 +13,17 @@ const StyledDraggableComponent = styled(DraggableComponent)`
 export interface ComponentListItemProps {
   name: string
   type: string;
+  resetPreview(): void;
 }
 
 export const ComponentListItem: React.FC<ComponentListItemProps> = (props) => {
   return (
-    <StyledDraggableComponent name={props.name} type={props.type} operation='drop'>
+    <StyledDraggableComponent 
+      name={props.name} 
+      type={props.type} 
+      operation='drop'
+      resetPreview={props.resetPreview}
+    >
       {props.name}
     </StyledDraggableComponent>
   )

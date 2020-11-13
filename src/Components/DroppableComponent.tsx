@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import React from 'react';
 import { useDrop } from 'react-dnd';
 import { ComponentTypes } from '../Utilities/ComponentTypes';
+import { DragItem } from './DraggableDroppableComponent';
 
 const selectBorder = (isActive: boolean, canDrop: boolean) => {
     if (isActive) {
@@ -22,12 +23,19 @@ interface DroppableComponentProps {
     children: JSX.Element;
     id: string;
     onDrop(component: any): void;
+    addPreview(componentType: string, adjacentComponentId: string): void;
     className?: string;
 }
 
 export const DroppableComponent: React.FC<DroppableComponentProps> = (props) => {
     const [{ canDrop, isOver }, drop] = useDrop({
       accept: ComponentTypes,
+      hover({ id: draggedId, type }: DragItem) {
+        if (!draggedId) {
+          // new component being dragged
+          props.addPreview(type, props.id);
+        }
+      },
       drop: (component, monitor) => {
         if (monitor.isOver()) {
           props.onDrop({...component, parent: props.id});

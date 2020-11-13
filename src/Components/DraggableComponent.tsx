@@ -6,6 +6,7 @@ interface DraggableComponentProps {
     type: string;
     operation: string;
     className?: string;
+    resetPreview(): void;
 }
 
 export const DraggableComponent: React.FC<DraggableComponentProps> = (props) => {
@@ -18,6 +19,9 @@ export const DraggableComponent: React.FC<DraggableComponentProps> = (props) => 
       collect: (monitor: any) => ({
         opacity: monitor.isDragging() ? 0.6 : 1,
       }),
+      end: (dropResult, monitor) => {
+        props.resetPreview();
+      },
     })
   
     return (
