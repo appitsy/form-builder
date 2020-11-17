@@ -1,5 +1,5 @@
-import React from 'react'
-import { useDrag, useDrop, DragSourceMonitor } from 'react-dnd'
+import React, { useRef } from 'react'
+import { useDrag, useDrop, DragSourceMonitor, DropTargetMonitor, XYCoord } from 'react-dnd'
 import { ComponentTypes } from '../Utilities/ComponentTypes';
 
 import Icon from 'appitsy/dist/components/BasicComponents/Icon';
@@ -30,14 +30,35 @@ export interface DragItem {
 }
 
 export const DraggableDroppableComponent: React.FC<DraggableDroppableComponentProps> = (props) => {
+  const dragRef = useRef<HTMLDivElement>(null)
+  const dropRef = useRef<HTMLDivElement>(null)
   const [, drop] = useDrop({
     accept: ComponentTypes,
-    hover({ id: draggedId }: DragItem) {
+    hover({ id: draggedId }: DragItem, monitor: DropTargetMonitor) {
+      console.log('DragDrop - hover');
+
+      if (!dropRef.current || draggedId === props.id) {
+        return
+      }
+      
+      // Determine rectangle on screen
+      const hoverBoundingRect = dropRef.current?.getBoundingClientRect()
+      
+      // Get vertical middle
+      const hoverMiddleY =
+        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2
+
+      // Determine mouse position
+      const clientOffset = monitor.getClientOffset()
+
+      // Get pixels to the top
+      const hoverClientY = (clientOffset as XYCoord).y - hoverBoundingRect.top
+
       if (!draggedId) {
         // new component being dragged
         props.addPreview(props.type, props.id);
       } else if (draggedId !== props.id) {
-        props.moveAdjacent(draggedId, props.id, false);
+        props.moveAdjacent(draggedId, props.id, hoverClientY > hoverMiddleY);
       }
     },
     drop: (component, monitor) => {
@@ -66,12 +87,16 @@ export const DraggableDroppableComponent: React.FC<DraggableDroppableComponentPr
   })
 
   const opacity = isDragging ? 0.5 : 1;
+
+  drop(dropRef);
+  drag(dragRef);
+
   const moveAction = (
-    <div ref={(node) => drag(node)}><Icon icon='arrows-alt'/></div>
+    <div ref={dragRef}><Icon icon='arrows-alt'/></div>
   );
 
   return (
-    <div ref={(node) => drop(node)} className={props.className} style={{ opacity }}>
+    <div ref={dropRef} className={props.className} style={{ opacity }}>
       <div ref={preview}></div>
       <Actions>
         {moveAction}

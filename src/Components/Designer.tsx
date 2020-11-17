@@ -100,7 +100,7 @@ const Designer = () => {
           insertNewComponentAtIndex(newGrandParentComponent.components!, component, parentIndex);
         } else {
           const parentIndex = schemaCopy.findIndex((x: ComponentSchemaWithId) => x.id === newParent.id);
-          insertNewComponentAtIndex(newParent.components!, component, parentIndex);
+          insertNewComponentAtIndex(schemaCopy, component, parentIndex);
         }
       }
       setSchema(schemaCopy);
@@ -158,8 +158,14 @@ const Designer = () => {
     }
 
     if (!oldParentComponent) {
+      if (isAlreadyAdjacent(id, adjacentComponentId, schemaCopy, after)) {
+        return;
+      }
       removeComponent(schemaCopy, id);
     } else {
+      if (isAlreadyAdjacent(id, adjacentComponentId, oldParentComponent.components!, after)) {
+        return;
+      }
       removeComponent(oldParentComponent.components!, id);
     }
 
@@ -278,7 +284,17 @@ const Designer = () => {
     }
       
     componentArray.splice(atIndex, 0, component);
-  }
+  };
+
+  const isAlreadyAdjacent = (componentId: string, adjacentComponentId: string, componentArray: ComponentSchemaWithId[], after: boolean) => {
+    const componentIndex = componentArray.findIndex(x => x.id === componentId);
+    
+    if (after) {
+      return componentIndex - 1 >= 0 && componentArray[componentIndex - 1].id === adjacentComponentId;
+    } else {
+      return componentIndex + 1 < componentArray.length && componentArray[componentIndex + 1].id === adjacentComponentId;
+    }
+  };
 
   return (
     <DesignerPage>
