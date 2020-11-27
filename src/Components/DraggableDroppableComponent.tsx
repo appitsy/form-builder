@@ -1,9 +1,10 @@
-import React, { useRef } from 'react'
+import React, { useRef } from 'react';
 import { useDrag, useDrop, DragSourceMonitor, DropTargetMonitor, XYCoord } from 'react-dnd'
 import { ComponentTypes } from '../Utilities/ComponentTypes';
 
 import Icon from 'appitsy/dist/components/BasicComponents/Icon';
 import styled from '@emotion/styled';
+import { PreviewComponent, PreviewComponentSchema } from './PreviewComponent';
 
 const Actions = styled.div`
   display: flex; 
@@ -15,10 +16,11 @@ export interface DraggableDroppableComponentProps {
   type: string;
   id: string;
   onDrop(component: any): void;
-  addPreview(componentType: string, adjacentComponentId: string): void;
+  addPreview(componentType: string, adjacentComponentId: string, after: boolean): void;
   moveComponent: (id: string, newParentId: string) => void;
   moveAdjacent: (id: string, adjacentComponentId: string, after: boolean) => void;
   children: JSX.Element;
+  previewComponent?: PreviewComponentSchema;
   className?: string;
   deleteAction: JSX.Element;
 }
@@ -30,35 +32,39 @@ export interface DragItem {
 }
 
 export const DraggableDroppableComponent: React.FC<DraggableDroppableComponentProps> = (props) => {
-  const dragRef = useRef<HTMLDivElement>(null)
-  const dropRef = useRef<HTMLDivElement>(null)
+  const dragRef = useRef<HTMLDivElement>(null);
+  const dropRef = useRef<HTMLDivElement>(null);
+
+  const isAfter = (monitor: DropTargetMonitor) => {
+    // Determine rectangle on screen
+    // dropRef.current is checked and expected in the caller function to be defined
+    const hoverBoundingRect = dropRef.current!.getBoundingClientRect()
+    
+    // Get vertical middle
+    const hoverMiddleY =
+      (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2
+
+    // Determine mouse position
+    const clientOffset = monitor.getClientOffset()
+
+    // Get pixels to the top
+    const hoverClientY = (clientOffset as XYCoord).y - hoverBoundingRect.top
+
+    return hoverClientY > hoverMiddleY;
+  };
+
   const [, drop] = useDrop({
     accept: ComponentTypes,
-    hover({ id: draggedId }: DragItem, monitor: DropTargetMonitor) {
-      console.log('DragDrop - hover');
-
-      if (!dropRef.current || draggedId === props.id) {
-        return
+    hover({ id: draggedId, type: draggedType }: DragItem, monitor: DropTargetMonitor) {
+      if (!dropRef.current || draggedId === props.id || !monitor.isOver({ shallow: true })) {
+        return;
       }
-      
-      // Determine rectangle on screen
-      const hoverBoundingRect = dropRef.current?.getBoundingClientRect()
-      
-      // Get vertical middle
-      const hoverMiddleY =
-        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2
-
-      // Determine mouse position
-      const clientOffset = monitor.getClientOffset()
-
-      // Get pixels to the top
-      const hoverClientY = (clientOffset as XYCoord).y - hoverBoundingRect.top
 
       if (!draggedId) {
         // new component being dragged
-        props.addPreview(props.type, props.id);
+        props.addPreview(draggedType, props.id, isAfter(monitor));
       } else if (draggedId !== props.id) {
-        props.moveAdjacent(draggedId, props.id, hoverClientY > hoverMiddleY);
+        props.moveAdjacent(draggedId, props.id, isAfter(monitor));
       }
     },
     drop: (component, monitor) => {
@@ -95,15 +101,19 @@ export const DraggableDroppableComponent: React.FC<DraggableDroppableComponentPr
     <div ref={dragRef}><Icon icon='arrows-alt'/></div>
   );
 
+  const previewComponent = props.previewComponent ? <PreviewComponent type={props.previewComponent.type} /> : null;
+
   return (
     <div ref={dropRef} className={props.className} style={{ opacity }}>
       <div ref={preview}></div>
+      { props.previewComponent && !props.previewComponent.isAfter ? previewComponent : null }
       <Actions>
         {moveAction}
         {props.deleteAction}
       </Actions>
       
       {props.children}
+      { props.previewComponent && props.previewComponent.isAfter ? previewComponent : null }
     </div>
   )
 }

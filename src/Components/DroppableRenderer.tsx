@@ -1,7 +1,8 @@
 import styled from '@emotion/styled';
 import React from 'react'
 import { ComponentProperties } from './ComponentProperties';
-import { ComponentSchemaWithId, DesignerRenderer } from './DesignerRenderer';
+import { RootComponent } from './Designer';
+import { DesignerRenderer } from './DesignerRenderer';
 import { DroppableComponent } from './DroppableComponent';
 
 const RendererAndProperties = styled.div`
@@ -22,11 +23,11 @@ const StyledDroppableComponent = styled(DroppableComponent)`
 `;
 
 interface DroppableRendererProps {
-  schema: ComponentSchemaWithId[];
+  rootComponent: RootComponent;
   data: any;
   onDrop(component: any): void;
   onDelete(componentId: string): void;
-  addPreview(componentType: string, adjacentComponentId: string): void;
+  addPreview(componentType: string, adjacentComponentId: string, after: boolean): void;
   moveComponent: (id: string, newPath: string) => void;
   moveAdjacent: (id: string, adjacentComponentId: string, after: boolean) => void;
 }
@@ -37,10 +38,11 @@ export const DroppableRenderer: React.FC<DroppableRendererProps> = (props) => {
       <StyledDroppableComponent 
         id="root"
         onDrop={props.onDrop} 
+        previewComponent={props.rootComponent.preview}
         addPreview={props.addPreview}
       >
           <DesignerRenderer 
-            schema={props.schema} 
+            schema={props.rootComponent.components} 
             data={props.data} 
             onDelete={props.onDelete} 
             onDrop={props.onDrop} 

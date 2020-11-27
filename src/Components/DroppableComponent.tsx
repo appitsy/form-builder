@@ -3,6 +3,7 @@ import React from 'react';
 import { useDrop } from 'react-dnd';
 import { ComponentTypes } from '../Utilities/ComponentTypes';
 import { DragItem } from './DraggableDroppableComponent';
+import { PreviewComponent, PreviewComponentSchema } from './PreviewComponent';
 
 const selectBorder = (isActive: boolean, canDrop: boolean) => {
     if (isActive) {
@@ -21,19 +22,20 @@ const DroppableArea = styled.div<any>`
 
 interface DroppableComponentProps {
     children: JSX.Element;
+    previewComponent?: PreviewComponentSchema;
     id: string;
     onDrop(component: any): void;
-    addPreview(componentType: string, adjacentComponentId: string): void;
+    addPreview(componentType: string, adjacentComponentId: string, after: boolean): void;
     className?: string;
 }
 
 export const DroppableComponent: React.FC<DroppableComponentProps> = (props) => {
     const [{ canDrop, isOver }, drop] = useDrop({
       accept: ComponentTypes,
-      hover({ id: draggedId, type }: DragItem) {
-        if (!draggedId) {
+      hover({ id: draggedId, type }: DragItem, monitor) {
+        if (!draggedId && monitor.isOver({ shallow: true })) {
           // new component being dragged
-          props.addPreview(type, props.id);
+          props.addPreview(type, props.id, false);
         }
       },
       drop: (component, monitor) => {
@@ -49,9 +51,11 @@ export const DroppableComponent: React.FC<DroppableComponentProps> = (props) => 
   
     const isActive = canDrop && isOver;
     const border = selectBorder(isActive, canDrop);
+
     return (
         <DroppableArea border={border} ref={drop} className={props.className}>
             { props.children }
+            { props.previewComponent ? <PreviewComponent type={props.previewComponent.type} /> : null }
         </DroppableArea>
     )
   }

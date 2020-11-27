@@ -9,6 +9,7 @@ import { getDefaultPropsForType } from "../Utilities/ComponentTypes";
 import cloneDeep from "lodash-es/cloneDeep";
 import { ComponentSchemaWithId } from "./DesignerRenderer";
 import { remove } from "lodash-es";
+import { PreviewComponentSchema } from "./PreviewComponent";
 
 const DesignerPage = styled.div`
   display: flex;
@@ -26,23 +27,16 @@ const DesignerPreview = styled.div`
 
 export const ROOT_ID = 'root';
 export const ROOT_PATH = '';
-export const PREVIEW_COMPONENT_TYPE = 'preview-component';
-export const PREVIEW_COMPONENT_ID = 'preview-component-id';
 
-// const getTextField = () => ({
-//   name: "text-" + new Date().getMilliseconds(),
-//   type: "text",
-//   data: {
-//     defaultValue: "asd",
-//   },
-//   validations: {
-//     minLength: 10,
-//   },
-// });
+export interface RootComponent {
+  components: ComponentSchemaWithId[];
+  preview?: PreviewComponentSchema;
+}
 
 const Designer = () => {
   const [data] = useState<Object>({});
-  const [schema, setSchema] = useState<ComponentSchemaWithId[]>([]);
+  const [rootComponent, setRootComponent] = useState<RootComponent>({ components: [] });
+  const [previewComponentParentId, setPreviewComponentParentId] = useState<string>();
 
   const onDrop = (componentEl: any) => {
     if (componentEl.operation === "drop") {
@@ -52,12 +46,12 @@ const Designer = () => {
         return;
       }
 
-      const schemaCopy = cloneDeep(schema);
+      const rootComponentCopy = cloneDeep(rootComponent);
 
       if (componentEl.parent === ROOT_PATH) {
-        insertNewComponentAtIndex(schemaCopy, newComponent, -1);
+        insertNewComponentAtIndex(rootComponentCopy.components, newComponent, -1);
       } else {
-        const { component: parentComponent, parent: grandParentComponent } = findComponentById(componentEl.parent, schemaCopy);
+        const { component: parentComponent, parent: grandParentComponent } = findComponentById(componentEl.parent, rootComponentCopy.components);
 
         if (parentComponent && parentComponent.components) {
           insertNewComponentAtIndex(parentComponent.components, newComponent, -1);
@@ -67,27 +61,27 @@ const Designer = () => {
           const parentIndex = grandParentComponent.components!.findIndex((x: ComponentSchemaWithId) => x.id === parentComponent?.id);
           insertNewComponentAtIndex(grandParentComponent.components!, newComponent, parentIndex);
         } else {
-          const parentIndex = schemaCopy.findIndex((x: ComponentSchemaWithId) => x.id === parentComponent?.id);
-          insertNewComponentAtIndex(schemaCopy, newComponent, parentIndex);
+          const parentIndex = rootComponentCopy.components.findIndex((x: ComponentSchemaWithId) => x.id === parentComponent?.id);
+          insertNewComponentAtIndex(rootComponentCopy.components, newComponent, parentIndex);
         }
       }
 
-      setSchema(schemaCopy);
+      setRootComponent(rootComponentCopy);
     }
     else if (componentEl.operation === 'move') {
-      const schemaCopy = cloneDeep(schema);
-      const { component, parent: oldParentComponent } = findComponentById(componentEl.id, schemaCopy);
+      const rootComponentCopy = cloneDeep(rootComponent);
+      const { component, parent: oldParentComponent } = findComponentById(componentEl.id, rootComponentCopy.components);
 
       if (!component) {
         return;
       }
 
-      removeComponent(oldParentComponent?.components || schemaCopy, component.id);
+      removeComponent(oldParentComponent?.components || rootComponentCopy.components, component.id);
 
       if (componentEl.parent === ROOT_ID) {
-        insertNewComponentAtIndex(schemaCopy, component, -1);
+        insertNewComponentAtIndex(rootComponentCopy.components, component, -1);
       } else {
-        const { component: newParent, parent: newGrandParentComponent } = findComponentById(componentEl.parent, schemaCopy);
+        const { component: newParent, parent: newGrandParentComponent } = findComponentById(componentEl.parent, rootComponentCopy.components);
 
         if (!newParent) {
           return;
@@ -99,17 +93,17 @@ const Designer = () => {
           const parentIndex = newGrandParentComponent.components!.findIndex((x: ComponentSchemaWithId) => x.id === newParent.id);
           insertNewComponentAtIndex(newGrandParentComponent.components!, component, parentIndex);
         } else {
-          const parentIndex = schemaCopy.findIndex((x: ComponentSchemaWithId) => x.id === newParent.id);
-          insertNewComponentAtIndex(schemaCopy, component, parentIndex);
+          const parentIndex = rootComponentCopy.components.findIndex((x: ComponentSchemaWithId) => x.id === newParent.id);
+          insertNewComponentAtIndex(rootComponentCopy.components, component, parentIndex);
         }
       }
-      setSchema(schemaCopy);
+      setRootComponent(rootComponentCopy);
     }
   };
 
   const onDelete = (componentId: string) => {
-    const schemaCopy = cloneDeep(schema);
-    const { component, parent } = findComponentById(componentId, schemaCopy);
+    const rootComponentCopy = cloneDeep(rootComponent);
+    const { component, parent } = findComponentById(componentId, rootComponentCopy.components);
 
     if (!component) {
       return;
@@ -120,48 +114,48 @@ const Designer = () => {
         removeComponent(parent.components, component.id);
       }
     } else {
-      removeComponent(schemaCopy, component.id);
+      removeComponent(rootComponentCopy.components, component.id);
     }
     
-    setSchema(schemaCopy);
+    setRootComponent(rootComponentCopy);
   };
 
   const moveComponent = (id: string, newParentId: string) => {
-    const schemaCopy = cloneDeep(schema);
-    const { component, parent: oldParentComponent } = findComponentById(id, schemaCopy);
+    const rootComponentCopy = cloneDeep(rootComponent);
+    const { component, parent: oldParentComponent } = findComponentById(id, rootComponentCopy.components);
 
     if(!component) {
       return;
     }
 
     if (!oldParentComponent) {
-      removeComponent(schemaCopy, id);
+      removeComponent(rootComponentCopy.components, id);
     } else {
       removeComponent(oldParentComponent.components!, id);
     }
 
-    const { parent: newParent } = findComponentById(newParentId, schemaCopy);
+    const { parent: newParent } = findComponentById(newParentId, rootComponentCopy.components);
     if (!newParent) {
       return;
     }
 
     insertComponent(newParent.components!, newParent.components!.length, component);
-    setSchema(schemaCopy);
+    setRootComponent(rootComponentCopy);
   };
 
   const moveAdjacent = (id: string, adjacentComponentId: string, after: boolean) => {
-    const schemaCopy = cloneDeep(schema);
-    const { component, parent: oldParentComponent } = findComponentById(id, schemaCopy);
+    const rootComponentCopy = cloneDeep(rootComponent);
+    const { component, parent: oldParentComponent } = findComponentById(id, rootComponentCopy.components);
 
     if(!component) {
       return;
     }
 
     if (!oldParentComponent) {
-      if (isAlreadyAdjacent(id, adjacentComponentId, schemaCopy, after)) {
+      if (isAlreadyAdjacent(id, adjacentComponentId, rootComponentCopy.components, after)) {
         return;
       }
-      removeComponent(schemaCopy, id);
+      removeComponent(rootComponentCopy.components, id);
     } else {
       if (isAlreadyAdjacent(id, adjacentComponentId, oldParentComponent.components!, after)) {
         return;
@@ -169,7 +163,7 @@ const Designer = () => {
       removeComponent(oldParentComponent.components!, id);
     }
 
-    const { component: adjacentComponent, parent: newParent } = findComponentById(adjacentComponentId, schemaCopy);
+    const { component: adjacentComponent, parent: newParent } = findComponentById(adjacentComponentId, rootComponentCopy.components);
     if (!adjacentComponent) {
       return;
     }
@@ -177,7 +171,7 @@ const Designer = () => {
     if (!newParent) {
       // parent is not there but found adjacent component
       // means the adjacent component is in the root
-      insertComponent(schemaCopy, schemaCopy.indexOf(adjacentComponent) + (after ? 1 : 0), component);
+      insertComponent(rootComponentCopy.components, rootComponentCopy.components.indexOf(adjacentComponent) + (after ? 1 : 0), component);
     } else {
       if (!newParent.components) {
         // shouldn't be the case
@@ -188,59 +182,79 @@ const Designer = () => {
       insertComponent(newParent.components, newParent.components.indexOf(adjacentComponent) + (after ? 1 : 0), component); 
     }
     
-    setSchema(schemaCopy);
+    setRootComponent(rootComponentCopy);
   }
 
-  const removeOldPreviewComponent = (componentsArray: ComponentSchemaWithId[]) => {
-    const { component: oldPreviewComponent, parent: previewComponentParent } = findComponentById(PREVIEW_COMPONENT_ID, componentsArray);
-    if (!oldPreviewComponent) {
-      return;
+  const addPreview = (componentType: string, adjacentComponentId: string, after: boolean) => {
+    const rootComponentCopy = cloneDeep(rootComponent);
+    let previewComponentParent: ComponentSchemaWithId | undefined = undefined;
+    
+    // remove the earlier preview
+    if (previewComponentParentId) {
+      if (previewComponentParentId === adjacentComponentId) {
+        if (previewComponentParentId === ROOT_ID) {
+          if (rootComponentCopy.preview?.type === componentType) {
+            return;
+          }
+          
+          rootComponentCopy.preview = undefined;
+          setPreviewComponentParentId(undefined);
+        } else {
+          let { component: previewComponentParentTemp } = findComponentById(previewComponentParentId, rootComponentCopy.components);
+          if (previewComponentParentTemp) {
+            previewComponentParent = previewComponentParentTemp;
+  
+            if (previewComponentParent.previewComponent?.type === componentType && previewComponentParent.previewComponent.isAfter === after) {
+              return;
+            }
+  
+            previewComponentParent.previewComponent = undefined;
+            setPreviewComponentParentId(undefined);
+          }
+        }
+      }
+      else {
+        // if preview component parent is not == adjacenComponentId
+        // find the component object
+        if (previewComponentParentId === ROOT_ID) {
+          rootComponentCopy.preview = undefined;
+          setPreviewComponentParentId(undefined);
+        } else {
+          let { component: previewComponentParentTemp } = findComponentById(previewComponentParentId, rootComponentCopy.components);
+          if (previewComponentParentTemp) {
+            previewComponentParent = previewComponentParentTemp;
+            previewComponentParent.previewComponent = undefined;
+            setPreviewComponentParentId(undefined);
+          }
+        }
+      }
     }
 
-    if (previewComponentParent) {
-      removeComponent(previewComponentParent.components!, PREVIEW_COMPONENT_ID);
+    if (adjacentComponentId === ROOT_ID) {
+      rootComponentCopy.preview = {
+        type: componentType,
+        isAfter: true
+      }
+
+      setPreviewComponentParentId(ROOT_ID);
     } else {
-      removeComponent(componentsArray, PREVIEW_COMPONENT_ID);
-    }
-  }
-
-  const resetDragDropPreview = () => {
-    const schemaCopy = cloneDeep(schema);
-    removeOldPreviewComponent(schemaCopy);
-    setSchema(schemaCopy);
-  }
-
-  const addPreview = (componentType: string, adjacentComponentId: string) => {
-    const schemaCopy = cloneDeep(schema);
-    
-    removeOldPreviewComponent(schemaCopy);
-    
-    const component: ComponentSchemaWithId = { id: PREVIEW_COMPONENT_ID, type: PREVIEW_COMPONENT_TYPE, name: componentType };
-
-    if (adjacentComponentId === 'root') {
-      insertComponent(schemaCopy, 0, component);
-    } else {
-      const { component: adjacentComponent, parent } = findComponentById(adjacentComponentId, schemaCopy);
-      if (!adjacentComponent) {
+      let { component: previewComponentParentTemp } = findComponentById(adjacentComponentId, rootComponentCopy.components);
+      if (!previewComponentParentTemp) {
+        console.error('Preview component parent not found!');
         return;
       }
-  
-      if (!parent) {
-        // parent is not there but found adjacent component
-        // means the adjacent component is in the root
-        insertComponent(schemaCopy, schemaCopy.indexOf(adjacentComponent), component);
-      } else {
-        if (!parent.components) {
-          // shouldn't be the case
-          alert('meh?');
-          return;
-        }
-  
-        insertComponent(parent.components, parent.components.indexOf(adjacentComponent), component); 
+
+      previewComponentParent = previewComponentParentTemp;
+
+      previewComponentParent.previewComponent = {
+        type: componentType,
+        isAfter: after,
       }
+
+      setPreviewComponentParentId(adjacentComponentId);
     }
 
-    setSchema(schemaCopy);
+    setRootComponent(rootComponentCopy);
   }
 
   const findComponentById = (id: string, findInSchema: ComponentSchemaWithId[]): { component: ComponentSchemaWithId | undefined, parent: ComponentSchemaWithId | undefined } => {
@@ -296,6 +310,25 @@ const Designer = () => {
     }
   };
 
+  const resetDragDropPreview = () => {
+    if (!previewComponentParentId) {
+      return;
+    }
+
+    const rootComponentCopy = cloneDeep(rootComponent);
+    if (previewComponentParentId === ROOT_ID) {
+      rootComponentCopy.preview = undefined;
+    } else {
+      const {component: previewComponentParent} = findComponentById(previewComponentParentId, rootComponentCopy.components);
+      if (previewComponentParent) {
+        previewComponentParent.previewComponent = undefined;
+      }
+    }
+
+    setRootComponent(rootComponentCopy);
+    setPreviewComponentParentId(undefined);
+  }
+
   return (
     <DesignerPage>
       <DndProvider backend={HTML5Backend}>
@@ -305,7 +338,7 @@ const Designer = () => {
 
         <DesignerPreview>
           <DroppableRenderer
-            schema={schema}
+            rootComponent={rootComponent}
             data={data}
             onDrop={onDrop}
             onDelete={onDelete}

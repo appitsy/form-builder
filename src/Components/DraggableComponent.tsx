@@ -23,7 +23,7 @@ export const DraggableComponent: React.FC<DraggableComponentProps> = (props) => 
         props.resetPreview();
       },
     })
-  
+
     return (
       <div ref={drag} className={props.className} style={{ opacity }}>
         {props.children}
