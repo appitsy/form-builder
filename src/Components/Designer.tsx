@@ -53,16 +53,18 @@ const Designer = () => {
       } else {
         const { component: parentComponent, parent: grandParentComponent } = findComponentById(componentEl.parent, rootComponentCopy.components);
 
-        if (parentComponent && parentComponent.components) {
-          insertNewComponentAtIndex(parentComponent.components, newComponent, -1);
+        if (parentComponent && parentComponent.canHaveChildComponents) {
+          insertNewComponentAtIndex(parentComponent.components!, newComponent, -1);
         } else if (grandParentComponent) {
           // grand parents children should obviously be there
           // otherwise we would have not got this
           const parentIndex = grandParentComponent.components!.findIndex((x: ComponentSchemaWithId) => x.id === parentComponent?.id);
-          insertNewComponentAtIndex(grandParentComponent.components!, newComponent, parentIndex);
+          const isAfter = componentEl.isAfter === true;
+          insertNewComponentAtIndex(grandParentComponent.components!, newComponent, parentIndex + (isAfter ? 1 : 0));
         } else {
           const parentIndex = rootComponentCopy.components.findIndex((x: ComponentSchemaWithId) => x.id === parentComponent?.id);
-          insertNewComponentAtIndex(rootComponentCopy.components, newComponent, parentIndex);
+          const isAfter = componentEl.isAfter === true;
+          insertNewComponentAtIndex(rootComponentCopy.components, newComponent, parentIndex + (isAfter ? 1 : 0));
         }
       }
 
@@ -87,7 +89,7 @@ const Designer = () => {
           return;
         }
 
-        if (newParent.components) {
+        if (newParent.canHaveChildComponents) {
           insertNewComponentAtIndex(newParent.components!, component, -1);
         } else if (newGrandParentComponent) {
           const parentIndex = newGrandParentComponent.components!.findIndex((x: ComponentSchemaWithId) => x.id === newParent.id);
@@ -110,8 +112,8 @@ const Designer = () => {
     }
 
     if (parent) {
-      if (parent.components) {
-        removeComponent(parent.components, component.id);
+      if (parent.canHaveChildComponents) {
+        removeComponent(parent.components!, component.id);
       }
     } else {
       removeComponent(rootComponentCopy.components, component.id);
@@ -173,13 +175,13 @@ const Designer = () => {
       // means the adjacent component is in the root
       insertComponent(rootComponentCopy.components, rootComponentCopy.components.indexOf(adjacentComponent) + (after ? 1 : 0), component);
     } else {
-      if (!newParent.components) {
+      if (!newParent.canHaveChildComponents) {
         // shouldn't be the case
         alert('meh?');
         return;
       }
 
-      insertComponent(newParent.components, newParent.components.indexOf(adjacentComponent) + (after ? 1 : 0), component); 
+      insertComponent(newParent.components!, newParent.components!.indexOf(adjacentComponent) + (after ? 1 : 0), component); 
     }
     
     setRootComponent(rootComponentCopy);
@@ -272,8 +274,11 @@ const Designer = () => {
         return false;
       }
 
-      ({ component } = findComponentById(id, cx.components));
-      if (component) {
+      ({ component, parent } = findComponentById(id, cx.components));
+      if (!parent && component) {
+        // if component is found, but the immediate recursive call just returned the component.
+        // This means, this component is the parent - assign it.
+        // otherwise return the parent which was returned form the call
         parent = cx;
       }
 

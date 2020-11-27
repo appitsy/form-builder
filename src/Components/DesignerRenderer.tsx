@@ -27,6 +27,7 @@ const DropFieldsHere = styled.div`
 
 export type ComponentSchemaWithId = ComponentSchema & {
   id: string;
+  canHaveChildComponents: boolean;
   components? : ComponentSchemaWithId[];
   previewComponent?: PreviewComponentSchema;
 }
@@ -68,7 +69,10 @@ export class DesignerRenderer extends Renderer<DesignerRendererProps> {
         type={component.type} 
         operation='move' 
         onDrop={this.props.onDrop}
-        previewComponent={component.previewComponent}
+        // if this component can render children, we'll skip showing preview
+        // in the DraggableDroppableComponent and rather show it in Droppable area 
+        // of the component
+        previewComponent={component.canHaveChildComponents ? undefined : component.previewComponent}
         addPreview={this.props.addPreview}
         moveComponent={this.props.moveComponent} 
         moveAdjacent={this.props.moveAdjacent}

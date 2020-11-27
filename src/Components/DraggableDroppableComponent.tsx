@@ -69,7 +69,7 @@ export const DraggableDroppableComponent: React.FC<DraggableDroppableComponentPr
     },
     drop: (component, monitor) => {
       if (monitor.isOver()) {
-        props.onDrop({...component, parent: props.id});
+        props.onDrop({...component, parent: props.id, isAfter: isAfter(monitor)});
       }
     },
   })
