@@ -9,6 +9,14 @@ import { PreviewComponent, PreviewComponentSchema } from './PreviewComponent';
 const Actions = styled.div`
   display: flex; 
   flex-direction: row;
+
+  * {
+    margin: 0px 1px;
+  }
+
+  i {
+    font-size: 14px;
+  }
 `;
 
 export interface DraggableDroppableComponentProps {
@@ -22,6 +30,8 @@ export interface DraggableDroppableComponentProps {
   children: JSX.Element;
   previewComponent?: PreviewComponentSchema;
   className?: string;
+  isEditing: boolean;
+  editAction: JSX.Element;
   deleteAction: JSX.Element;
 }
 
@@ -108,6 +118,7 @@ export const DraggableDroppableComponent: React.FC<DraggableDroppableComponentPr
       <div ref={preview}></div>
       { props.previewComponent && !props.previewComponent.isAfter ? previewComponent : null }
       <Actions>
+        {props.editAction}
         {moveAction}
         {props.deleteAction}
       </Actions>

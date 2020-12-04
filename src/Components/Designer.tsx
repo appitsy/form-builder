@@ -36,6 +36,7 @@ export interface RootComponent {
 const Designer = () => {
   const [data] = useState<Object>({});
   const [rootComponent, setRootComponent] = useState<RootComponent>({ components: [] });
+  const [editingComponentId, setEditingComponentId] = useState<string>();
   const [previewComponentParentId, setPreviewComponentParentId] = useState<string>();
 
   const onDrop = (componentEl: any) => {
@@ -102,6 +103,28 @@ const Designer = () => {
       setRootComponent(rootComponentCopy);
     }
   };
+
+  const onEdit = (componentId: string) => {
+    const rootComponentCopy = cloneDeep(rootComponent);
+    
+    // clear the earlier editing component
+    if (editingComponentId) {
+      const { component: previousEditingComponent } = findComponentById(editingComponentId, rootComponentCopy.components);  
+      if (previousEditingComponent) {
+        previousEditingComponent.isEditing = false;
+      }
+    }
+
+    const { component } = findComponentById(componentId, rootComponentCopy.components);
+
+    if (component === undefined) {
+      return;
+    }
+
+    component.isEditing = true;
+    setEditingComponentId(component.id);
+    setRootComponent(rootComponentCopy);
+  }
 
   const onDelete = (componentId: string) => {
     const rootComponentCopy = cloneDeep(rootComponent);
@@ -346,6 +369,7 @@ const Designer = () => {
             rootComponent={rootComponent}
             data={data}
             onDrop={onDrop}
+            onEdit={onEdit}
             onDelete={onDelete}
             addPreview={addPreview}
             moveComponent={moveComponent}

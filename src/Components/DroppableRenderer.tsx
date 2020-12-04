@@ -26,6 +26,7 @@ interface DroppableRendererProps {
   rootComponent: RootComponent;
   data: any;
   onDrop(component: any): void;
+  onEdit(componentId: string): void;
   onDelete(componentId: string): void;
   addPreview(componentType: string, adjacentComponentId: string, after: boolean): void;
   moveComponent: (id: string, newPath: string) => void;
@@ -44,6 +45,7 @@ export const DroppableRenderer: React.FC<DroppableRendererProps> = (props) => {
           <DesignerRenderer 
             schema={props.rootComponent.components} 
             data={props.data} 
+            onEdit={props.onEdit} 
             onDelete={props.onDelete} 
             onDrop={props.onDrop} 
             addPreview={props.addPreview}

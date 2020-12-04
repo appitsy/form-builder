@@ -25,8 +25,14 @@ const DropFieldsHere = styled.div`
   margin: 0px;
 `;
 
+const StyledDraggableDroppableComponent = styled(DraggableDroppableComponent)`
+    padding: 7px;
+    background-color: ${(props) => props.isEditing ? '#ffffb3' : ''};
+`;
+
 export type ComponentSchemaWithId = ComponentSchema & {
   id: string;
+  isEditing: boolean;
   canHaveChildComponents: boolean;
   components? : ComponentSchemaWithId[];
   previewComponent?: PreviewComponentSchema;
@@ -34,6 +40,7 @@ export type ComponentSchemaWithId = ComponentSchema & {
 
 interface DesignerRendererProps extends RendererProps {
   schema: ComponentSchemaWithId[];
+  onEdit(componentId: string): void;
   onDelete(componentId: string): void;
   onDrop(component: any): void;
   addPreview(componentType: string, adjacentComponentId: string, after: boolean): void;
@@ -58,12 +65,16 @@ export class DesignerRenderer extends Renderer<DesignerRendererProps> {
         break;
     }
 
+    const editAction = (
+      <div onClick={() => this.props.onEdit(component.id)}><Icon icon='pen'/></div>
+    );
+
     const deleteAction = (
       <div onClick={() => this.props.onDelete(component.id)}><Icon icon='trash-alt'/></div>
     );
 
     return (
-      <DraggableDroppableComponent 
+      <StyledDraggableDroppableComponent 
         id={component.id} 
         key={component.id} 
         type={component.type} 
@@ -76,10 +87,12 @@ export class DesignerRenderer extends Renderer<DesignerRendererProps> {
         addPreview={this.props.addPreview}
         moveComponent={this.props.moveComponent} 
         moveAdjacent={this.props.moveAdjacent}
+        isEditing={component.isEditing}
+        editAction={editAction}
         deleteAction={deleteAction}
       >
         { renderedComponent }
-      </DraggableDroppableComponent>
+      </StyledDraggableDroppableComponent>
     );
   }
 
