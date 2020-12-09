@@ -1,4 +1,4 @@
-import { Types } from 'appitsy/dist/types/Types';
+import { Types } from 'appitsy/types/Types';
 import { ComponentSchemaWithId } from "../Components/DesignerRenderer";
 import { v4 as uuidv4 } from 'uuid';
 

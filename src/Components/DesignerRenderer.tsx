@@ -1,13 +1,13 @@
 import React from 'react';
-import { Renderer, RendererProps } from "appitsy/dist/components/Renderer/Renderer";
+import { Renderer, RendererProps } from "appitsy/components/Renderer/Renderer";
 import Styled from '@emotion/styled';
-import { ComponentSchema } from 'appitsy/dist/types/ComponentSchema';
-import { Types } from 'appitsy/dist/types/Types';
+import { ComponentSchema } from 'appitsy/types/ComponentSchema';
+import { Types } from 'appitsy/types/Types';
 import { DroppableComponent } from './DroppableComponent';
 import { DraggableDroppableComponent } from './DraggableDroppableComponent';
 import styled from '@emotion/styled';
 import { ROOT_ID } from './Designer';
-import Icon from 'appitsy/dist/components/BasicComponents/Icon';
+import Icon from 'appitsy/components/BasicComponents/Icon';
 import { PreviewComponentSchema } from './PreviewComponent';
 
 const StyledPage = Styled.div`
