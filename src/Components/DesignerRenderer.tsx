@@ -9,6 +9,7 @@ import styled from '@emotion/styled';
 import { ROOT_ID } from './Designer';
 import Icon from 'appitsy/components/BasicComponents/Icon';
 import { PreviewComponentSchema } from './PreviewComponent';
+import ReactTooltip from 'react-tooltip';
 
 const StyledPage = Styled.div`
     display: flex;
@@ -97,8 +98,7 @@ export class DesignerRenderer extends Renderer<DesignerRendererProps> {
   }
 
   renderChildren() {
-    return this.props.schema.map((component) => this.renderDesignerComponent(component)
-    );
+    return this.props.schema.map((component) => this.renderDesignerComponent(component));
   }
 
   renderLayoutChildren(childComponents: ComponentSchemaWithId[], parentComponent: ComponentSchemaWithId) {
@@ -128,7 +128,23 @@ export class DesignerRenderer extends Renderer<DesignerRendererProps> {
     )];
   }
 
+  addReactTooltip(children: JSX.Element[]): React.ReactNode {
+    /*
+        Issue: Tried multiple things
+        If we remove/move the below code, either the tooltips stop working
+        Or tooltips stop working with showing up just one weird border at the bottom
+        of the screen. But I think we can live with this for now.
+    */
+    children.push(<span data-tip={"asd"} />);
+    children.push(<ReactTooltip />);
+    return children;
+  }
+
   renderRoot() {
-    return <StyledPage>{this.renderChildren()}</StyledPage>;
+    return (
+      <StyledPage>
+        { this.addReactTooltip(this.renderChildren()) }
+      </StyledPage>
+    );
   }
 }
