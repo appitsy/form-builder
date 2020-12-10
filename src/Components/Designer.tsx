@@ -36,7 +36,7 @@ export interface RootComponent {
 const Designer = () => {
   const [data] = useState<Object>({});
   const [rootComponent, setRootComponent] = useState<RootComponent>({ components: [] });
-  const [editingComponentId, setEditingComponentId] = useState<string>();
+  const [editingComponent, setEditingComponent] = useState<ComponentSchemaWithId>();
   const [previewComponentParentId, setPreviewComponentParentId] = useState<string>();
 
   const onDrop = (componentEl: any) => {
@@ -108,8 +108,8 @@ const Designer = () => {
     const rootComponentCopy = cloneDeep(rootComponent);
     
     // clear the earlier editing component
-    if (editingComponentId) {
-      const { component: previousEditingComponent } = findComponentById(editingComponentId, rootComponentCopy.components);  
+    if (editingComponent !== undefined) {
+      const { component: previousEditingComponent } = findComponentById(editingComponent.id, rootComponentCopy.components);  
       if (previousEditingComponent) {
         previousEditingComponent.isEditing = false;
       }
@@ -122,7 +122,7 @@ const Designer = () => {
     }
 
     component.isEditing = true;
-    setEditingComponentId(component.id);
+    setEditingComponent(component);
     setRootComponent(rootComponentCopy);
   }
 
@@ -357,6 +357,29 @@ const Designer = () => {
     setPreviewComponentParentId(undefined);
   }
 
+  const updateComponentSchema = (updatedComponentSchema: any) => {
+    const rootComponentCopy = cloneDeep(rootComponent);
+    
+    // clear the earlier editing component
+    if (editingComponent === undefined) {
+      return;
+    }
+
+    const { component, parent: parentComponent } = findComponentById(editingComponent.id, rootComponentCopy.components);
+
+    if (component === undefined) {
+      // component wasn't found 
+      return;
+    }
+
+    updatedComponentSchema.id = component.id;
+    const parentComponentChildren = parentComponent || rootComponentCopy.components;
+    const componentIdx = parentComponentChildren.findIndex((x: ComponentSchemaWithId) => x.id === component.id);
+    parentComponentChildren.splice(componentIdx, 1, updatedComponentSchema);
+
+    setRootComponent(rootComponentCopy);
+  }
+
   return (
     <DesignerPage>
       <DndProvider backend={HTML5Backend}>
@@ -368,12 +391,14 @@ const Designer = () => {
           <DroppableRenderer
             rootComponent={rootComponent}
             data={data}
+            editingComponent={editingComponent}
             onDrop={onDrop}
             onEdit={onEdit}
             onDelete={onDelete}
             addPreview={addPreview}
             moveComponent={moveComponent}
             moveAdjacent={moveAdjacent}
+            updateComponentSchema={updateComponentSchema}
           />
         </DesignerPreview>
       </DndProvider>

@@ -12,7 +12,7 @@ interface ComponentListProps {
 }
 
 const ComponentList = (props: ComponentListProps) => (
-  <StackList style={{ overflow: "hidden", clear: "both" }}>
+  <StackList style={{ overflow: "hidden", clear: "both", height: '100%' }}>
     <ComponentListItem name="Text Field" type="text" resetPreview={props.resetPreview} />
     <ComponentListItem name="Text Area" type="textarea" resetPreview={props.resetPreview} />
     <ComponentListItem name="Password" type="password" resetPreview={props.resetPreview} />

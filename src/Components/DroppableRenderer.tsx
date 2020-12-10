@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
 import React from 'react'
-import { ComponentProperties } from './ComponentProperties';
+import { ComponentProperties } from './ComponentProperties/ComponentProperties';
 import { RootComponent } from './Designer';
-import { DesignerRenderer } from './DesignerRenderer';
+import { ComponentSchemaWithId, DesignerRenderer } from './DesignerRenderer';
 import { DroppableComponent } from './DroppableComponent';
 
 const RendererAndProperties = styled.div`
@@ -24,6 +24,7 @@ const StyledDroppableComponent = styled(DroppableComponent)`
 
 interface DroppableRendererProps {
   rootComponent: RootComponent;
+  editingComponent?: ComponentSchemaWithId;
   data: any;
   onDrop(component: any): void;
   onEdit(componentId: string): void;
@@ -31,6 +32,7 @@ interface DroppableRendererProps {
   addPreview(componentType: string, adjacentComponentId: string, after: boolean): void;
   moveComponent: (id: string, newPath: string) => void;
   moveAdjacent: (id: string, adjacentComponentId: string, after: boolean) => void;
+  updateComponentSchema: (componentSchema: any) => void;
 }
 
 export const DroppableRenderer: React.FC<DroppableRendererProps> = (props) => {
@@ -51,9 +53,10 @@ export const DroppableRenderer: React.FC<DroppableRendererProps> = (props) => {
             addPreview={props.addPreview}
             moveComponent={props.moveComponent} 
             moveAdjacent={props.moveAdjacent} 
+            onSubmit={(_) => {}}
           />
       </StyledDroppableComponent>
-      <StyledComponentProperties />
+      <StyledComponentProperties component={props.editingComponent} updateComponentSchema={props.updateComponentSchema} />
     </RendererAndProperties>
   )
 }
