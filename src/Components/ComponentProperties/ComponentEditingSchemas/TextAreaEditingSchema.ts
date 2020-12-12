@@ -1,6 +1,6 @@
 import { ComponentSchema } from "appitsy/types/ComponentSchema";
 
-export const TextFieldEditingSchema: ComponentSchema[] = [
+export const TextAreaEditingSchema: ComponentSchema[] = [
   {
     type: 'text',
     name: 'name',
@@ -10,7 +10,7 @@ export const TextFieldEditingSchema: ComponentSchema[] = [
   },
   {
     type: 'tabs',
-    name: 'textFieldEditing',
+    name: 'textAreaEditing',
     data: {
       flattenDataWithParent: true,
     },

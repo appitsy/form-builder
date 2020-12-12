@@ -15,10 +15,6 @@ const StyledPage = Styled.div`
     display: flex;
     flex-direction: column;
     padding: 7px;
-    .appitsy-component {
-        margin: 7px;
-        width: calc(100% - 14px);
-    }
 `;
 const DropFieldsHere = styled.div`
   background-color: lightgrey;

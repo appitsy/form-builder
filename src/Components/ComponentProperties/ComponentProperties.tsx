@@ -17,18 +17,18 @@ const PropertiesPane = styled.div`
 
 export const ComponentProperties = (props: ComponentPropertiesProps) => {
   
-  if (props.component === undefined) {
+  const componentEditingSchema = props.component ? ComponentEditingSchemas[props.component.type] : undefined;
+
+  if (!componentEditingSchema) {
     return (
       <div> Please select a component to continue edit it.. </div>
-    )
+    );
   }
-
-  const componentEditingSchema = ComponentEditingSchemas[props.component.type];
 
   return (
     <PropertiesPane className={props.className}>
       Component Properties
-      <Renderer schema={componentEditingSchema} data={props.component} onSubmit={props.updateComponentSchema}></Renderer>
+      <Renderer schema={componentEditingSchema} data={props.component} onDataChange={props.updateComponentSchema}></Renderer>
     </PropertiesPane>
   );
 };

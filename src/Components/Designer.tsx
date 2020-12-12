@@ -10,6 +10,7 @@ import cloneDeep from "lodash-es/cloneDeep";
 import { ComponentSchemaWithId } from "./DesignerRenderer";
 import { remove } from "lodash-es";
 import { PreviewComponentSchema } from "./PreviewComponent";
+import _ from "lodash";
 
 const DesignerPage = styled.div`
   display: flex;
@@ -33,11 +34,23 @@ export interface RootComponent {
   preview?: PreviewComponentSchema;
 }
 
-const Designer = () => {
+interface DesignerProps {
+  schema: ComponentSchemaWithId[];
+  onSchemaChange?: (updatedSchema: ComponentSchemaWithId[]) => void;
+}
+
+const Designer = (props: DesignerProps) => {
   const [data] = useState<Object>({});
-  const [rootComponent, setRootComponent] = useState<RootComponent>({ components: [] });
+  const [rootComponent, setRootComponent] = useState<RootComponent>({ components: props.schema });
   const [editingComponent, setEditingComponent] = useState<ComponentSchemaWithId>();
   const [previewComponentParentId, setPreviewComponentParentId] = useState<string>();
+
+  const updateRootComponent = (root: RootComponent): void => {
+    setRootComponent(root);
+    if (props.onSchemaChange) {
+      props.onSchemaChange(root.components);
+    }
+  };
 
   const onDrop = (componentEl: any) => {
     if (componentEl.operation === "drop") {
@@ -69,7 +82,7 @@ const Designer = () => {
         }
       }
 
-      setRootComponent(rootComponentCopy);
+      updateRootComponent(rootComponentCopy);
     }
     else if (componentEl.operation === 'move') {
       const rootComponentCopy = cloneDeep(rootComponent);
@@ -100,7 +113,7 @@ const Designer = () => {
           insertNewComponentAtIndex(rootComponentCopy.components, component, parentIndex);
         }
       }
-      setRootComponent(rootComponentCopy);
+      updateRootComponent(rootComponentCopy);
     }
   };
 
@@ -123,7 +136,7 @@ const Designer = () => {
 
     component.isEditing = true;
     setEditingComponent(component);
-    setRootComponent(rootComponentCopy);
+    updateRootComponent(rootComponentCopy);
   }
 
   const onDelete = (componentId: string) => {
@@ -142,7 +155,7 @@ const Designer = () => {
       removeComponent(rootComponentCopy.components, component.id);
     }
     
-    setRootComponent(rootComponentCopy);
+    updateRootComponent(rootComponentCopy);
   };
 
   const moveComponent = (id: string, newParentId: string) => {
@@ -165,7 +178,7 @@ const Designer = () => {
     }
 
     insertComponent(newParent.components!, newParent.components!.length, component);
-    setRootComponent(rootComponentCopy);
+    updateRootComponent(rootComponentCopy);
   };
 
   const moveAdjacent = (id: string, adjacentComponentId: string, after: boolean) => {
@@ -207,7 +220,7 @@ const Designer = () => {
       insertComponent(newParent.components!, newParent.components!.indexOf(adjacentComponent) + (after ? 1 : 0), component); 
     }
     
-    setRootComponent(rootComponentCopy);
+    updateRootComponent(rootComponentCopy);
   }
 
   const addPreview = (componentType: string, adjacentComponentId: string, after: boolean) => {
@@ -279,7 +292,7 @@ const Designer = () => {
       setPreviewComponentParentId(adjacentComponentId);
     }
 
-    setRootComponent(rootComponentCopy);
+    updateRootComponent(rootComponentCopy);
   }
 
   const findComponentById = (id: string, findInSchema: ComponentSchemaWithId[]): { component: ComponentSchemaWithId | undefined, parent: ComponentSchemaWithId | undefined } => {
@@ -353,7 +366,7 @@ const Designer = () => {
       }
     }
 
-    setRootComponent(rootComponentCopy);
+    updateRootComponent(rootComponentCopy);
     setPreviewComponentParentId(undefined);
   }
 
@@ -375,9 +388,9 @@ const Designer = () => {
     updatedComponentSchema.id = component.id;
     const parentComponentChildren = parentComponent || rootComponentCopy.components;
     const componentIdx = parentComponentChildren.findIndex((x: ComponentSchemaWithId) => x.id === component.id);
-    parentComponentChildren.splice(componentIdx, 1, updatedComponentSchema);
+    parentComponentChildren.splice(componentIdx, 1, _.cloneDeep(updatedComponentSchema));
 
-    setRootComponent(rootComponentCopy);
+    updateRootComponent(rootComponentCopy);
   }
 
   return (
