@@ -12,7 +12,7 @@ export const TextAreaEditingSchema: ComponentSchema[] = [
     type: 'tabs',
     name: 'textAreaEditing',
     data: {
-      flattenDataWithParent: true,
+      path: '',
     },
     components: [
       {

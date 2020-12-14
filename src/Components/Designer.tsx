@@ -386,7 +386,7 @@ const Designer = (props: DesignerProps) => {
     }
 
     updatedComponentSchema.id = component.id;
-    const parentComponentChildren = parentComponent || rootComponentCopy.components;
+    const parentComponentChildren = parentComponent?.components || rootComponentCopy.components;
     const componentIdx = parentComponentChildren.findIndex((x: ComponentSchemaWithId) => x.id === component.id);
     parentComponentChildren.splice(componentIdx, 1, _.cloneDeep(updatedComponentSchema));
 

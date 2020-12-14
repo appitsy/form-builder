@@ -12,7 +12,7 @@ export const TextFieldEditingSchema: ComponentSchema[] = [
     type: 'tabs',
     name: 'textFieldEditing',
     data: {
-      flattenDataWithParent: true,
+      path: '',
     },
     components: [
       {
