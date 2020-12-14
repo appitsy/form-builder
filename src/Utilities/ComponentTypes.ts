@@ -10,13 +10,14 @@ export const ComponentTypes = [
   Types.Number,
   Types.Button,
   Types.Panel,
+  Types.Tabs,
 ]
 
 export const getDefaultPropsForType = (componentType: string, nameSuffix: string): ComponentSchemaWithId | undefined => {
   const id = uuidv4();
   switch (componentType) {
     case Types.TextField:
-      return { id, isEditing: false, canHaveChildComponents: false, type: Types.TextField, name: 'textField' + nameSuffix, display: { label: 'Text Field ' + nameSuffix } }
+      return { id, isEditing: false, canHaveChildComponents: false, type: 'text', name: 'textField' + nameSuffix, display: { label: 'Text Field ' + nameSuffix } }
     case Types.TextArea:
       return { id, isEditing: false, canHaveChildComponents: false, type: Types.TextArea, name: 'textArea' + nameSuffix, display: { label: 'Text Area ' + nameSuffix } }
     case Types.Email:
@@ -28,8 +29,10 @@ export const getDefaultPropsForType = (componentType: string, nameSuffix: string
     case Types.Button:
       return { id, isEditing: false, canHaveChildComponents: false, type: Types.Button, name: 'button' + nameSuffix, display: { label: 'Button ' + nameSuffix } }
     case Types.Panel:
-      return { id, isEditing: false, canHaveChildComponents: true, components: [], type: Types.Panel, name: 'panel' + nameSuffix, display: { label: 'Panel ' + nameSuffix } }
-
+      return { id, isEditing: false, canHaveChildComponents: true, components: [], type: 'panel', name: 'panel' + nameSuffix, display: { label: 'Panel ' + nameSuffix } }
+    case Types.Tabs:
+      return { id, isEditing: false, canHaveChildComponents: false, tabs: [ { name: 'tab1', display: { label: 'Tab1' }, components: [], canHaveChildComponents: true } ], type: 'tabs', name: 'tabs' + nameSuffix, display: { label: 'Tabs ' + nameSuffix } }
+  
     default: return undefined;
   }
 }

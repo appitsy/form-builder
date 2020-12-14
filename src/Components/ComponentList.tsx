@@ -20,6 +20,7 @@ const ComponentList = (props: ComponentListProps) => (
     <ComponentListItem name="Number" type="number" resetPreview={props.resetPreview} />
     <ComponentListItem name="Button" type="button" resetPreview={props.resetPreview} />
     <ComponentListItem name="Panel" type="panel" resetPreview={props.resetPreview} />
+    <ComponentListItem name="Tabs" type="tabs" resetPreview={props.resetPreview} />
   </StackList>
 );
 

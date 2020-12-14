@@ -6,7 +6,6 @@ import { Types } from 'appitsy/types/Types';
 import { DroppableComponent } from './DroppableComponent';
 import { DraggableDroppableComponent } from './DraggableDroppableComponent';
 import styled from '@emotion/styled';
-import { ROOT_ID } from './Designer';
 import Icon from 'appitsy/components/BasicComponents/Icon';
 import { PreviewComponentSchema } from './PreviewComponent';
 import ReactTooltip from 'react-tooltip';
@@ -46,16 +45,20 @@ interface DesignerRendererProps extends RendererProps {
 }
 
 export class DesignerRenderer extends Renderer<DesignerRendererProps> {
-  renderDesignerComponent = (component: ComponentSchemaWithId, parentComponent?: ComponentSchemaWithId) => {
+  renderDesignerComponent = (component: ComponentSchemaWithId) => {
     let renderedComponent;
-    const parentId = parentComponent?.id || ROOT_ID;
-    const key = `${parentId}-${component.id}` 
+    const key = `${component.id}` 
     switch (component.type) {
       case Types.Panel: 
         let panelComponentSchema = component as any;
         panelComponentSchema.display = { ...panelComponentSchema.display, expandable: false };
         let panel = super.renderComponent(panelComponentSchema, key);
         renderedComponent = panel;
+        break;
+      case Types.Tabs: 
+        let tabsComponentSchema = component as any;
+        let tabs = super.renderComponent(tabsComponentSchema, key);
+        renderedComponent = tabs;
         break;
       default:
         renderedComponent = super.renderComponent(component, key);
@@ -97,12 +100,16 @@ export class DesignerRenderer extends Renderer<DesignerRendererProps> {
     return this.props.schema.map((component) => this.renderDesignerComponent(component));
   }
 
-  renderLayoutChildren(childComponents: ComponentSchemaWithId[], parentComponent: ComponentSchemaWithId) {
+  renderChildComponents(childComponents?: ComponentSchemaWithId[], parentPath?: string, parentComponent?: ComponentSchemaWithId): JSX.Element[] {
+    if (parentPath === undefined || parentComponent === undefined) {
+      return [];
+    }
+
     var inner = undefined;
-    if (childComponents.length > 0) {
+    if (childComponents && childComponents.length > 0) {
       inner = (
         <div>
-        {childComponents.map((panelChild) => this.renderDesignerComponent(panelChild, parentComponent))}
+          {childComponents.map((panelChild) => this.renderDesignerComponent(panelChild))}
         </div>
       );
     } else {
@@ -110,6 +117,7 @@ export class DesignerRenderer extends Renderer<DesignerRendererProps> {
         <DropFieldsHere>Drop fields here!</DropFieldsHere>
       );
     }
+
     return [(
       <DroppableComponent 
         id={parentComponent.id} 
