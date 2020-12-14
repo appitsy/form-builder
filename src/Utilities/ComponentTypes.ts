@@ -30,8 +30,10 @@ export const getDefaultPropsForType = (componentType: string, nameSuffix: string
       return { id, isEditing: false, canHaveChildComponents: false, type: Types.Button, name: 'button' + nameSuffix, display: { label: 'Button ' + nameSuffix } }
     case Types.Panel:
       return { id, isEditing: false, canHaveChildComponents: true, components: [], type: 'panel', name: 'panel' + nameSuffix, display: { label: 'Panel ' + nameSuffix } }
-    case Types.Tabs:
-      return { id, isEditing: false, canHaveChildComponents: false, tabs: [ { name: 'tab1', display: { label: 'Tab1' }, components: [], canHaveChildComponents: true } ], type: 'tabs', name: 'tabs' + nameSuffix, display: { label: 'Tabs ' + nameSuffix } }
+    case Types.Tabs: {
+      const tab1 = { id: uuidv4(), name: 'tab1', display: { label: 'Tab1' }, components: [], canHaveChildComponents: true } as any as ComponentSchemaWithId;
+      return { id, isEditing: false, canHaveChildComponents: true, components: [ tab1 ], type: 'tabs', name: 'tabs' + nameSuffix, display: { label: 'Tabs ' + nameSuffix } }
+    }
   
     default: return undefined;
   }
