@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { useDrag, useDrop, DragSourceMonitor, DropTargetMonitor, XYCoord } from 'react-dnd'
 import { ComponentTypes } from '../Utilities/ComponentTypes';
 
-import Icon from 'appitsy/components/BasicComponents/Icon';
+import Icon from 'appitsy/components/Basic/Icon';
 import styled from '@emotion/styled';
 import { PreviewComponent, PreviewComponentSchema } from './PreviewComponent';
 

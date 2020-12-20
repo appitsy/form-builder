@@ -6,7 +6,7 @@ import { Types } from 'appitsy/types/Types';
 import { DroppableComponent } from './DroppableComponent';
 import { DraggableDroppableComponent } from './DraggableDroppableComponent';
 import styled from '@emotion/styled';
-import Icon from 'appitsy/components/BasicComponents/Icon';
+import Icon from 'appitsy/components/Basic/Icon';
 import { PreviewComponentSchema } from './PreviewComponent';
 import ReactTooltip from 'react-tooltip';
 

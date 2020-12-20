@@ -48,7 +48,7 @@ const AppTabs = styled(Tabs)`
 `;
 
 const App = () => {
-    const [data, ] = useState({});
+    const [data, setData] = useState({});
     const [schema, setSchema] = useState<ComponentSchemaWithId[]>([]);
 
     return (
@@ -69,7 +69,7 @@ const App = () => {
             </TabPanel>
 
             <TabPanel style={{flexGrow: 1}}>
-                <Renderer schema={schema} data={data} />
+                <Renderer schema={schema} data={data} onDataChange={setData}/>
             </TabPanel>
         </AppTabs>
     );

@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { Renderer } from "appitsy";
+import _ from "lodash";
 import React from "react";
 
 import { ComponentSchemaWithId } from "../DesignerRenderer";
@@ -15,7 +16,13 @@ const PropertiesPane = styled.div`
   padding: 15px;
 `;
 
-export const ComponentProperties = (props: ComponentPropertiesProps) => {
+const checkRenderer = (prevProps: ComponentPropertiesProps, nextProps: ComponentPropertiesProps) => {
+  return prevProps.component === nextProps.component 
+    && (prevProps.component === undefined 
+        || _.isEqual(prevProps.component.components, nextProps.component?.components));
+};
+
+export const ComponentProperties = React.memo<ComponentPropertiesProps>((props) => {
   
   const componentEditingSchema = props.component ? ComponentEditingSchemas[props.component.type] : undefined;
 
@@ -31,4 +38,4 @@ export const ComponentProperties = (props: ComponentPropertiesProps) => {
       <Renderer schema={componentEditingSchema} data={props.component} onDataChange={props.updateComponentSchema}></Renderer>
     </PropertiesPane>
   );
-};
+}, checkRenderer);

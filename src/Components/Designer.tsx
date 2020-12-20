@@ -47,8 +47,15 @@ const Designer = (props: DesignerProps) => {
 
   const updateRootComponent = (root: RootComponent): void => {
     setRootComponent(root);
+    
     if (props.onSchemaChange) {
       props.onSchemaChange(root.components);
+    }
+
+    // trigger editing component change if any is selected
+    if (editingComponent) {
+      const { component: updatedEditingComponent } = findComponentById(editingComponent.id, root.components);
+      setEditingComponent(updatedEditingComponent);
     }
   };
 
