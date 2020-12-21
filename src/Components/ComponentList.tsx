@@ -18,9 +18,13 @@ const ComponentList = (props: ComponentListProps) => (
     <ComponentListItem name="Password" type="password" resetPreview={props.resetPreview} />
     <ComponentListItem name="Email" type="email" resetPreview={props.resetPreview} />
     <ComponentListItem name="Number" type="number" resetPreview={props.resetPreview} />
+    <ComponentListItem name="Checkbox" type="checkbox" resetPreview={props.resetPreview} />
+    <ComponentListItem name="Multi-Checkbox" type="multi-checkbox" resetPreview={props.resetPreview} />
     <ComponentListItem name="Button" type="button" resetPreview={props.resetPreview} />
     <ComponentListItem name="Panel" type="panel" resetPreview={props.resetPreview} />
     <ComponentListItem name="Tabs" type="tabs" resetPreview={props.resetPreview} />
+    <ComponentListItem name="Table" type="table" resetPreview={props.resetPreview} />
+    <ComponentListItem name="Object" type="object" resetPreview={props.resetPreview} />
   </StackList>
 );
 

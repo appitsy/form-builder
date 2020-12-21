@@ -45,15 +45,17 @@ const Designer = (props: DesignerProps) => {
   const [editingComponent, setEditingComponent] = useState<ComponentSchemaWithId>();
   const [previewComponentParentId, setPreviewComponentParentId] = useState<string>();
 
-  const updateRootComponent = (root: RootComponent): void => {
+  const updateRootComponent = (root: RootComponent, newEditComponent?: ComponentSchemaWithId): void => {
     setRootComponent(root);
     
     if (props.onSchemaChange) {
       props.onSchemaChange(root.components);
     }
 
-    // trigger editing component change if any is selected
-    if (editingComponent) {
+    if (newEditComponent) {
+      setEditingComponent(newEditComponent);
+    } else if (editingComponent) {
+      // re-trigger editing component change if any is selected
       const { component: updatedEditingComponent } = findComponentById(editingComponent.id, root.components);
       setEditingComponent(updatedEditingComponent);
     }
@@ -142,8 +144,7 @@ const Designer = (props: DesignerProps) => {
     }
 
     component.isEditing = true;
-    setEditingComponent(component);
-    updateRootComponent(rootComponentCopy);
+    updateRootComponent(rootComponentCopy, component);
   }
 
   const onDelete = (componentId: string) => {
