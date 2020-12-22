@@ -1,16 +1,17 @@
-import styled from "@emotion/styled";
-import React, { useState } from "react";
-import ComponentList from "./ComponentList";
+import React, { useState } from 'react';
 
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
-import { DroppableRenderer } from "./DroppableRenderer";
-import { getDefaultPropsForType } from "../Utilities/ComponentTypes";
-import cloneDeep from "lodash-es/cloneDeep";
-import { ComponentSchemaWithId } from "./DesignerRenderer";
-import { remove } from "lodash-es";
-import { PreviewComponentSchema } from "./PreviewComponent";
-import _ from "lodash";
+import { remove } from 'lodash-es';
+import cloneDeep from 'lodash-es/cloneDeep';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+
+import styled from '@emotion/styled';
+
+import { getDefaultPropsForType } from '../Utilities/ComponentTypes';
+import ComponentList from './ComponentList';
+import { ComponentSchemaWithId } from './DesignerRenderer';
+import { DroppableRenderer } from './DroppableRenderer';
+import { PreviewComponentSchema } from './PreviewComponent';
 
 const DesignerPage = styled.div`
   display: flex;
@@ -321,18 +322,17 @@ const Designer = (props: DesignerProps) => {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let _ = findInSchema.some(c => {
-      let cx = c as any;
-
-      if (!cx.components) {
+      let childChildren = c.getComponents();
+      if (!childChildren) {
         return false;
       }
 
-      ({ component, parent } = findComponentById(id, cx.components));
+      ({ component, parent } = findComponentById(id, childChildren));
       if (!parent && component) {
         // if component is found, but the immediate recursive call just returned the component.
         // This means, this component is the parent - assign it.
         // otherwise return the parent which was returned form the call
-        parent = cx;
+        parent = c;
       }
 
       return !!component;
@@ -405,7 +405,7 @@ const Designer = (props: DesignerProps) => {
     updatedComponentSchema.id = component.id;
     const parentComponentChildren = parentComponent?.getComponents() || rootComponentCopy.components;
     const componentIdx = parentComponentChildren.findIndex((x: ComponentSchemaWithId) => x.id === component.id);
-    parentComponentChildren.splice(componentIdx, 1, _.cloneDeep(updatedComponentSchema));
+    parentComponentChildren.splice(componentIdx, 1, cloneDeep(updatedComponentSchema));
 
     updateRootComponent(rootComponentCopy);
   }
