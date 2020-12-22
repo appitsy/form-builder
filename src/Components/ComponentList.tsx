@@ -1,6 +1,13 @@
-import styled from "@emotion/styled";
-import React from "react";
-import { ComponentListItem } from "./ComponentListItem";
+import React from 'react';
+
+import {
+  TypeDisplayNames,
+  Types,
+} from 'appitsy/types/Types';
+
+import styled from '@emotion/styled';
+
+import { ComponentListItem } from './ComponentListItem';
 
 const StackList = styled.div`
   display: flex;
@@ -13,18 +20,18 @@ interface ComponentListProps {
 
 const ComponentList = (props: ComponentListProps) => (
   <StackList style={{ overflow: "hidden", clear: "both", height: '100%' }}>
-    <ComponentListItem name="Text Field" type="text" resetPreview={props.resetPreview} />
-    <ComponentListItem name="Text Area" type="textarea" resetPreview={props.resetPreview} />
-    <ComponentListItem name="Password" type="password" resetPreview={props.resetPreview} />
-    <ComponentListItem name="Email" type="email" resetPreview={props.resetPreview} />
-    <ComponentListItem name="Number" type="number" resetPreview={props.resetPreview} />
-    <ComponentListItem name="Checkbox" type="checkbox" resetPreview={props.resetPreview} />
-    <ComponentListItem name="Multi-Checkbox" type="multi-checkbox" resetPreview={props.resetPreview} />
-    <ComponentListItem name="Button" type="button" resetPreview={props.resetPreview} />
-    <ComponentListItem name="Panel" type="panel" resetPreview={props.resetPreview} />
-    <ComponentListItem name="Tabs" type="tabs" resetPreview={props.resetPreview} />
-    <ComponentListItem name="Table" type="table" resetPreview={props.resetPreview} />
-    <ComponentListItem name="Object" type="object" resetPreview={props.resetPreview} />
+    <ComponentListItem name={TypeDisplayNames.TextField} type={Types.TextField} resetPreview={props.resetPreview} />
+    <ComponentListItem name={TypeDisplayNames.TextArea} type={Types.TextArea} resetPreview={props.resetPreview} />
+    <ComponentListItem name={TypeDisplayNames.Password} type={Types.Password} resetPreview={props.resetPreview} />
+    <ComponentListItem name={TypeDisplayNames.Email} type={Types.Email} resetPreview={props.resetPreview} />
+    <ComponentListItem name={TypeDisplayNames.Number} type={Types.Number} resetPreview={props.resetPreview} />
+    <ComponentListItem name={TypeDisplayNames.Checkbox} type={Types.Checkbox} resetPreview={props.resetPreview} />
+    <ComponentListItem name={TypeDisplayNames.MultiCheckbox} type={Types.MultiCheckbox} resetPreview={props.resetPreview} />
+    <ComponentListItem name={TypeDisplayNames.Button} type={Types.Button} resetPreview={props.resetPreview} />
+    <ComponentListItem name={TypeDisplayNames.Panel} type={Types.Panel} resetPreview={props.resetPreview} />
+    <ComponentListItem name={TypeDisplayNames.Tabs} type={Types.Tabs} resetPreview={props.resetPreview} />
+    <ComponentListItem name={TypeDisplayNames.Table} type={Types.Table} resetPreview={props.resetPreview} />
+    <ComponentListItem name={TypeDisplayNames.ObjectComponent} type={Types.ObjectComponent} resetPreview={props.resetPreview} />
   </StackList>
 );
 

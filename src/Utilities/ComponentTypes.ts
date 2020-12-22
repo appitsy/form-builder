@@ -1,6 +1,10 @@
-import { Types } from 'appitsy/types/Types';
-import { ComponentSchemaWithId } from "../Components/DesignerRenderer";
+import {
+  getDisplayNameForType,
+  Types,
+} from 'appitsy/types/Types';
 import { v4 as uuidv4 } from 'uuid';
+
+import { ComponentSchemaWithId } from '../Components/DesignerRenderer';
 
 export const ComponentTypes = [
   Types.TextField,
@@ -26,7 +30,7 @@ export const getDefaultPropsForType = (type: string, nameSuffix: string): Compon
     type,
     name: type + nameSuffix,
     display: {
-      label: 'a' + nameSuffix
+      label: getDisplayNameForType(type) + ' ' + nameSuffix
     },
   }
   switch (type) {
@@ -89,9 +93,9 @@ export const getDefaultPropsForType = (type: string, nameSuffix: string): Compon
         return this.components;
       }
 
-      tabComponent.insertTab = function() {
-        this.components.push(newTab('', ''));
-      }
+      // tabComponent.insertTab = function() {
+      //   this.components.push(newTab('', ''));
+      // }
       
       return tabComponent as ComponentSchemaWithId;
     }
