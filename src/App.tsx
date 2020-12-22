@@ -61,7 +61,7 @@ const App = () => {
             </TabList>
 
             <TabPanel style={{flexGrow: 1}}>
-                <Designer schema={schema} onSchemaChange={s => setSchema(s)}/>
+                <Designer schema={schema} onSchemaChange={s => setSchema(s)} />
             </TabPanel>
 
             <TabPanel style={{flexGrow: 1}}>
@@ -69,7 +69,7 @@ const App = () => {
             </TabPanel>
 
             <TabPanel style={{flexGrow: 1}}>
-                <Renderer schema={schema} data={data} onDataChange={setData}/>
+                <Renderer schema={schema} data={data} onDataChange={setData} onSubmit={data => alert(JSON.stringify(data))} />
             </TabPanel>
         </AppTabs>
     );

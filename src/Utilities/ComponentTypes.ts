@@ -19,38 +19,108 @@ export const ComponentTypes = [
 
 export const getDefaultPropsForType = (type: string, nameSuffix: string): ComponentSchemaWithId | undefined => {
   const id = uuidv4();
+  const commonProperties = {
+    id, 
+    isEditing: false,
+    getComponents: () => undefined,
+    type,
+    name: type + nameSuffix,
+    display: {
+      label: 'a' + nameSuffix
+    },
+  }
   switch (type) {
     case Types.TextField:
-      return { id, isEditing: false, canHaveChildComponents: false, type, name: 'textField' + nameSuffix, display: { label: 'Text Field ' + nameSuffix } }
     case Types.TextArea:
-      return { id, isEditing: false, canHaveChildComponents: false, type, name: 'textArea' + nameSuffix, display: { label: 'Text Area ' + nameSuffix } }
     case Types.Email:
-      return { id, isEditing: false, canHaveChildComponents: false, type, name: 'email' + nameSuffix, display: { label: 'Email ' + nameSuffix } }
     case Types.Password:
-      return { id, isEditing: false, canHaveChildComponents: false, type, name: 'password' + nameSuffix, display: { label: 'Password ' + nameSuffix } }
     case Types.Number:
-      return { id, isEditing: false, canHaveChildComponents: false, type, name: 'number' + nameSuffix, display: { label: 'Number ' + nameSuffix } }
     case Types.Checkbox:
-        return { id, isEditing: false, canHaveChildComponents: false, type, name: 'checkbox' + nameSuffix, display: { label: 'Checkbox ' + nameSuffix } }
-    case Types.MultiCheckbox:
-      return { id, isEditing: false, canHaveChildComponents: false, type: 'multi-checkbox', name: 'multi-checkbox' + nameSuffix, display: { label: 'Multi Checkbox ' + nameSuffix }, data: { checkboxes: [
-        {
-          name: '',
-          label: ''
-        }
-      ] } }
-      case Types.Button:
-      return { id, isEditing: false, canHaveChildComponents: false, type, name: 'button' + nameSuffix, display: { label: 'Button ' + nameSuffix } }
-    case Types.Panel:
-      return { id, isEditing: false, canHaveChildComponents: true, components: [], type, name: 'panel' + nameSuffix, display: { label: 'Panel ' + nameSuffix } }
-    case Types.Tabs: {
-      const tab1 = { id: uuidv4(), name: 'tab1', display: { label: 'Tab1' }, components: [], canHaveChildComponents: true } as any as ComponentSchemaWithId;
-      return { id, isEditing: false, canHaveChildComponents: true, components: [ tab1 ], type, name: 'tabs' + nameSuffix, display: { label: 'Tabs ' + nameSuffix } }
+    case Types.Button:
+        return { ...commonProperties };
+    case Types.MultiCheckbox: {
+      const multiCheckbox = { 
+        ...ComponentTypes, 
+        data: { 
+          checkboxes: [
+            {
+              name: '',
+              label: ''
+            }
+          ] 
+        } 
+      }
+
+      return multiCheckbox as any as ComponentSchemaWithId;
     }
-    case Types.Table: 
-      return { id, isEditing: false, canHaveChildComponents: true, components: [], type: 'table', name: 'table' + nameSuffix, data: { columns: [] } };
-    case Types.ObjectComponent: 
-      return { id, isEditing: false, canHaveChildComponents: true, components: [], type, name: 'object' + nameSuffix };
+    case Types.Panel: {
+      let panel: any = { 
+        ...commonProperties,
+        components: [],
+      }
+
+      panel.getComponents = function(): ComponentSchemaWithId[] {
+        return this.components;
+      }
+
+      return panel as ComponentSchemaWithId;
+    }
+    case Types.Tabs: {
+      const newTab = (name: string, label: string) => ({ 
+        id: uuidv4(), 
+        name, 
+        display: { label }, 
+        components: [], 
+        canHaveChildComponents: true 
+      });
+
+      const tab1: any = newTab('tab1', 'Tab1');
+
+      tab1.getComponents = function() {
+        return this.components;
+      }
+
+      const tabComponent: any = { 
+        ...commonProperties,
+        components: [ tab1 ] 
+      }
+
+      tabComponent.getComponents = function() {
+        return this.components;
+      }
+
+      tabComponent.insertTab = function() {
+        this.components.push(newTab('', ''));
+      }
+      
+      return tabComponent as ComponentSchemaWithId;
+    }
+    case Types.Table: {
+      const table: any = { 
+        ...commonProperties,
+        data: { 
+          columns: [] 
+        },
+      };
+
+      table.getComponents = function () {
+        return this.data.columns;
+      }
+
+      return table;
+    }
+    case Types.ObjectComponent: {
+      const objComponent: any = { 
+        ...commonProperties,
+        components: [],
+      };
+
+      objComponent.getComponents = function () {
+        return this.components;
+      }
+
+      return objComponent;
+    }
   
     default: return undefined;
   }

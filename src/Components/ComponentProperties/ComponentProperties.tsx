@@ -19,7 +19,7 @@ const PropertiesPane = styled.div`
 const checkRenderer = (prevProps: ComponentPropertiesProps, nextProps: ComponentPropertiesProps) => {
   return prevProps.component === nextProps.component 
     && (prevProps.component === undefined 
-        || _.isEqual(prevProps.component.components, nextProps.component?.components));
+        || _.isEqual(prevProps.component.getComponents(), nextProps.component?.getComponents()));
 };
 
 export const ComponentProperties = React.memo<ComponentPropertiesProps>((props) => {

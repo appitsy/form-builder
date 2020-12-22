@@ -9,6 +9,8 @@ import styled from '@emotion/styled';
 import Icon from 'appitsy/components/Basic/Icon';
 import { PreviewComponentSchema } from './PreviewComponent';
 import ReactTooltip from 'react-tooltip';
+import { TableSchema } from 'appitsy/types/DataComponentSchema';
+import _ from 'lodash';
 
 const StyledPage = Styled.div`
     display: flex;
@@ -29,9 +31,8 @@ const StyledDraggableDroppableComponent = styled(DraggableDroppableComponent)`
 export type ComponentSchemaWithId = ComponentSchema & {
   id: string;
   isEditing: boolean;
-  canHaveChildComponents: boolean;
-  components? : ComponentSchemaWithId[];
   previewComponent?: PreviewComponentSchema;
+  getComponents: () => ComponentSchemaWithId[] | undefined;
 }
 
 interface DesignerRendererProps extends RendererProps {
@@ -60,6 +61,13 @@ export class DesignerRenderer extends Renderer<DesignerRendererProps> {
         let tabs = super.renderComponent(tabsComponentSchema, key);
         renderedComponent = tabs;
         break;
+      case Types.Table: 
+        let tableComponentSchema = _.cloneDeep(component) as any as TableSchema;
+        tableComponentSchema.data.atleastOneRow = true;
+        tableComponentSchema.data.allowAddRemove = false;
+        tableComponentSchema.data.allowSorting = false;
+        renderedComponent = super.renderComponent(tableComponentSchema, key);
+        break;
       default:
         renderedComponent = super.renderComponent(component, key);
         break;
@@ -83,7 +91,7 @@ export class DesignerRenderer extends Renderer<DesignerRendererProps> {
         // if this component can render children, we'll skip showing preview
         // in the DraggableDroppableComponent and rather show it in Droppable area 
         // of the component
-        previewComponent={component.canHaveChildComponents ? undefined : component.previewComponent}
+        previewComponent={component.getComponents() ? undefined : component.previewComponent}
         addPreview={this.props.addPreview}
         moveComponent={this.props.moveComponent} 
         moveAdjacent={this.props.moveAdjacent}
@@ -105,18 +113,27 @@ export class DesignerRenderer extends Renderer<DesignerRendererProps> {
       return [];
     }
 
-    var inner = undefined;
-    if (childComponents && childComponents.length > 0) {
-      inner = (
-        <div>
-          {childComponents.map((panelChild) => this.renderDesignerComponent(panelChild))}
-        </div>
-      );
-    } else {
-      inner = (
-        <DropFieldsHere>Drop fields here!</DropFieldsHere>
-      );
-    }
+    const dropFieldsHereComponent = (<DropFieldsHere>Drop fields here!</DropFieldsHere>);
+
+    const inner = childComponents?.map((panelChild) => this.renderDesignerComponent(panelChild)) || [];
+
+    // ---- SPECIFIC COMPONENT OVERRIDE ----
+    if (parentComponent.type === Types.Table) {
+      return [
+        ...inner,
+        (
+        <DroppableComponent 
+          id={parentComponent.id} 
+          onDrop={this.props.onDrop}
+          previewComponent={parentComponent.previewComponent}
+          addPreview={this.props.addPreview}
+        >
+          <div style={{minWidth: '100px'}}>
+            {dropFieldsHereComponent}
+          </div>
+        </DroppableComponent>
+      )];
+    } 
 
     return [(
       <DroppableComponent 
@@ -126,7 +143,7 @@ export class DesignerRenderer extends Renderer<DesignerRendererProps> {
         addPreview={this.props.addPreview}
       >
         <div style={{minWidth: '100px'}}>
-          {inner}
+          { inner.length !== 0 ? inner : dropFieldsHereComponent }
         </div>
       </DroppableComponent>
     )];
