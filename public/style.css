@@ -1,0 +1,30 @@
+body {
+    height: 100%;
+}
+
+#header {
+  background: #fff;
+  transition: all 0.5s;
+  z-index: 997;
+  padding: 20px 0;
+  box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.05);
+}
+
+#header .logo {
+  font-size: 28px;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 1px;
+  font-family: "Lato", sans-serif;
+}
+
+#header .logo a {
+  color: #0f394c;
+}
+
+#header .logo img {
+  max-height: 40px;
+}
+

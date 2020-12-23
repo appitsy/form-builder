@@ -1,9 +1,14 @@
 @import '../node_modules/appitsy/themes/bootstrap.css';
 
 html, 
-body,
+body{
+  height: 100%;
+}
+
 div#root {
     height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 body {
