@@ -1,9 +1,12 @@
-import styled from "@emotion/styled";
-import { Renderer } from "appitsy";
-import _ from "lodash";
-import React from "react";
+import React from 'react';
 
-import { ComponentSchemaWithId } from "../DesignerRenderer";
+import { Renderer } from 'appitsy';
+import classNames from 'classnames';
+import _ from 'lodash';
+
+import styled from '@emotion/styled';
+
+import { ComponentSchemaWithId } from '../DesignerRenderer';
 import { ComponentEditingSchemas } from './ComponentEditingSchemas';
 
 interface ComponentPropertiesProps {
@@ -26,16 +29,19 @@ export const ComponentProperties = React.memo<ComponentPropertiesProps>((props) 
   
   const componentEditingSchema = props.component ? ComponentEditingSchemas[props.component.type] : undefined;
 
-  if (!componentEditingSchema) {
-    return (
-      <div> Please select a component to continue edit it.. </div>
-    );
-  }
-
   return (
-    <PropertiesPane className={props.className}>
-      Component Properties
-      <Renderer schema={componentEditingSchema} data={props.component} onDataChange={props.updateComponentSchema}></Renderer>
+    <PropertiesPane className={classNames(props.className, 'bg-light')}>
+      {
+          componentEditingSchema ? (
+            <>
+              <span>Component Properties</span>
+              <Renderer schema={componentEditingSchema} data={props.component} onDataChange={props.updateComponentSchema}></Renderer>
+            </>
+          ): (
+            <h6>Select a component to continue edit it..</h6>
+          )
+      }
+      
     </PropertiesPane>
   );
 }, checkRenderer);

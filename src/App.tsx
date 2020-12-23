@@ -1,10 +1,19 @@
-import React, { useState } from 'react';
 import './App.css';
-import Designer from './Components/Designer';
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+
+import React, { useState } from 'react';
+
 import { Renderer } from 'appitsy';
-import { ComponentSchemaWithId } from './Components/DesignerRenderer';
+import {
+  Tab,
+  TabList,
+  TabPanel,
+  Tabs,
+} from 'react-tabs';
+
 import styled from '@emotion/styled';
+
+import Designer from './Components/Designer';
+import { ComponentSchemaWithId } from './Components/DesignerRenderer';
 
 const AppTabs = styled(Tabs)`
     display: flex;
@@ -12,9 +21,9 @@ const AppTabs = styled(Tabs)`
     height: 100%;
 
     .appitsy-builder-header-tabs {
-        .react-tabs__tab-list{
-            padding: 0px 200px;
-        }
+        margin-bottom: 0px;
+        border-bottom: 4px darkgrey solid;
+        padding: 0px 200px;
     
         .react-tabs__tab {
             width: 33.33%;
@@ -35,14 +44,6 @@ const AppTabs = styled(Tabs)`
             border-color: #909090;
             border-radius: 0px;
             bottom: 0px;
-    
-            &:last-child {
-                border-width: 0px 0px 0px 1px;
-            }
-    
-            &:first-child {
-                border-width: 0px 1px 0px 0px;
-            }
         }
     }
 `;

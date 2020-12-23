@@ -9,6 +9,7 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "appitsy": "file:../appitsy/appitsy-0.0.1.tgz",
+    "classnames": "^2.2.6",
     "lodash-es": "^4.17.15",
     "node-sass": "^4.14.1",
     "react": "^16.13.1",
@@ -41,12 +42,13 @@
     ]
   },
   "devDependencies": {
-    "@types/lodash-es": "^4.17.3",
-    "@types/react-tabs": "^2.3.2",
-    "@types/uuid": "^8.3.0",
+    "@types/classnames": "^2.2.11",
     "@types/jest": "^24.9.1",
+    "@types/lodash-es": "^4.17.3",
     "@types/node": "^12.12.67",
     "@types/react": "^16.9.52",
-    "@types/react-dom": "^16.9.8"
+    "@types/react-dom": "^16.9.8",
+    "@types/react-tabs": "^2.3.2",
+    "@types/uuid": "^8.3.0"
   }
 }
