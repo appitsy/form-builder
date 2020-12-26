@@ -44,7 +44,7 @@ export const getDefaultPropsForType = (type: string, nameSuffix: string): Compon
         return { ...commonProperties };
     case Types.MultiCheckbox: {
       const multiCheckbox = { 
-        ...ComponentTypes, 
+        ...commonProperties, 
         data: { 
           checkboxes: [
             {
