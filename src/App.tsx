@@ -3,6 +3,8 @@ import './App.css';
 import React, { useState } from 'react';
 
 import { Renderer } from 'appitsy';
+import { Button } from 'appitsy/components/Basic';
+import ReactJson from 'react-json-view';
 import {
   Tab,
   TabList,
@@ -55,6 +57,11 @@ const AppTabs = styled(Tabs)`
   }
 `;
 
+const SchemaActions = styled.div`
+  text-align: right;
+  margin-bottom: 10px;
+`;
+
 const tabPanelStyle = { 
 	flexGrow: 1,
 	borderTop: '2px solid #cfcfcf',
@@ -63,6 +70,8 @@ const tabPanelStyle = {
 const App = () => {
   const [data, setData] = useState({});
   const [schema, setSchema] = useState<ComponentSchemaWithId[]>([]);
+
+  const copyToClipboard = (text: string) => navigator.clipboard.writeText(text);
 
   return (
     <AppRoot>
@@ -78,7 +87,16 @@ const App = () => {
           <Designer schema={schema} onSchemaChange={(s) => setSchema(s)} />
         </TabPanel>
 
-        <TabPanel style={tabPanelStyle}>JSON</TabPanel>
+        <TabPanel style={tabPanelStyle}>
+          <div style={{ maxWidth: '900px', margin: '15px auto' }}>
+            <SchemaActions>
+              <Button name='copyToClipboard' display={{ leftIcon: 'clipboard' }} onClick={() => copyToClipboard(JSON.stringify(schema, null, "  "))} text='Copy' style='primary' />
+            </SchemaActions>
+            <div className="card card-body bg-light">
+              <ReactJson src={schema} />
+            </div>
+          </div>
+        </TabPanel>
 
         <TabPanel style={tabPanelStyle}>
 					<div className="card card-body bg-light" style={{ maxWidth: '900px', margin: '15px auto' }}>
