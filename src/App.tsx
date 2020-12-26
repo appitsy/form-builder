@@ -3,8 +3,6 @@ import './App.css';
 import React, { useState } from 'react';
 
 import { Renderer } from 'appitsy';
-import { Button } from 'appitsy/components/Basic';
-import ReactJson from 'react-json-view';
 import {
   Tab,
   TabList,
@@ -16,6 +14,7 @@ import styled from '@emotion/styled';
 
 import Designer from './Components/Designer';
 import { ComponentSchemaWithId } from './Components/DesignerRenderer';
+import { SchemaEditor } from './Components/SchemaEditor';
 
 const AppRoot = styled.div`
 	display: flex;
@@ -57,22 +56,20 @@ const AppTabs = styled(Tabs)`
   }
 `;
 
-const SchemaActions = styled.div`
-  text-align: right;
-  margin-bottom: 10px;
-`;
-
 const tabPanelStyle = { 
 	flexGrow: 1,
 	borderTop: '2px solid #cfcfcf',
 };
 
+const Card = styled.div`
+  max-width: 900px;
+  margin: 15px auto;
+`;
+
 const App = () => {
   const [data, setData] = useState({});
   const [schema, setSchema] = useState<ComponentSchemaWithId[]>([]);
-
-  const copyToClipboard = (text: string) => navigator.clipboard.writeText(text);
-
+  
   return (
     <AppRoot>
       <Heading>Form Builder</Heading>
@@ -88,25 +85,20 @@ const App = () => {
         </TabPanel>
 
         <TabPanel style={tabPanelStyle}>
-          <div style={{ maxWidth: '900px', margin: '15px auto' }}>
-            <SchemaActions>
-              <Button name='copyToClipboard' display={{ leftIcon: 'clipboard' }} onClick={() => copyToClipboard(JSON.stringify(schema, null, "  "))} text='Copy' style='primary' />
-            </SchemaActions>
-            <div className="card card-body bg-light">
-              <ReactJson src={schema} />
-            </div>
-          </div>
+          <Card>
+            <SchemaEditor schema={schema} onSchemaChange={setSchema} />
+          </Card>
         </TabPanel>
 
         <TabPanel style={tabPanelStyle}>
-					<div className="card card-body bg-light" style={{ maxWidth: '900px', margin: '15px auto' }}>
+					<Card className="card card-body bg-light">
 						<Renderer
 							schema={schema}
 							data={data}
 							onDataChange={setData}
 							onSubmit={(data) => alert(JSON.stringify(data))}
 						/>
-					</div>
+					</Card>
         </TabPanel>
       </AppTabs>
     </AppRoot>

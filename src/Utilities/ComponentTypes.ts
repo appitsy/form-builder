@@ -2,6 +2,7 @@ import {
   getDisplayNameForType,
   Types,
 } from 'appitsy/types/Types';
+import _ from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 
 import { ComponentSchemaWithId } from '../Components/DesignerRenderer';
@@ -27,6 +28,7 @@ export const getDefaultPropsForType = (type: string, nameSuffix: string): Compon
     id, 
     isEditing: false,
     getComponents: () => undefined,
+    setComponents: () => undefined,
     type,
     name: type + nameSuffix,
     display: {
@@ -67,6 +69,10 @@ export const getDefaultPropsForType = (type: string, nameSuffix: string): Compon
         return this.components;
       }
 
+      panel.setComponents = function(components: ComponentSchemaWithId[]): void {
+        this.components = components;
+      }
+
       return panel as ComponentSchemaWithId;
     }
     case Types.Tabs: {
@@ -84,6 +90,10 @@ export const getDefaultPropsForType = (type: string, nameSuffix: string): Compon
         return this.components;
       }
 
+      tab1.setComponents = function(components: ComponentSchemaWithId[]): void {
+        this.components = components;
+      }
+
       const tabComponent: any = { 
         ...commonProperties,
         components: [ tab1 ] 
@@ -91,6 +101,10 @@ export const getDefaultPropsForType = (type: string, nameSuffix: string): Compon
 
       tabComponent.getComponents = function() {
         return this.components;
+      }
+
+      tabComponent.setComponents = function(components: ComponentSchemaWithId[]): void {
+        this.components = components;
       }
 
       // tabComponent.insertTab = function() {
@@ -111,6 +125,10 @@ export const getDefaultPropsForType = (type: string, nameSuffix: string): Compon
         return this.data.columns;
       }
 
+      table.setComponents = function(components: ComponentSchemaWithId[]): void {
+        this.data.columns = components;
+      }
+
       return table;
     }
     case Types.ObjectComponent: {
@@ -123,9 +141,30 @@ export const getDefaultPropsForType = (type: string, nameSuffix: string): Compon
         return this.components;
       }
 
+      objComponent.setComponents = function(components: ComponentSchemaWithId[]): void {
+        this.components = components;
+      }
+
       return objComponent;
     }
   
     default: return undefined;
   }
+}
+
+export const parseTypeFromJson = (json: any): ComponentSchemaWithId => {
+  if (json.type === undefined) {
+    throw new Error('Wrong JSON being parsed');
+  }
+
+  const defaultProps = getDefaultPropsForType(json.type, '');
+  const props = JSON.parse(json);
+  const component = _.assign(defaultProps, props) as ComponentSchemaWithId;
+
+  const childComponents = component.getComponents();
+  if (childComponents !== undefined) {
+    component.setComponents(childComponents.map(x => parseTypeFromJson(x)));
+  }
+
+  return component;
 }

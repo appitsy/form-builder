@@ -1,16 +1,22 @@
 import React from 'react';
-import { Renderer, RendererProps } from "appitsy/components/Renderer/Renderer";
-import Styled from '@emotion/styled';
-import { ComponentSchema } from 'appitsy/types/ComponentSchema';
-import { Types } from 'appitsy/types/Types';
-import { DroppableComponent } from './DroppableComponent';
-import { DraggableDroppableComponent } from './DraggableDroppableComponent';
-import styled from '@emotion/styled';
+
 import Icon from 'appitsy/components/Basic/Icon';
-import { PreviewComponentSchema } from './PreviewComponent';
-import ReactTooltip from 'react-tooltip';
+import {
+  Renderer,
+  RendererProps,
+} from 'appitsy/components/Renderer/Renderer';
+import { ComponentSchema } from 'appitsy/types/ComponentSchema';
 import { TableSchema } from 'appitsy/types/DataComponentSchema';
+import { Types } from 'appitsy/types/Types';
 import _ from 'lodash';
+import ReactTooltip from 'react-tooltip';
+
+import styled from '@emotion/styled';
+import Styled from '@emotion/styled';
+
+import { DraggableDroppableComponent } from './DraggableDroppableComponent';
+import { DroppableComponent } from './DroppableComponent';
+import { PreviewComponentSchema } from './PreviewComponent';
 
 const StyledPage = Styled.div`
     display: flex;
@@ -33,6 +39,7 @@ export type ComponentSchemaWithId = ComponentSchema & {
   isEditing: boolean;
   previewComponent?: PreviewComponentSchema;
   getComponents: () => ComponentSchemaWithId[] | undefined;
+  setComponents: (components: ComponentSchemaWithId[]) => void;
 }
 
 interface DesignerRendererProps extends RendererProps {
