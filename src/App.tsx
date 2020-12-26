@@ -22,7 +22,7 @@ const AppRoot = styled.div`
 `;
 
 const Heading = styled.h4`
-	margin: 10px 0px;
+	margin: 10px 0px 0px 0px;
 	text-align: center;
 `
 const AppTabs = styled(Tabs)`
@@ -31,7 +31,7 @@ const AppTabs = styled(Tabs)`
 	flex-grow: 1;
 
   .appitsy-builder-header-tabs {
-    margin: 15px auto;
+    margin: 10px auto;
 
     .react-tabs__tab-list {
       border-width: 0px;
@@ -81,12 +81,14 @@ const App = () => {
         <TabPanel style={tabPanelStyle}>JSON</TabPanel>
 
         <TabPanel style={tabPanelStyle}>
-          <Renderer
-            schema={schema}
-            data={data}
-            onDataChange={setData}
-            onSubmit={(data) => alert(JSON.stringify(data))}
-          />
+					<div className="card card-body bg-light" style={{ maxWidth: '900px', margin: '15px auto' }}>
+						<Renderer
+							schema={schema}
+							data={data}
+							onDataChange={setData}
+							onSubmit={(data) => alert(JSON.stringify(data))}
+						/>
+					</div>
         </TabPanel>
       </AppTabs>
     </AppRoot>
