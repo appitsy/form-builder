@@ -6,13 +6,20 @@ import ReactJson from 'react-json-view';
 
 import styled from '@emotion/styled';
 
-import { parseTypeFromJson } from '../Utilities/ComponentTypes';
+import {
+  parseTypeFromJson,
+  prepareJsonSchema,
+} from '../Utilities/ComponentTypes';
 import { ComponentSchemaWithId } from './DesignerRenderer';
 
 const SchemaActions = styled.div`
   text-align: right;
   margin-bottom: 10px;
 `;
+
+const SchemaActionButton = styled(Button)`
+	margin-left: 10px;
+`
 
 interface SchemaEditorProps {
 	schema: ComponentSchemaWithId[];
@@ -22,9 +29,10 @@ interface SchemaEditorProps {
 export const SchemaEditor = (props: SchemaEditorProps) => {
 	const [isSchemaEditable, setIsSchemaEditable] = useState<boolean>(false);
   const [editingSchema, setEditingSchema] = useState<string>('');
-  
+	
+	const schema = prepareJsonSchema(props.schema);
   const copyToClipboard = (text: string) => navigator.clipboard.writeText(text);
-  const jsonFormattedString = () => JSON.stringify(props.schema, null, "  ");
+  const jsonFormattedString = () => JSON.stringify(schema, null, "  ");
 
   const startSchemaEditing = () => {
     setIsSchemaEditable(true);
@@ -49,17 +57,17 @@ export const SchemaEditor = (props: SchemaEditorProps) => {
 			<SchemaActions>
 				{ 
 					isSchemaEditable
-						? (<Button name='saveSchema' display={{ leftIcon: 'save' }} onClick={endSchemaEditing} text='Save' style='secondary' />)
-						: (<Button name='editSchema' display={{ leftIcon: 'pen' }} onClick={startSchemaEditing} text='Edit' style='secondary' />)
+						? (<SchemaActionButton name='saveSchema' display={{ leftIcon: 'save' }} onClick={endSchemaEditing} text='Save' style='secondary' />)
+						: (<SchemaActionButton name='editSchema' display={{ leftIcon: 'pen' }} onClick={startSchemaEditing} text='Edit' style='secondary' />)
 				}
 				
-			<Button name='copyToClipboard' display={{ leftIcon: 'clipboard' }} onClick={() => copyToClipboard(jsonFormattedString())} text='Copy' style='primary' />
+				<SchemaActionButton name='copyToClipboard' display={{ leftIcon: 'clipboard' }} onClick={() => copyToClipboard(jsonFormattedString())} text='Copy' style='primary' />
 			</SchemaActions>
 			<div className="card card-body bg-light">
 				{ 
 					isSchemaEditable 
 						? (<textarea value={editingSchema} onChange={(evt) => setEditingSchema(evt.target.value)}> sd </textarea>)
-						: (<ReactJson src={props.schema} />)
+						: (<ReactJson src={schema} />)
 				}
 			</div>
 		</>

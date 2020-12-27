@@ -1,3 +1,4 @@
+import { ComponentSchema } from 'appitsy/types/ComponentSchema';
 import {
   getDisplayNameForType,
   Types,
@@ -167,4 +168,25 @@ export const parseTypeFromJson = (json: any): ComponentSchemaWithId => {
   }
 
   return component;
+}
+
+export const prepareJsonSchema = (schema: ComponentSchemaWithId[]): ComponentSchema[] => {
+  let jsonSchema: any[] = _.cloneDeep(schema);
+  
+  jsonSchema = jsonSchema.map(x => {
+    if (x.getComponents() !== undefined) {
+      x.setComponents(prepareJsonSchema(x.getComponents()));  
+    }
+    return x;
+  })
+
+  return jsonSchema.map((x: any) => {
+      delete x.id;
+      delete x.isEditing;
+      delete x.previewComponent;
+      delete x.getComponents;
+      delete x.setComponents;
+
+      return x;
+  });
 }
