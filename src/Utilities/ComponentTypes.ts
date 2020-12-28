@@ -23,6 +23,24 @@ export const ComponentTypes = [
   Types.ObjectComponent,
 ]
 
+const createNewTab = (tabProperties: any) => {
+  const tab = {
+    ...tabProperties, 
+    id: uuidv4(), 
+    components: [],
+  }
+
+  tab.getComponents = function() {
+    return this.components;
+  }
+
+  tab.setComponents = function(components: ComponentSchemaWithId[]): void {
+    this.components = components;
+  }
+
+  return tab;
+}
+
 export const getDefaultPropsForType = (type: string, nameSuffix: string): ComponentSchemaWithId | undefined => {
   const id = uuidv4();
   const commonProperties = {
@@ -77,24 +95,12 @@ export const getDefaultPropsForType = (type: string, nameSuffix: string): Compon
       return panel as ComponentSchemaWithId;
     }
     case Types.Tabs: {
-      const newTab = (name: string, label: string) => ({ 
-        id: uuidv4(), 
-        name, 
-        display: { label }, 
-        components: [], 
-        canHaveChildComponents: true 
-      });
-
-      const tab1: any = newTab('tab1', 'Tab1');
-
-      tab1.getComponents = function() {
-        return this.components;
-      }
-
-      tab1.setComponents = function(components: ComponentSchemaWithId[]): void {
-        this.components = components;
-      }
-
+      const tab1 = createNewTab({
+        name: 'tab1',
+        display: {
+          label: 'Tab1',
+        },
+      })
       const tabComponent: any = { 
         ...commonProperties,
         components: [ tab1 ] 
@@ -108,10 +114,6 @@ export const getDefaultPropsForType = (type: string, nameSuffix: string): Compon
         this.components = components;
       }
 
-      // tabComponent.insertTab = function() {
-      //   this.components.push(newTab('', ''));
-      // }
-      
       return tabComponent as ComponentSchemaWithId;
     }
     case Types.Table: {
@@ -158,13 +160,25 @@ export const parseTypeFromJson = (json: any): ComponentSchemaWithId => {
     throw new Error('Wrong JSON being parsed');
   }
 
-  const defaultProps = getDefaultPropsForType(json.type, '');
-  const props = JSON.parse(json);
-  const component = _.assign(defaultProps, props) as ComponentSchemaWithId;
+  // get default
+  const defaultProps = getDefaultPropsForType(json.type, '') || {};
+  const component = _.assign(defaultProps, json) as ComponentSchemaWithId;
 
   const childComponents = component.getComponents();
   if (childComponents !== undefined) {
-    component.setComponents(childComponents.map(x => parseTypeFromJson(x)));
+    switch (component.type) {
+      case Types.Tabs:
+        component.setComponents(childComponents.map((x: any) => { 
+            const tab: any = createNewTab(x);
+            const tabChildren = x.components?.map((y: any) => parseTypeFromJson(y)) || [];
+            tab.setComponents(tabChildren);
+            return tab;
+          })
+        );
+        break;
+      default:
+        component.setComponents(childComponents.map(x => parseTypeFromJson(x)));
+    }
   }
 
   return component;

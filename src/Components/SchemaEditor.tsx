@@ -41,8 +41,11 @@ export const SchemaEditor = (props: SchemaEditorProps) => {
 
   const endSchemaEditing = () => {
     setIsSchemaEditable(false);
-    setEditingSchema('');
-    const jsonArray = JSON.parse(editingSchema);
+		setEditingSchema('');
+		// we'll have to use eval here
+		// so that we can parse relaxed json
+    // eslint-disable-next-line no-eval
+    const jsonArray = eval(`(${editingSchema})`);
     if (!_.isArray(jsonArray)) {
       throw new Error('JSON Array expected here..');
     }
