@@ -1,4 +1,4 @@
-import { ComponentSchema } from "appitsy/types/ComponentSchema";
+import { ComponentSchema } from 'appitsy/types/ComponentSchema';
 
 export const TextAreaEditingSchema: ComponentSchema[] = [
   {
@@ -12,7 +12,7 @@ export const TextAreaEditingSchema: ComponentSchema[] = [
     type: 'tabs',
     name: 'textAreaEditing',
     data: {
-      path: '',
+      path: '$',
     },
     components: [
       {

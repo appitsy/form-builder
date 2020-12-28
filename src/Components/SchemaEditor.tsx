@@ -69,7 +69,7 @@ export const SchemaEditor = (props: SchemaEditorProps) => {
 			<div className="card card-body bg-light">
 				{ 
 					isSchemaEditable 
-						? (<textarea value={editingSchema} onChange={(evt) => setEditingSchema(evt.target.value)}> sd </textarea>)
+						? (<textarea rows={20} value={editingSchema} onChange={(evt) => setEditingSchema(evt.target.value)}> sd </textarea>)
 						: (<ReactJson src={schema} />)
 				}
 			</div>

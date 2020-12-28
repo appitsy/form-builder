@@ -2,71 +2,92 @@ import { ComponentSchema } from 'appitsy/types/ComponentSchema';
 
 export const TabsEditingSchema: ComponentSchema[] = [
   {
-    type: 'text',
-    name: 'name',
-    display: {
-      label: 'Name'
+    "type": "text",
+    "name": "name",
+    "display": {
+      "label": "Name"
     }
   },
   {
-    type: 'tabs',
-    name: 'textFieldEditing',
-    data: {
-      path: '',
+    "type": "tabs",
+    "name": "textFieldEditing",
+    "display": {
+      "label": "Tabs "
     },
-    components: [
+    "components": [
       {
-        name: 'display',
-        display: {
-          label: 'Display',
+        "name": "display",
+        "display": {
+          "label": "Display"
         },
-        components: [
+        "components": [
           {
-            type: 'text',
-            name: 'label',
-            display: {
-              label: 'Label'
+            "type": "text",
+            "name": "label",
+            "display": {
+              "label": "Label"
             }
           },
           {
-            type: 'table',
-            name: 'components',
-            display: {
-              label: 'Tabs'
+            "type": "table",
+            "name": "components",
+            "display": {
+              "label": "Tabs"
             },
-            data: {
-              path: 'components',
-              addNewDefault: 'let tab = ({ "id": uuid(), components: [] }); tab.getComponents = function() { return this.components }; tab;',
-              columns: [
+            "data": {
+              "path": "$.components",
+              "addNewDefault": "let tab = ({ \"id\": uuid(), components: [] }); tab.getComponents = function() { return this.components };  tab.setComponents = function(components) { this.components = components; }; tab;",
+              "columns": [
                 {
-                  name: 'name',
-                  type: 'text',
-                  display: {
-                    label: 'Tab name'
+                  "type": "text",
+                  "name": "name",
+                  "display": {
+                    "label": "Tab name"
                   }
                 },
                 {
-                  name: 'display',
-                  type: 'object',
-                  display: {
-                    label: 'Tab label',
-                    hideLabel: true,
+                  "type": "object",
+                  "name": "display",
+                  "display": {
+                    "label": "Tab label",
+                    "hideLabel": true
                   },
-                  components: [
+                  "components": [
                     {
-                      name: 'label',
-                      type: 'text',
-                      display: {
-                        hideLabel: true,
+                      "type": "text",
+                      "name": "label",
+                      "display": {
+                        "hideLabel": true
                       }
-                    },
+                    }
                   ]
-                },
+                }
               ]
             }
-          },
+          }
         ]
       },
-    ]
-  },
+      {
+        "components": [
+          {
+            "type": "text",
+            "name": "path",
+            "display": {
+              "label": "Data Path",
+              "placeholder": "",
+              "prefix": "",
+              "suffix": ""
+            }
+          }
+        ],
+        "name": "data",
+        "display": {
+          "label": "Data"
+        }
+      }
+    ],
+    "data": {
+      "path": "$"
+    }
+  }
 ]

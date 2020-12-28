@@ -1,6 +1,6 @@
 import { ComponentSchema } from 'appitsy/types/ComponentSchema';
 
-export const NumberEditingSchema: ComponentSchema[] = [
+export const CheckboxEditingSchema: ComponentSchema[] = [
   {
     "type": "text",
     "name": "name",
@@ -15,7 +15,7 @@ export const NumberEditingSchema: ComponentSchema[] = [
     "type": "tabs",
     "name": "tabs1",
     "display": {
-      "label": ""
+      "label": "Tabs "
     },
     "components": [
       {
@@ -33,24 +33,54 @@ export const NumberEditingSchema: ComponentSchema[] = [
               "prefix": "",
               "suffix": ""
             },
+            "validations": {
+              "maxLength": "",
+              "checkbox1": true
+            }
+          }
+        ]
+      },
+      {
+        "components": [
+          {
+            "type": "text",
+            "name": "path",
+            "display": {
+              "label": "Path",
+              "placeholder": "",
+              "prefix": "",
+              "suffix": ""
+            },
             "data": {
               "defaultValue": ""
             },
             "validations": {
               "maxLength": ""
             }
+          },
+          {
+            "type": "checkbox",
+            "name": "defaultValue",
+            "display": {
+              "label": "Default Value"
+            }
           }
-        ]
-      },
-      {
-        "components": [],
+        ],
         "name": "data",
         "display": {
           "label": "Data"
         }
       },
       {
-        "components": [],
+        "components": [
+          {
+            "type": "checkbox",
+            "name": "required",
+            "display": {
+              "label": "Required"
+            }
+          }
+        ],
         "name": "validations",
         "display": {
           "label": "Validations"

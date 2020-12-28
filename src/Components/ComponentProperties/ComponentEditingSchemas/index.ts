@@ -1,19 +1,24 @@
-import { Types } from "appitsy/types/Types";
-import { ButtonEditingSchema } from "./ButtonEditingSchema";
-import { EmailEditingSchema } from "./EmailEditingSchema";
-import { NumberEditingSchema } from "./NumberEditingSchema";
-import { PanelEditingSchema } from "./PanelEditingSchema";
-import { PasswordEditingSchema } from "./PasswordEditingSchema";
-import { TableEditingSchema } from "./TableEditingSchema";
-import { TabsEditingSchema } from "./TabsEditingSchema";
-import { TextAreaEditingSchema } from "./TextAreaEditingSchema";
-import { TextFieldEditingSchema } from "./TextFieldEditingSchema";
+import { Types } from 'appitsy/types/Types';
+
+import { ButtonEditingSchema } from './ButtonEditingSchema';
+import { CheckboxEditingSchema } from './CheckboxEditingSchema';
+import { EmailEditingSchema } from './EmailEditingSchema';
+import { MultiCheckboxEditingSchema } from './MultiCheckboxEditingSchema';
+import { NumberEditingSchema } from './NumberEditingSchema';
+import { PanelEditingSchema } from './PanelEditingSchema';
+import { PasswordEditingSchema } from './PasswordEditingSchema';
+import { TableEditingSchema } from './TableEditingSchema';
+import { TabsEditingSchema } from './TabsEditingSchema';
+import { TextAreaEditingSchema } from './TextAreaEditingSchema';
+import { TextFieldEditingSchema } from './TextFieldEditingSchema';
 
 export const ComponentEditingSchemas = {
     [Types.TextField]: TextFieldEditingSchema,
     [Types.TextArea]: TextAreaEditingSchema,
     [Types.Email]: EmailEditingSchema,
     [Types.Number]: NumberEditingSchema,
+    [Types.Checkbox]: CheckboxEditingSchema,
+    [Types.MultiCheckbox]: MultiCheckboxEditingSchema,
     [Types.Password]: PasswordEditingSchema,
     [Types.Button]: ButtonEditingSchema,
     [Types.Panel]: PanelEditingSchema,
