@@ -1,11 +1,72 @@
-import { ComponentSchema } from "appitsy/types/ComponentSchema";
+import { ComponentSchema } from 'appitsy/types/ComponentSchema';
 
 export const ButtonEditingSchema: ComponentSchema[] = [
   {
-    type: 'text',
-    name: 'name',
-    display: {
-      label: 'Name'
+    "type": "text",
+    "name": "name",
+    "display": {
+      "label": "Name",
+      "placeholder": "",
+      "prefix": "",
+      "suffix": ""
     }
   },
+  {
+    "type": "text",
+    "name": "text",
+    "display": {
+      "label": "Text"
+    }
+  },
+  {
+    "type": "text",
+    "name": "style",
+    "display": {
+      "label": "Style",
+      "placeholder": "",
+      "prefix": "",
+      "suffix": ""
+    },
+    "data": {
+      "defaultValue": "",
+      "path": ""
+    },
+    "validations": {
+      "maxLength": ""
+    }
+  },
+  {
+    "type": "tabs",
+    "name": "buttonConfig",
+    "display": {
+      "label": "Button Configuration"
+    },
+    "components": [
+      {
+        "name": "display",
+        "display": {
+          "label": "Display"
+        },
+        "components": [
+          {
+            "type": "text",
+            "name": "leftIcon",
+            "display": {
+              "label": "Left Icon"
+            }
+          },
+          {
+            "type": "text",
+            "name": "rightIcon",
+            "display": {
+              "label": "Right Icon"
+            }
+          }
+        ]
+      }
+    ],
+    "data": {
+      "path": "$"
+    }
+  }
 ]

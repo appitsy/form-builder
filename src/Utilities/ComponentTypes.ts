@@ -60,8 +60,14 @@ export const getDefaultPropsForType = (type: string): ComponentSchemaWithId | un
     case Types.Email:
     case Types.Number:
     case Types.Checkbox:
+      return { ...commonProperties };
     case Types.Button:
-        return { ...commonProperties };
+      return _.defaultsDeep(
+        {
+          text: 'Submit',
+          style: 'primary'
+        },
+        commonProperties);
     case Types.Password:
       return _.defaultsDeep(
         {          
