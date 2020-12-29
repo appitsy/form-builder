@@ -57,6 +57,13 @@ export const TextFieldEditingSchema: ComponentSchema[] = [
         "components": [
           {
             "type": "text",
+            "name": "path",
+            "display": {
+              "label": "Data Path"
+            }
+          },
+          {
+            "type": "text",
             "name": "defaultValue",
             "display": {
               "label": "Default Value"
@@ -68,9 +75,9 @@ export const TextFieldEditingSchema: ComponentSchema[] = [
         "components": [
           {
             "type": "checkbox",
-            "name": "checkbox1",
+            "name": "required",
             "display": {
-              "label": "Checkbox 1"
+              "label": "Required"
             }
           },
           {

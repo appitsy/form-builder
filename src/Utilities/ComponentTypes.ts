@@ -41,7 +41,7 @@ const createNewTab = (tabProperties: any) => {
   return tab;
 }
 
-export const getDefaultPropsForType = (type: string, nameSuffix: string): ComponentSchemaWithId | undefined => {
+export const getDefaultPropsForType = (type: string): ComponentSchemaWithId | undefined => {
   const id = uuidv4();
   const commonProperties = {
     id, 
@@ -49,20 +49,27 @@ export const getDefaultPropsForType = (type: string, nameSuffix: string): Compon
     getComponents: () => undefined,
     setComponents: () => undefined,
     type,
-    name: type + nameSuffix,
+    name: type,
     display: {
-      label: getDisplayNameForType(type) + ' ' + nameSuffix
+      label: getDisplayNameForType(type)
     },
   }
   switch (type) {
     case Types.TextField:
     case Types.TextArea:
     case Types.Email:
-    case Types.Password:
     case Types.Number:
     case Types.Checkbox:
     case Types.Button:
         return { ...commonProperties };
+    case Types.Password:
+      return _.defaultsDeep(
+        {          
+          display: {
+            placeholder: '********',
+          },
+        },
+        commonProperties);
     case Types.MultiCheckbox: {
       const multiCheckbox = { 
         ...commonProperties, 
@@ -120,7 +127,9 @@ export const getDefaultPropsForType = (type: string, nameSuffix: string): Compon
       const table: any = { 
         ...commonProperties,
         data: { 
-          columns: [] 
+          columns: [],
+          allowSorting: true,
+          allowAddRemove: true,
         },
       };
 
@@ -161,7 +170,7 @@ export const parseTypeFromJson = (json: any): ComponentSchemaWithId => {
   }
 
   // get default
-  const defaultProps = getDefaultPropsForType(json.type, '') || {};
+  const defaultProps = getDefaultPropsForType(json.type) || {};
   const component = _.assign(defaultProps, json) as ComponentSchemaWithId;
 
   const childComponents = component.getComponents();

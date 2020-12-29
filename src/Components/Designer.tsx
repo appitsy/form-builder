@@ -64,7 +64,7 @@ const Designer = (props: DesignerProps) => {
 
   const onDrop = (componentEl: any) => {
     if (componentEl.operation === "drop") {
-      let newComponent: ComponentSchemaWithId | undefined = getDefaultPropsForType(componentEl.type, "1");
+      let newComponent: ComponentSchemaWithId | undefined = getDefaultPropsForType(componentEl.type);
 
       if (!newComponent) {
         return;

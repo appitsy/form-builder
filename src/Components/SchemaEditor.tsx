@@ -60,10 +60,13 @@ export const SchemaEditor = (props: SchemaEditorProps) => {
 			<SchemaActions>
 				{ 
 					isSchemaEditable
+						// eslint-disable-next-line react/style-prop-object
 						? (<SchemaActionButton name='saveSchema' display={{ leftIcon: 'save' }} onClick={endSchemaEditing} text='Save' style='secondary' />)
+						// eslint-disable-next-line react/style-prop-object
 						: (<SchemaActionButton name='editSchema' display={{ leftIcon: 'pen' }} onClick={startSchemaEditing} text='Edit' style='secondary' />)
 				}
 				
+				{ /*eslint-disable-next-line react/style-prop-object */ }
 				<SchemaActionButton name='copyToClipboard' display={{ leftIcon: 'clipboard' }} onClick={() => copyToClipboard(jsonFormattedString())} text='Copy' style='primary' />
 			</SchemaActions>
 			<div className="card card-body bg-light">

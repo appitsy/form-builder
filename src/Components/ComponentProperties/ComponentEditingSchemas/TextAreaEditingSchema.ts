@@ -2,56 +2,66 @@ import { ComponentSchema } from 'appitsy/types/ComponentSchema';
 
 export const TextAreaEditingSchema: ComponentSchema[] = [
   {
-    type: 'text',
-    name: 'name',
-    display: {
-      label: 'Name'
+    "type": "text",
+    "name": "name",
+    "display": {
+      "label": "Name"
     }
   },
   {
-    type: 'tabs',
-    name: 'textAreaEditing',
-    data: {
-      path: '$',
+    "type": "tabs",
+    "name": "textAreaEditing",
+    "display": {
+      "label": "Tabs "
     },
-    components: [
+    "components": [
       {
-        name: 'display',
-        display: {
-          label: 'Display',
+        "name": "display",
+        "display": {
+          "label": "Display"
         },
-        components: [
+        "components": [
           {
-            type: 'text',
-            name: 'label',
-            display: {
-              label: 'Label'
+            "type": "text",
+            "name": "label",
+            "display": {
+              "label": "Label"
             }
           },
           {
-            type: 'text',
-            name: 'placeholder',
-            display: {
-              label: 'Placeholder'
+            "type": "text",
+            "name": "placeholder",
+            "display": {
+              "label": "Placeholder"
             }
-          },
+          }
         ]
       },
       {
-        name: 'data',
-        display: {
-          label: 'Data',
+        "name": "data",
+        "display": {
+          "label": "Data"
         },
-        components: [
+        "components": [
           {
-            type: 'text',
-            name: 'defaultValue',
-            display: {
-              label: 'Default Value'
+            "type": "text",
+            "name": "path",
+            "display": {
+              "label": "Data Path"
             }
           },
+          {
+            "type": "text",
+            "name": "defaultValue",
+            "display": {
+              "label": "Default Value"
+            }
+          }
         ]
       }
-    ]
-  },
+    ],
+    "data": {
+      "path": "$"
+    }
+  }
 ]
