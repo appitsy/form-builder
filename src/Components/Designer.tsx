@@ -20,7 +20,7 @@ const DesignerPage = styled.div`
 `;
 
 const ComponentListContainer = styled.div`
-  width: 240px;
+  width: 300px;
 `;
 
 const DesignerPreview = styled.div`

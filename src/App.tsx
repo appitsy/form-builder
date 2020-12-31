@@ -22,10 +22,6 @@ const AppRoot = styled.div`
 	flex-grow: 1;
 `;
 
-const Heading = styled.h4`
-	margin: 10px 0px 0px 0px;
-	text-align: center;
-`
 const AppTabs = styled(Tabs)`
 	display: flex;
   flex-direction: column;
@@ -72,7 +68,6 @@ const App = () => {
   
   return (
     <AppRoot>
-      <Heading>Form Builder</Heading>
       <AppTabs>
         <TabList className="appitsy-builder-header-tabs">
           <Tab>Designer</Tab>

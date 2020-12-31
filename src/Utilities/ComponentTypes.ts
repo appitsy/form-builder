@@ -11,14 +11,14 @@ import { ComponentSchemaWithId } from '../Components/DesignerRenderer';
 export const BasicComponentTypes = [
   Types.TextField,
   Types.TextArea,
-  Types.Email,
-  Types.Password,
   Types.Number,
+  Types.Email,
+  Types.Button,
+  Types.Password,
   Types.Checkbox,
   Types.MultiCheckbox,
   Types.Select,
   Types.Radio,
-  Types.Button,
 ]
 
 export const LayoutComponentTypes = [
