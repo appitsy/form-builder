@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { ComponentSchemaWithId } from '../Components/DesignerRenderer';
 
-export const ComponentTypes = [
+export const BasicComponentTypes = [
   Types.TextField,
   Types.TextArea,
   Types.Email,
@@ -17,11 +17,24 @@ export const ComponentTypes = [
   Types.Checkbox,
   Types.MultiCheckbox,
   Types.Select,
+  Types.Radio,
   Types.Button,
+]
+
+export const LayoutComponentTypes = [
   Types.Panel,
   Types.Tabs,
+]
+
+export const DataComponentTypes = [
   Types.Table,
   Types.ObjectComponent,
+]
+
+export const ComponentTypes = [
+  ...BasicComponentTypes,
+  ...LayoutComponentTypes,
+  ...DataComponentTypes,
 ]
 
 const createNewTab = (tabProperties: any) => {
@@ -77,8 +90,11 @@ export const getDefaultPropsForType = (type: string): ComponentSchemaWithId | un
           },
         },
         commonProperties);
-    case Types.Select: {
-      const select = {
+    case Types.Radio:
+    case Types.Select: 
+    // COMMON code for radio & select
+    {
+      const selectOrRadio = {
         ...commonProperties,
         data: {
           options: [
@@ -90,7 +106,7 @@ export const getDefaultPropsForType = (type: string): ComponentSchemaWithId | un
         }
       };
 
-      return select as any as ComponentSchemaWithId;
+      return selectOrRadio as any as ComponentSchemaWithId;
     }
     case Types.MultiCheckbox: {
       const multiCheckbox = { 

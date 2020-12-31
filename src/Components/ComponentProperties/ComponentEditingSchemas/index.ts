@@ -8,6 +8,7 @@ import { NumberEditingSchema } from './NumberEditingSchema';
 import { ObjectEditingSchema } from './ObjectEditingSchema';
 import { PanelEditingSchema } from './PanelEditingSchema';
 import { PasswordEditingSchema } from './PasswordEditingSchema';
+import { RadioEditingSchema } from './RadioEditingSchema';
 import { SelectEditingSchema } from './SelectEditingSchema';
 import { TableEditingSchema } from './TableEditingSchema';
 import { TabsEditingSchema } from './TabsEditingSchema';
@@ -23,6 +24,7 @@ export const ComponentEditingSchemas = {
     [Types.MultiCheckbox]: MultiCheckboxEditingSchema,
     [Types.Password]: PasswordEditingSchema,
     [Types.Select]: SelectEditingSchema,
+    [Types.Radio]: RadioEditingSchema,
     [Types.Button]: ButtonEditingSchema,
     [Types.Panel]: PanelEditingSchema,
     [Types.Tabs]: TabsEditingSchema,
