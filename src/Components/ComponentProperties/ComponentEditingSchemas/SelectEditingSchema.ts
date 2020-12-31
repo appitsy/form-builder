@@ -1,6 +1,6 @@
 import { ComponentSchema } from 'appitsy/types/ComponentSchema';
 
-export const MultiCheckboxEditingSchema: ComponentSchema[] = [
+export const SelectEditingSchema: ComponentSchema[] = [
   {
     "type": "text",
     "name": "name",
@@ -54,7 +54,7 @@ export const MultiCheckboxEditingSchema: ComponentSchema[] = [
         "components": [
           {
             "type": "table",
-            "name": "checkboxes",
+            "name": "options",
             "display": {
               "label": "Table 1"
             },

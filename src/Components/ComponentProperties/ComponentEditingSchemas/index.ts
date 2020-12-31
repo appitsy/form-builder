@@ -8,6 +8,7 @@ import { NumberEditingSchema } from './NumberEditingSchema';
 import { ObjectEditingSchema } from './ObjectEditingSchema';
 import { PanelEditingSchema } from './PanelEditingSchema';
 import { PasswordEditingSchema } from './PasswordEditingSchema';
+import { SelectEditingSchema } from './SelectEditingSchema';
 import { TableEditingSchema } from './TableEditingSchema';
 import { TabsEditingSchema } from './TabsEditingSchema';
 import { TextAreaEditingSchema } from './TextAreaEditingSchema';
@@ -21,6 +22,7 @@ export const ComponentEditingSchemas = {
     [Types.Checkbox]: CheckboxEditingSchema,
     [Types.MultiCheckbox]: MultiCheckboxEditingSchema,
     [Types.Password]: PasswordEditingSchema,
+    [Types.Select]: SelectEditingSchema,
     [Types.Button]: ButtonEditingSchema,
     [Types.Panel]: PanelEditingSchema,
     [Types.Tabs]: TabsEditingSchema,

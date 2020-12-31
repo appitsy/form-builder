@@ -16,6 +16,7 @@ export const ComponentTypes = [
   Types.Number,
   Types.Checkbox,
   Types.MultiCheckbox,
+  Types.Select,
   Types.Button,
   Types.Panel,
   Types.Tabs,
@@ -76,13 +77,28 @@ export const getDefaultPropsForType = (type: string): ComponentSchemaWithId | un
           },
         },
         commonProperties);
+    case Types.Select: {
+      const select = {
+        ...commonProperties,
+        data: {
+          options: [
+            {
+              value: '',
+              label: '',
+            }
+          ]
+        }
+      };
+
+      return select as any as ComponentSchemaWithId;
+    }
     case Types.MultiCheckbox: {
       const multiCheckbox = { 
         ...commonProperties, 
         data: { 
           checkboxes: [
             {
-              name: '',
+              value: '',
               label: ''
             }
           ] 

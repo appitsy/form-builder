@@ -27,6 +27,7 @@ const ComponentList = (props: ComponentListProps) => (
     <ComponentListItem name={TypeDisplayNames.Number} type={Types.Number} resetPreview={props.resetPreview} />
     <ComponentListItem name={TypeDisplayNames.Checkbox} type={Types.Checkbox} resetPreview={props.resetPreview} />
     <ComponentListItem name={TypeDisplayNames.MultiCheckbox} type={Types.MultiCheckbox} resetPreview={props.resetPreview} />
+    <ComponentListItem name={TypeDisplayNames.Select} type={Types.Select} resetPreview={props.resetPreview} />
     <ComponentListItem name={TypeDisplayNames.Button} type={Types.Button} resetPreview={props.resetPreview} />
     <ComponentListItem name={TypeDisplayNames.Panel} type={Types.Panel} resetPreview={props.resetPreview} />
     <ComponentListItem name={TypeDisplayNames.Tabs} type={Types.Tabs} resetPreview={props.resetPreview} />
