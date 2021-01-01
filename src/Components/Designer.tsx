@@ -4,6 +4,7 @@ import { remove } from 'lodash-es';
 import cloneDeep from 'lodash-es/cloneDeep';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import Modal from 'react-modal';
 
 import styled from '@emotion/styled';
 
@@ -11,6 +12,7 @@ import { getDefaultPropsForType } from '../Utilities/ComponentTypes';
 import ComponentList from './ComponentList';
 import { ComponentSchemaWithId } from './DesignerRenderer';
 import { DroppableRenderer } from './DroppableRenderer';
+import { NewComponentConfirmForm } from './NewComponentConfirmForm';
 import { PreviewComponentSchema } from './PreviewComponent';
 
 const DesignerPage = styled.div`
@@ -27,12 +29,36 @@ const DesignerPreview = styled.div`
   flex: 1;
 `;
 
+const NewComponentConfirmModalWrapper = styled.div`
+  height: 100%;
+  display: flex;
+  
+`;
+
+const NewComponentConfirmModal = styled(Modal)`
+  height: 100%;
+  width: 350px;
+  margin: auto;
+  padding-top: 300px;
+  outline: none;
+`;
+
+const NewComponentConfirmFormWrapper = styled.div`
+  border: 2px solid grey;
+  border-radius: 5px;
+`;
+
 export const ROOT_ID = 'root';
 export const ROOT_PATH = '';
 
 export interface RootComponent {
   components: ComponentSchemaWithId[];
   preview?: PreviewComponentSchema;
+}
+
+interface NewComponentDroppedInfo {
+  componentId: string;
+  componentType: string;
 }
 
 interface DesignerProps {
@@ -45,6 +71,7 @@ const Designer = (props: DesignerProps) => {
   const [rootComponent, setRootComponent] = useState<RootComponent>({ components: props.schema });
   const [editingComponent, setEditingComponent] = useState<ComponentSchemaWithId>();
   const [previewComponentParentId, setPreviewComponentParentId] = useState<string>();
+  const [newComponentDropped, setNewComponentDropped] = useState<NewComponentDroppedInfo | undefined>(undefined);
 
   const updateRootComponent = (root: RootComponent, newEditComponent?: ComponentSchemaWithId): void => {
     setRootComponent(root);
@@ -73,28 +100,26 @@ const Designer = (props: DesignerProps) => {
       const rootComponentCopy = cloneDeep(rootComponent);
 
       if (componentEl.parent === ROOT_PATH) {
-        insertNewComponentAtIndex(rootComponentCopy.components, newComponent, -1);
+        insertNewComponentAtIndex(rootComponentCopy, rootComponentCopy.components, newComponent, -1);
       } else {
         const { component: parentComponent, parent: grandParentComponent } = findComponentById(componentEl.parent, rootComponentCopy.components);
         const parentChildComponents = parentComponent?.getComponents();
 
         if (parentChildComponents) {
-          insertNewComponentAtIndex(parentChildComponents, newComponent, -1);
+          insertNewComponentAtIndex(rootComponentCopy, parentChildComponents, newComponent, -1);
         } else if (grandParentComponent) {
           // grand parents children should obviously be there
           // otherwise we would have not got this
           const grandParentChildren = grandParentComponent.getComponents()!;
           const parentIndex = grandParentChildren.findIndex((x: ComponentSchemaWithId) => x.id === parentComponent?.id);
           const isAfter = componentEl.isAfter === true;
-          insertNewComponentAtIndex(grandParentChildren, newComponent, parentIndex + (isAfter ? 1 : 0));
+          insertNewComponentAtIndex(rootComponentCopy, grandParentChildren, newComponent, parentIndex + (isAfter ? 1 : 0));
         } else {
           const parentIndex = rootComponentCopy.components.findIndex((x: ComponentSchemaWithId) => x.id === parentComponent?.id);
           const isAfter = componentEl.isAfter === true;
-          insertNewComponentAtIndex(rootComponentCopy.components, newComponent, parentIndex + (isAfter ? 1 : 0));
+          insertNewComponentAtIndex(rootComponentCopy, rootComponentCopy.components, newComponent, parentIndex + (isAfter ? 1 : 0));
         }
       }
-
-      updateRootComponent(rootComponentCopy);
     }
     else if (componentEl.operation === 'move') {
       const rootComponentCopy = cloneDeep(rootComponent);
@@ -107,7 +132,7 @@ const Designer = (props: DesignerProps) => {
       removeComponent(oldParentComponent?.getComponents() || rootComponentCopy.components, component.id);
 
       if (componentEl.parent === ROOT_ID) {
-        insertNewComponentAtIndex(rootComponentCopy.components, component, -1);
+        insertNewComponentAtIndex(rootComponentCopy, rootComponentCopy.components, component, -1);
       } else {
         const { component: newParent, parent: newGrandParentComponent } = findComponentById(componentEl.parent, rootComponentCopy.components);
 
@@ -118,39 +143,46 @@ const Designer = (props: DesignerProps) => {
         const newParentChildren = newParent.getComponents();
 
         if (newParentChildren) {
-          insertNewComponentAtIndex(newParentChildren, component, -1);
+          insertNewComponentAtIndex(rootComponentCopy, newParentChildren, component, -1);
         } else if (newGrandParentComponent) {
           const newGrandParentChildren = newGrandParentComponent.getComponents()!;
           const parentIndex = newGrandParentChildren.findIndex((x: ComponentSchemaWithId) => x.id === newParent.id);
-          insertNewComponentAtIndex(newGrandParentChildren, component, parentIndex);
+          insertNewComponentAtIndex(rootComponentCopy, newGrandParentChildren, component, parentIndex);
         } else {
           const parentIndex = rootComponentCopy.components.findIndex((x: ComponentSchemaWithId) => x.id === newParent.id);
-          insertNewComponentAtIndex(rootComponentCopy.components, component, parentIndex);
+          insertNewComponentAtIndex(rootComponentCopy, rootComponentCopy.components, component, parentIndex);
         }
       }
-      updateRootComponent(rootComponentCopy);
     }
   };
 
-  const onEdit = (componentId: string) => {
+  const onEditWithId = (componentId: string) => {
     const rootComponentCopy = cloneDeep(rootComponent);
-    
-    // clear the earlier editing component
-    if (editingComponent !== undefined) {
-      const { component: previousEditingComponent } = findComponentById(editingComponent.id, rootComponentCopy.components);  
-      if (previousEditingComponent) {
-        previousEditingComponent.isEditing = false;
-      }
-    }
-
     const { component } = findComponentById(componentId, rootComponentCopy.components);
 
     if (component === undefined) {
       return;
     }
 
-    component.isEditing = true;
-    updateRootComponent(rootComponentCopy, component);
+    onEditWithComponentInternal(component, rootComponentCopy);
+  }
+
+  const onEditWithComponent = (component: ComponentSchemaWithId) => {
+    const rootComponentCopy = cloneDeep(rootComponent);
+    onEditWithComponentInternal(component, rootComponentCopy);
+  }
+
+  const onEditWithComponentInternal = (component: ComponentSchemaWithId, rootComponentCopy: RootComponent) => {
+      // clear the earlier editing component
+      if (editingComponent !== undefined) {
+        const { component: previousEditingComponent } = findComponentById(editingComponent.id, rootComponentCopy.components);  
+        if (previousEditingComponent) {
+          previousEditingComponent.isEditing = false;
+        }
+      }
+  
+      component.isEditing = true;
+      updateRootComponent(rootComponentCopy, component);
   }
 
   const onDelete = (componentId: string) => {
@@ -349,13 +381,20 @@ const Designer = (props: DesignerProps) => {
     componentArray.splice(atIndex, 0, component);
   }
 
-  const insertNewComponentAtIndex = (componentArray: ComponentSchemaWithId[], component: ComponentSchemaWithId, atIndex: number) => {
-    if(atIndex === -1) {
+  const insertNewComponentAtIndex = (rootComponentCopy: RootComponent, componentArray: ComponentSchemaWithId[], component: ComponentSchemaWithId, atIndex: number) => {
+    // ask the name & label from the user
+    setNewComponentDropped({
+      componentId: component.id,
+      componentType: component.type,
+    });
+
+    if (atIndex === -1) {
       componentArray.push(component);
-      return;
+    } else {
+      componentArray.splice(atIndex, 0, component);
     }
       
-    componentArray.splice(atIndex, 0, component);
+    updateRootComponent(rootComponentCopy);
   };
 
   const isAlreadyAdjacent = (componentId: string, adjacentComponentId: string, componentArray: ComponentSchemaWithId[], after: boolean) => {
@@ -410,6 +449,30 @@ const Designer = (props: DesignerProps) => {
     updateRootComponent(rootComponentCopy);
   }
 
+  const onNewComponentConfirmed = (name: string, label: string) => {
+    const { component: newComponent } = findComponentById(newComponentDropped!.componentId, rootComponent.components);
+    
+    if (newComponent === undefined) {
+      return;
+    }
+
+    newComponent.name = name;
+    newComponent.display = {
+      ...(newComponent.display || {}),
+      label
+    };
+
+    // reset the root component with the new component as the editing one. 
+    // as probably that one will be the one the user will edit next.
+    onEditWithComponent(newComponent);
+    setNewComponentDropped(undefined);
+  }
+
+  const onNewComponentCancelled = () => {
+    onDelete(newComponentDropped!.componentId);
+    setNewComponentDropped(undefined);
+  };
+  
   return (
     <DesignerPage>
       <DndProvider backend={HTML5Backend}>
@@ -423,7 +486,7 @@ const Designer = (props: DesignerProps) => {
             data={data}
             editingComponent={editingComponent}
             onDrop={onDrop}
-            onEdit={onEdit}
+            onEdit={onEditWithId}
             onDelete={onDelete}
             addPreview={addPreview}
             moveComponent={moveComponent}
@@ -432,6 +495,27 @@ const Designer = (props: DesignerProps) => {
           />
         </DesignerPreview>
       </DndProvider>
+      <NewComponentConfirmModalWrapper>
+
+      <NewComponentConfirmModal isOpen={newComponentDropped !== undefined}>
+        {
+          newComponentDropped
+          ? (
+            <NewComponentConfirmFormWrapper>
+              <NewComponentConfirmForm
+                componentId={newComponentDropped.componentId}
+                componentType={newComponentDropped.componentType}
+                onConfirm={onNewComponentConfirmed}
+                onCancel={onNewComponentCancelled}
+              />
+            </NewComponentConfirmFormWrapper>
+            )
+          : null
+        }
+        </NewComponentConfirmModal>
+        
+      </NewComponentConfirmModalWrapper>
+
     </DesignerPage>
   );
 };
