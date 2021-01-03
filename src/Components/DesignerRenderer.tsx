@@ -9,7 +9,6 @@ import { ComponentSchema } from 'appitsy/types/ComponentSchema';
 import { TableSchema } from 'appitsy/types/DataComponentSchema';
 import { Types } from 'appitsy/types/Types';
 import _ from 'lodash';
-import ReactTooltip from 'react-tooltip';
 
 import styled from '@emotion/styled';
 import Styled from '@emotion/styled';
@@ -156,22 +155,10 @@ export class DesignerRenderer extends Renderer<DesignerRendererProps> {
     )];
   }
 
-  addReactTooltip(children: JSX.Element[]): React.ReactNode {
-    /*
-        Issue: Tried multiple things
-        If we remove/move the below code, either the tooltips stop working
-        Or tooltips stop working with showing up just one weird border at the bottom
-        of the screen. But I think we can live with this for now.
-    */
-    children.push(<span data-tip={"asd"} />);
-    children.push(<ReactTooltip />);
-    return children;
-  }
-
   renderRoot() {
     return (
       <StyledPage>
-        { this.addReactTooltip(this.renderChildren()) }
+        { this.renderChildren() }
       </StyledPage>
     );
   }
