@@ -1,4 +1,4 @@
-import { ComponentSchema } from "appitsy/types/ComponentSchema";
+import { ComponentSchema } from 'appitsy/types/ComponentSchema';
 
 export const PanelEditingSchema: ComponentSchema[] = [
   {
@@ -8,4 +8,11 @@ export const PanelEditingSchema: ComponentSchema[] = [
       label: 'Name'
     }
   },
+  {
+    "type": "tabs",
+    "name": "textFieldEditing",
+    "components": [
+      
+    ]
+  }
 ]
