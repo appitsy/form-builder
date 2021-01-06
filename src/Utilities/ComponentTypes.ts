@@ -23,6 +23,7 @@ export const BasicComponentTypes = [
 
 export const LayoutComponentTypes = [
   Types.Panel,
+  Types.Columns,
   Types.Tabs,
 ]
 
@@ -123,21 +124,23 @@ export const getDefaultPropsForType = (type: string): ComponentSchemaWithId | un
 
       return multiCheckbox as any as ComponentSchemaWithId;
     }
-    case Types.Panel: {
-      let panel: any = { 
+    case Types.Columns:
+    case Types.Panel: 
+    {
+      let panelOrColumns: any = { 
         ...commonProperties,
         components: [],
       }
 
-      panel.getComponents = function(): ComponentSchemaWithId[] {
+      panelOrColumns.getComponents = function(): ComponentSchemaWithId[] {
         return this.components;
       }
 
-      panel.setComponents = function(components: ComponentSchemaWithId[]): void {
+      panelOrColumns.setComponents = function(components: ComponentSchemaWithId[]): void {
         this.components = components;
       }
 
-      return panel as ComponentSchemaWithId;
+      return panelOrColumns as ComponentSchemaWithId;
     }
     case Types.Tabs: {
       const tab1 = createNewTab({

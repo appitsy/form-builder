@@ -26,11 +26,18 @@ const DropFieldsHere = styled.div`
   background-color: lightgrey;
   padding: 10px;
   margin: 0px;
+  flex: 1;
+  text-align: center;
 `;
 
 const StyledDraggableDroppableComponent = styled(DraggableDroppableComponent)`
-    padding: 7px;
-    background-color: ${(props) => props.isEditing ? '#ffffb3' : ''};
+  padding: 7px;
+  background-color: ${(props) => props.isEditing ? '#ffffb3' : ''};
+`;
+
+const StyledDroppableComponent = styled(DroppableComponent)`
+  display: flex;
+  align-items: stretch;
 `;
 
 export type ComponentSchemaWithId = ComponentSchema & {
@@ -52,15 +59,18 @@ interface DesignerRendererProps extends RendererProps {
 }
 
 export class DesignerRenderer extends Renderer<DesignerRendererProps> {
+  dropFieldsHereComponent = (<DropFieldsHere>Drop fields here!</DropFieldsHere>);
+
   renderDesignerComponent = (component: ComponentSchemaWithId) => {
     let renderedComponent;
     const key = `${component.id}` 
     switch (component.type) {
+      case Types.Columns: 
       case Types.Panel: 
-        let panelComponentSchema = component as any;
-        panelComponentSchema.display = { ...panelComponentSchema.display, expandable: false };
-        let panel = super.renderComponent(panelComponentSchema, key);
-        renderedComponent = panel;
+        let panelOrColumnsComponentSchema = component as any;
+        panelOrColumnsComponentSchema.display = { ...panelOrColumnsComponentSchema.display, expandable: false };
+        let panelOrColumns = super.renderComponent(panelOrColumnsComponentSchema, key);
+        renderedComponent = panelOrColumns;
         break;
       case Types.Tabs: 
         let tabsComponentSchema = component as any;
@@ -111,6 +121,9 @@ export class DesignerRenderer extends Renderer<DesignerRendererProps> {
   }
 
   renderChildren() {
+    if (this.props.schema.length === 0) {
+      return [ this.dropFieldsHereComponent ];
+    }
     return this.props.schema.map((component) => this.renderDesignerComponent(component));
   }
 
@@ -119,39 +132,36 @@ export class DesignerRenderer extends Renderer<DesignerRendererProps> {
       return [];
     }
 
-    const dropFieldsHereComponent = (<DropFieldsHere>Drop fields here!</DropFieldsHere>);
 
     const inner = childComponents?.map((panelChild) => this.renderDesignerComponent(panelChild)) || [];
 
     // ---- SPECIFIC COMPONENT OVERRIDE ----
-    if (parentComponent.type === Types.Table) {
+    if (parentComponent.type === Types.Table || parentComponent.type === Types.Columns) {
       return [
         ...inner,
         (
-        <DroppableComponent 
+        <StyledDroppableComponent 
           id={parentComponent.id} 
           onDrop={this.props.onDrop}
           previewComponent={parentComponent.previewComponent}
           addPreview={this.props.addPreview}
         >
-          <div style={{minWidth: '100px'}}>
-            {dropFieldsHereComponent}
-          </div>
-        </DroppableComponent>
+          {this.dropFieldsHereComponent}
+        </StyledDroppableComponent>
       )];
     } 
 
     return [(
-      <DroppableComponent 
+      <StyledDroppableComponent 
         id={parentComponent.id} 
         onDrop={this.props.onDrop}
         previewComponent={parentComponent.previewComponent}
         addPreview={this.props.addPreview}
       >
-        <div style={{minWidth: '100px'}}>
-          { inner.length !== 0 ? inner : dropFieldsHereComponent }
+        <div style={{flex: '1'}}>
+          { inner.length !== 0 ? inner : this.dropFieldsHereComponent }
         </div>
-      </DroppableComponent>
+      </StyledDroppableComponent>
     )];
   }
 
