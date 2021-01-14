@@ -7,7 +7,7 @@ import ReactJson from 'react-json-view';
 import styled from '@emotion/styled';
 
 import {
-  parseTypeFromJson,
+  parseComponentJson,
   prepareJsonSchema,
 } from '../Utilities/ComponentTypes';
 import { ComponentSchemaWithId } from './DesignerRenderer';
@@ -50,7 +50,7 @@ export const SchemaEditor = (props: SchemaEditorProps) => {
       throw new Error('JSON Array expected here..');
     }
 
-    const saveSchema = jsonArray.map(x => parseTypeFromJson(x));
+    const saveSchema = jsonArray.map(x => parseComponentJson(x));
 
     props.onSchemaChange(saveSchema);
   }

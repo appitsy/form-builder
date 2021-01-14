@@ -205,7 +205,7 @@ export const getDefaultPropsForType = (type: string): ComponentSchemaWithId | un
   }
 }
 
-export const parseTypeFromJson = (json: any): ComponentSchemaWithId => {
+export const parseComponentJson = (json: any): ComponentSchemaWithId => {
   if (json.type === undefined) {
     throw new Error('Wrong JSON being parsed');
   }
@@ -220,14 +220,14 @@ export const parseTypeFromJson = (json: any): ComponentSchemaWithId => {
       case Types.Tabs:
         component.setComponents(childComponents.map((x: any) => { 
             const tab: any = createNewTab(x);
-            const tabChildren = x.components?.map((y: any) => parseTypeFromJson(y)) || [];
+            const tabChildren = x.components?.map((y: any) => parseComponentJson(y)) || [];
             tab.setComponents(tabChildren);
             return tab;
           })
         );
         break;
       default:
-        component.setComponents(childComponents.map(x => parseTypeFromJson(x)));
+        component.setComponents(childComponents.map(x => parseComponentJson(x)));
     }
   }
 
