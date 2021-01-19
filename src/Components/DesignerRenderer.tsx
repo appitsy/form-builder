@@ -65,13 +65,19 @@ export class DesignerRenderer extends Renderer<DesignerRendererProps> {
     let renderedComponent;
     const key = `${component.id}` 
     switch (component.type) {
-      case Types.Columns: 
-      case Types.Panel: 
-        let panelOrColumnsComponentSchema = component as any;
-        panelOrColumnsComponentSchema.display = { ...panelOrColumnsComponentSchema.display, expandable: false };
-        let panelOrColumns = super.renderComponent(panelOrColumnsComponentSchema, key);
-        renderedComponent = panelOrColumns;
+      case Types.Columns: {
+        const columnsComponentSchema = component as any;
+        let columns = super.renderComponent(columnsComponentSchema, key);
+        renderedComponent = columns;
         break;
+      }
+      case Types.Panel: {
+        let panelComponentSchema = component as any;
+        panelComponentSchema.display = { ...panelComponentSchema.display, expandable: false };
+        let panel = super.renderComponent(panelComponentSchema, key);
+        renderedComponent = panel;
+        break;
+      }
       case Types.Tabs: 
         let tabsComponentSchema = component as any;
         let tabs = super.renderComponent(tabsComponentSchema, key);
@@ -82,7 +88,7 @@ export class DesignerRenderer extends Renderer<DesignerRendererProps> {
         if (!tableComponentSchema.display) {
           tableComponentSchema.display = {};
         }
-        
+
         tableComponentSchema.display.atleastOneRow = true;
         tableComponentSchema.display.allowAddRemove = false;
         tableComponentSchema.display.allowSorting = false;

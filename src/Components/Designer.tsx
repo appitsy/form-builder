@@ -70,7 +70,7 @@ const Designer = (props: DesignerProps) => {
   const [data] = useState<Object>({});
   const [rootComponent, setRootComponent] = useState<RootComponent>({ components: props.schema });
   const [editingComponent, setEditingComponent] = useState<ComponentSchemaWithId>();
-  const [previewComponentParentId, setPreviewComponentParentId] = useState<string>();
+  const [previewComponentState, setPreviewComponentState] = useState<any>(undefined);
   const [newComponentDropped, setNewComponentDropped] = useState<NewComponentDroppedInfo | undefined>(undefined);
 
   const updateRootComponent = (root: RootComponent, newEditComponent?: ComponentSchemaWithId): void => {
@@ -269,54 +269,23 @@ const Designer = (props: DesignerProps) => {
     const rootComponentCopy = cloneDeep(rootComponent);
     let previewComponentParent: ComponentSchemaWithId | undefined = undefined;
     
-    // remove the earlier preview
-    if (previewComponentParentId) {
-      if (previewComponentParentId === adjacentComponentId) {
-        if (previewComponentParentId === ROOT_ID) {
-          if (rootComponentCopy.preview?.type === componentType) {
-            return;
-          }
-          
-          rootComponentCopy.preview = undefined;
-          setPreviewComponentParentId(undefined);
-        } else {
-          let { component: previewComponentParentTemp } = findComponentById(previewComponentParentId, rootComponentCopy.components);
-          if (previewComponentParentTemp) {
-            previewComponentParent = previewComponentParentTemp;
-  
-            if (previewComponentParent.previewComponent?.type === componentType && previewComponentParent.previewComponent.isAfter === after) {
-              return;
-            }
-  
-            previewComponentParent.previewComponent = undefined;
-            setPreviewComponentParentId(undefined);
-          }
-        }
+    if (previewComponentState !== undefined) {
+      // if similar state just return else remove and proceed
+      if (previewComponentState.parentId === adjacentComponentId 
+            && previewComponentState.componentType === componentType 
+            && previewComponentState.isAfter === after) {
+        return;
       }
-      else {
-        // if preview component parent is not == adjacenComponentId
-        // find the component object
-        if (previewComponentParentId === ROOT_ID) {
-          rootComponentCopy.preview = undefined;
-          setPreviewComponentParentId(undefined);
-        } else {
-          let { component: previewComponentParentTemp } = findComponentById(previewComponentParentId, rootComponentCopy.components);
-          if (previewComponentParentTemp) {
-            previewComponentParent = previewComponentParentTemp;
-            previewComponentParent.previewComponent = undefined;
-            setPreviewComponentParentId(undefined);
-          }
-        }
-      }
-    }
 
+      resetDragDropPreviewInternal(rootComponentCopy);
+    }
+          
     if (adjacentComponentId === ROOT_ID) {
       rootComponentCopy.preview = {
         type: componentType,
         isAfter: true
       }
 
-      setPreviewComponentParentId(ROOT_ID);
     } else {
       let { component: previewComponentParentTemp } = findComponentById(adjacentComponentId, rootComponentCopy.components);
       if (!previewComponentParentTemp) {
@@ -330,9 +299,13 @@ const Designer = (props: DesignerProps) => {
         type: componentType,
         isAfter: after,
       }
-
-      setPreviewComponentParentId(adjacentComponentId);
     }
+
+    setPreviewComponentState({
+      parentId: adjacentComponentId,
+      componentType,
+      isAfter: after
+    });
 
     updateRootComponent(rootComponentCopy);
   }
@@ -400,22 +373,26 @@ const Designer = (props: DesignerProps) => {
   };
 
   const resetDragDropPreview = () => {
-    if (!previewComponentParentId) {
+    if (!previewComponentState) {
       return;
     }
 
     const rootComponentCopy = cloneDeep(rootComponent);
-    if (previewComponentParentId === ROOT_ID) {
+
+    resetDragDropPreviewInternal(rootComponentCopy);
+    updateRootComponent(rootComponentCopy);
+    setPreviewComponentState(undefined);
+  }
+
+  const resetDragDropPreviewInternal = (rootComponentCopy: RootComponent) => {
+    if (previewComponentState.parentId === ROOT_ID) {
       rootComponentCopy.preview = undefined;
     } else {
-      const {component: previewComponentParent} = findComponentById(previewComponentParentId, rootComponentCopy.components);
+      const {component: previewComponentParent} = findComponentById(previewComponentState.parentId, rootComponentCopy.components);
       if (previewComponentParent) {
         previewComponentParent.previewComponent = undefined;
       }
     }
-
-    updateRootComponent(rootComponentCopy);
-    setPreviewComponentParentId(undefined);
   }
 
   const updateComponentSchema = (updatedComponentSchema: any) => {
