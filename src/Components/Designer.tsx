@@ -185,14 +185,8 @@ const Designer = (props: DesignerProps) => {
       return;
     }
 
-    if (parent) {
-      const parentChildren = parent.getComponents();
-      if (parentChildren) {
-        removeComponent(parentChildren, component.id);
-      }
-    } else {
-      removeComponent(rootComponentCopy.components, component.id);
-    }
+    const parentChildren = parent?.getComponents() || rootComponentCopy.components;
+    removeComponent(parentChildren, component.id);
     
     updateRootComponent(rootComponentCopy);
   };
@@ -217,7 +211,7 @@ const Designer = (props: DesignerProps) => {
     }
 
     const newParentChildren = (newParent.getComponents()!);
-    insertComponent(newParent.getComponents()!, newParentChildren.length, component);
+    insertComponent(newParentChildren, newParentChildren.length, component);
     updateRootComponent(rootComponentCopy);
   };
 
@@ -229,39 +223,23 @@ const Designer = (props: DesignerProps) => {
       return;
     }
 
-    if (!oldParentComponent) {
-      if (isAlreadyAdjacent(id, adjacentComponentId, rootComponentCopy.components, after)) {
-        return;
-      }
-      removeComponent(rootComponentCopy.components, id);
-    } else {
-      const oldParentChildren = oldParentComponent.getComponents()!;
-      if (isAlreadyAdjacent(id, adjacentComponentId, oldParentChildren, after)) {
-        return;
-      }
-      removeComponent(oldParentChildren, id);
+    /// --> Remove from old parent
+    const oldParentChildren = oldParentComponent?.getComponents() || rootComponentCopy.components;
+    if (isAlreadyAdjacent(id, adjacentComponentId, oldParentChildren, after)) {
+      return;
     }
 
+    removeComponent(oldParentChildren, id);
+
+    /// --> Add to new parent
     const { component: adjacentComponent, parent: newParent } = findComponentById(adjacentComponentId, rootComponentCopy.components);
     if (!adjacentComponent) {
       return;
     }
 
-    if (!newParent) {
-      // parent is not there but found adjacent component
-      // means the adjacent component is in the root
-      insertComponent(rootComponentCopy.components, rootComponentCopy.components.indexOf(adjacentComponent) + (after ? 1 : 0), component);
-    } else {
-      const newParentChildren = newParent.getComponents();
-      if (!newParentChildren) {
-        // shouldn't be the case
-        alert('meh?');
-        return;
-      }
+    const newParentChildren = newParent?.getComponents() || rootComponentCopy.components;
+    insertComponent(newParentChildren, newParentChildren.indexOf(adjacentComponent) + (after ? 1 : 0), component); 
 
-      insertComponent(newParentChildren, newParentChildren.indexOf(adjacentComponent) + (after ? 1 : 0), component); 
-    }
-    
     updateRootComponent(rootComponentCopy);
   }
 
