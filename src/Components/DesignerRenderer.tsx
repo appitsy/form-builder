@@ -78,10 +78,14 @@ export class DesignerRenderer extends Renderer<DesignerRendererProps> {
         renderedComponent = tabs;
         break;
       case Types.Table: 
-        let tableComponentSchema = _.cloneDeep(component) as any as TableSchema;
-        tableComponentSchema.data.atleastOneRow = true;
-        tableComponentSchema.data.allowAddRemove = false;
-        tableComponentSchema.data.allowSorting = false;
+        let tableComponentSchema = _.cloneDeep(component) as TableSchema;
+        if (!tableComponentSchema.display) {
+          tableComponentSchema.display = {};
+        }
+        
+        tableComponentSchema.display.atleastOneRow = true;
+        tableComponentSchema.display.allowAddRemove = false;
+        tableComponentSchema.display.allowSorting = false;
         renderedComponent = super.renderComponent(tableComponentSchema, key);
         break;
       default:

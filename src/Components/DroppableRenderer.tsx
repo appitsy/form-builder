@@ -1,8 +1,13 @@
+import React from 'react';
+
 import styled from '@emotion/styled';
-import React from 'react'
+
 import { ComponentProperties } from './ComponentProperties/ComponentProperties';
 import { RootComponent } from './Designer';
-import { ComponentSchemaWithId, DesignerRenderer } from './DesignerRenderer';
+import {
+  ComponentSchemaWithId,
+  DesignerRenderer,
+} from './DesignerRenderer';
 import { DroppableComponent } from './DroppableComponent';
 
 const RendererAndProperties = styled.div`
