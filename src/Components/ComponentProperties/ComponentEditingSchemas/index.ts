@@ -21,30 +21,30 @@ import { TabsEditingSchema } from './TabsEditingSchema';
 import { TextAreaEditingSchema } from './TextAreaEditingSchema';
 import { TextFieldEditingSchema } from './TextFieldEditingSchema';
 
-const logicTabComponents = [
-  {
-    "type": "text",
-    "name": "name",
-    "display": {
-      "label": "Name",
-      "placeholder": "",
-      "prefix": "",
-      "suffix": ""
-    },
-    "validations": {
-      "maxLength": ""
-    }
-  },
-  {
-    "type": "text",
-    "name": "code",
-    "display": {
-      "label": "Expression",
-      "placeholder": "",
-      "prefix": "",
-      "suffix": ""
-    }
-  }
+const logicTabComponents: any[] = [
+//   {
+//     "type": "text",
+//     "name": "name",
+//     "display": {
+//       "label": "Name",
+//       "placeholder": "",
+//       "prefix": "",
+//       "suffix": ""
+//     },
+//     "validations": {
+//       "maxLength": ""
+//     }
+//   },
+//   {
+//     "type": "text",
+//     "name": "code",
+//     "display": {
+//       "label": "Expression",
+//       "placeholder": "",
+//       "prefix": "",
+//       "suffix": ""
+//     }
+//   }
 ];
 
 const AddLogicTab = (type: string, schema: ComponentSchema[]) => {
