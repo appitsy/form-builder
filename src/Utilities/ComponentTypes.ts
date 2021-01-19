@@ -1,11 +1,14 @@
-import { ComponentSchema } from 'appitsy/types/ComponentSchema';
-import { TableRowExpandedTypeName } from 'appitsy/types/DataComponentSchema';
+import _ from 'lodash';
+import { v4 as uuidv4 } from 'uuid';
+
+import { ComponentSchema } from '@appitsy/forms/types/ComponentSchema';
+import {
+  TableRowExpandedTypeName,
+} from '@appitsy/forms/types/DataComponentSchema';
 import {
   getDisplayNameForType,
   Types,
-} from 'appitsy/types/Types';
-import _ from 'lodash';
-import { v4 as uuidv4 } from 'uuid';
+} from '@appitsy/forms/types/Types';
 
 import { ComponentSchemaWithId } from '../Components/DesignerRenderer';
 

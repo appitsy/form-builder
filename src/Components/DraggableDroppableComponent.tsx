@@ -1,10 +1,21 @@
 import React, { useRef } from 'react';
-import { useDrag, useDrop, DragSourceMonitor, DropTargetMonitor, XYCoord } from 'react-dnd'
-import { ComponentTypes } from '../Utilities/ComponentTypes';
 
-import Icon from 'appitsy/components/Basic/Icon';
+import {
+  DragSourceMonitor,
+  DropTargetMonitor,
+  useDrag,
+  useDrop,
+  XYCoord,
+} from 'react-dnd';
+
+import Icon from '@appitsy/forms/components/Basic/Icon';
 import styled from '@emotion/styled';
-import { PreviewComponent, PreviewComponentSchema } from './PreviewComponent';
+
+import { ComponentTypes } from '../Utilities/ComponentTypes';
+import {
+  PreviewComponent,
+  PreviewComponentSchema,
+} from './PreviewComponent';
 
 const Actions = styled.div`
   display: flex; 

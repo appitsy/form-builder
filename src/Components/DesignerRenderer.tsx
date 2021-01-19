@@ -1,15 +1,15 @@
 import React from 'react';
 
-import Icon from 'appitsy/components/Basic/Icon';
+import _ from 'lodash';
+
+import Icon from '@appitsy/forms/components/Basic/Icon';
 import {
   Renderer,
   RendererProps,
-} from 'appitsy/components/Renderer/Renderer';
-import { ComponentSchema } from 'appitsy/types/ComponentSchema';
-import { TableSchema } from 'appitsy/types/DataComponentSchema';
-import { Types } from 'appitsy/types/Types';
-import _ from 'lodash';
-
+} from '@appitsy/forms/components/Renderer/Renderer';
+import { ComponentSchema } from '@appitsy/forms/types/ComponentSchema';
+import { TableSchema } from '@appitsy/forms/types/DataComponentSchema';
+import { Types } from '@appitsy/forms/types/Types';
 import styled from '@emotion/styled';
 import Styled from '@emotion/styled';
 

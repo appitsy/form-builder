@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 
-import { Renderer } from 'appitsy';
-import { getDisplayNameForType } from 'appitsy/types/Types';
-
+import { Renderer } from '@appitsy/forms';
+import { getDisplayNameForType } from '@appitsy/forms/types/Types';
 import styled from '@emotion/styled';
 
 const nameAndLabelFormSchema = [

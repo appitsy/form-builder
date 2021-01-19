@@ -1,4 +1,4 @@
-import { ComponentSchema } from 'appitsy/types/ComponentSchema';
+import { ComponentSchema } from '@appitsy/forms/types/ComponentSchema';
 
 export const NumberEditingSchema: ComponentSchema[] = [
   {

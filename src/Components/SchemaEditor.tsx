@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 
-import { Button } from 'appitsy/components/Basic';
 import _ from 'lodash';
 import ReactJson from 'react-json-view';
 
+import { Button } from '@appitsy/forms/components/Basic';
 import styled from '@emotion/styled';
 
 import {

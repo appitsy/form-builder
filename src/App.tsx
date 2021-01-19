@@ -2,9 +2,9 @@ import './App.css';
 
 import React, { useState } from 'react';
 
-import { Renderer } from 'appitsy';
 import classNames from 'classnames';
 
+import { Renderer } from '@appitsy/forms';
 import styled from '@emotion/styled';
 
 import Designer from './Components/Designer';

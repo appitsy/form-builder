@@ -1,9 +1,9 @@
-import { ComponentSchema } from 'appitsy/types/ComponentSchema';
+import { ComponentSchema } from '@appitsy/forms/types/ComponentSchema';
 import {
   TabsProps,
   TabsTypeName,
-} from 'appitsy/types/LayoutComponentSchema';
-import { Types } from 'appitsy/types/Types';
+} from '@appitsy/forms/types/LayoutComponentSchema';
+import { Types } from '@appitsy/forms/types/Types';
 
 import { ButtonEditingSchema } from './ButtonEditingSchema';
 import { CheckboxEditingSchema } from './CheckboxEditingSchema';

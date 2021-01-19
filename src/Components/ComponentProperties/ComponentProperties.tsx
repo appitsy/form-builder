@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { Renderer } from 'appitsy';
 import classNames from 'classnames';
 import _ from 'lodash';
 
+import { Renderer } from '@appitsy/forms';
 import styled from '@emotion/styled';
 
 import { ComponentSchemaWithId } from '../DesignerRenderer';

@@ -1,7 +1,6 @@
 import React from 'react';
 
-import { getDisplayNameForType } from 'appitsy/types/Types';
-
+import { getDisplayNameForType } from '@appitsy/forms/types/Types';
 import styled from '@emotion/styled';
 
 import {
