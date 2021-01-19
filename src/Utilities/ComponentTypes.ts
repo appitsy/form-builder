@@ -1,4 +1,5 @@
 import { ComponentSchema } from 'appitsy/types/ComponentSchema';
+import { TableRowExpandedTypeName } from 'appitsy/types/DataComponentSchema';
 import {
   getDisplayNameForType,
   Types,
@@ -46,6 +47,15 @@ const createNewTab = (tabProperties: any) => {
   }
 
   return tab;
+}
+
+const createTableRow = (): any => {
+  return {
+    id: uuidv4(),
+    name: TableRowExpandedTypeName,
+    type: TableRowExpandedTypeName,
+    components: []
+  };
 }
 
 export const getDefaultPropsForType = (type: string): ComponentSchemaWithId | undefined => {
@@ -143,12 +153,7 @@ export const getDefaultPropsForType = (type: string): ComponentSchemaWithId | un
       const table: any = { 
         ...commonProperties,
         components: [
-          {
-            id: uuidv4(),
-            name: 'table-row-expand',
-            type: 'table-row-expand',
-            components: []
-          }
+          createTableRow()
         ],
         data: { 
           allowSorting: true,
@@ -190,6 +195,15 @@ export const parseComponentJson = (json: any): ComponentSchemaWithId => {
           return tab;
         });
         break;
+      case Types.Table:
+        // Add back expanded rows if not present to make components droppable into it
+        if (!childComponents.some(x => x.type === TableRowExpandedTypeName)) {
+          component.components = [ 
+            ...childComponents,
+            createTableRow(),
+          ]
+        }
+        break;
       default:
         component.components = childComponents.map(x => parseComponentJson(x));
     }
@@ -206,12 +220,25 @@ export const prepareJsonSchema = (schema: ComponentSchemaWithId[]): ComponentSch
       x.components = prepareJsonSchema(x.components); 
     }
     return x;
-  })
+  });
+
+  jsonSchema = jsonSchema.map(x => {
+    // remove expanded rows if they are empty
+    if (x.type === Types.Table) {
+      x.components = x.components.filter((y: any) => !(y.type === TableRowExpandedTypeName && y.components?.length === 0));
+    }
+
+    return x;
+  });
 
   return jsonSchema.map((x: any) => {
       delete x.id;
       delete x.isEditing;
       delete x.previewComponent;
+
+      if (x.components === undefined) {
+        delete x.components;
+      }
 
       return x;
   });

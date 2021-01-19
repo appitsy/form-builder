@@ -10,6 +10,7 @@ import styled from '@emotion/styled';
 import Designer from './Components/Designer';
 import { ComponentSchemaWithId } from './Components/DesignerRenderer';
 import { SchemaEditor } from './Components/SchemaEditor';
+import { prepareJsonSchema } from './Utilities/ComponentTypes';
 
 const AppRoot = styled.div`
 	display: flex;
@@ -99,7 +100,7 @@ const App = () => {
           <TabPane className={tabPaneClasses(2)} style={tabPanelStyle} id='preview'>
             <Card className="card card-body bg-light">
               <Renderer
-                schema={schema}
+                schema={prepareJsonSchema(schema)}
                 data={data}
                 onDataChange={setData}
                 onSubmit={(data) => alert(JSON.stringify(data))}
