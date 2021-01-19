@@ -76,7 +76,7 @@ const ComponentEditingSchemas = {
 	[Types.Radio]: AddLogicTab(Types.Radio, RadioEditingSchema),
 	[Types.Button]: AddLogicTab(Types.Button, ButtonEditingSchema),
 	[Types.Panel]: AddLogicTab(Types.Panel, PanelEditingSchema),
-	[Types.Columns]: AddLogicTab(Types.Panel, ColumnsEditingSchema),
+	[Types.Columns]: AddLogicTab(Types.Columns, ColumnsEditingSchema),
 	[Types.Tabs]: AddLogicTab(Types.Tabs, TabsEditingSchema),
 
 	[Types.Table]: AddLogicTab(Types.Table, TableEditingSchema),
