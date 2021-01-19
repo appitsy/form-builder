@@ -45,14 +45,6 @@ const createNewTab = (tabProperties: any) => {
     components: [],
   }
 
-  tab.getComponents = function() {
-    return this.components;
-  }
-
-  tab.setComponents = function(components: ComponentSchemaWithId[]): void {
-    this.components = components;
-  }
-
   return tab;
 }
 
@@ -61,8 +53,7 @@ export const getDefaultPropsForType = (type: string): ComponentSchemaWithId | un
   const commonProperties = {
     id, 
     isEditing: false,
-    getComponents: () => undefined,
-    setComponents: () => undefined,
+    components: undefined,
     type,
     name: type,
     display: {
@@ -132,14 +123,6 @@ export const getDefaultPropsForType = (type: string): ComponentSchemaWithId | un
         components: [],
       }
 
-      panelOrColumns.getComponents = function(): ComponentSchemaWithId[] {
-        return this.components;
-      }
-
-      panelOrColumns.setComponents = function(components: ComponentSchemaWithId[]): void {
-        this.components = components;
-      }
-
       return panelOrColumns as ComponentSchemaWithId;
     }
     case Types.Tabs: {
@@ -154,33 +137,24 @@ export const getDefaultPropsForType = (type: string): ComponentSchemaWithId | un
         components: [ tab1 ] 
       }
 
-      tabComponent.getComponents = function() {
-        return this.components;
-      }
-
-      tabComponent.setComponents = function(components: ComponentSchemaWithId[]): void {
-        this.components = components;
-      }
-
       return tabComponent as ComponentSchemaWithId;
     }
     case Types.Table: {
       const table: any = { 
         ...commonProperties,
+        components: [
+          {
+            id: uuidv4(),
+            name: 'table-row-expand',
+            type: 'table-row-expand',
+            components: []
+          }
+        ],
         data: { 
-          columns: [],
           allowSorting: true,
           allowAddRemove: true,
         },
       };
-
-      table.getComponents = function () {
-        return this.data.columns;
-      }
-
-      table.setComponents = function(components: ComponentSchemaWithId[]): void {
-        this.data.columns = components;
-      }
 
       return table;
     }
@@ -189,14 +163,6 @@ export const getDefaultPropsForType = (type: string): ComponentSchemaWithId | un
         ...commonProperties,
         components: [],
       };
-
-      objComponent.getComponents = function () {
-        return this.components;
-      }
-
-      objComponent.setComponents = function(components: ComponentSchemaWithId[]): void {
-        this.components = components;
-      }
 
       return objComponent;
     }
@@ -214,20 +180,18 @@ export const parseComponentJson = (json: any): ComponentSchemaWithId => {
   const defaultProps = getDefaultPropsForType(json.type) || {};
   const component = _.assign(defaultProps, json) as ComponentSchemaWithId;
 
-  const childComponents = component.getComponents();
+  const childComponents = component.components;
   if (childComponents !== undefined) {
     switch (component.type) {
       case Types.Tabs:
-        component.setComponents(childComponents.map((x: any) => { 
-            const tab: any = createNewTab(x);
-            const tabChildren = x.components?.map((y: any) => parseComponentJson(y)) || [];
-            tab.setComponents(tabChildren);
-            return tab;
-          })
-        );
+        component.components = childComponents.map((x: any) => { 
+          const tab: any = createNewTab(x);
+          tab.components = x.components?.map((y: any) => parseComponentJson(y)) || [];
+          return tab;
+        });
         break;
       default:
-        component.setComponents(childComponents.map(x => parseComponentJson(x)));
+        component.components = childComponents.map(x => parseComponentJson(x));
     }
   }
 
@@ -238,8 +202,8 @@ export const prepareJsonSchema = (schema: ComponentSchemaWithId[]): ComponentSch
   let jsonSchema: any[] = _.cloneDeep(schema);
   
   jsonSchema = jsonSchema.map(x => {
-    if (x.getComponents() !== undefined) {
-      x.setComponents(prepareJsonSchema(x.getComponents()));  
+    if (x.components !== undefined) {
+      x.components = prepareJsonSchema(x.components); 
     }
     return x;
   })
@@ -248,8 +212,6 @@ export const prepareJsonSchema = (schema: ComponentSchemaWithId[]): ComponentSch
       delete x.id;
       delete x.isEditing;
       delete x.previewComponent;
-      delete x.getComponents;
-      delete x.setComponents;
 
       return x;
   });

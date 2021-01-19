@@ -103,13 +103,13 @@ const Designer = (props: DesignerProps) => {
         insertNewComponentAtIndex(rootComponentCopy, rootComponentCopy.components, newComponent, -1);
       } else {
         const { component: parentComponent, parent: grandParentComponent } = findComponentById(componentEl.parent, rootComponentCopy.components);
-        const parentChildComponents = parentComponent?.getComponents();
+        const parentChildComponents = parentComponent?.components;
 
         if (parentChildComponents) {
           insertNewComponentAtIndex(rootComponentCopy, parentChildComponents, newComponent, -1);
         } else {
           // grand parents children or if not present the root components
-          const grandParentChildren = grandParentComponent?.getComponents() || rootComponentCopy.components;
+          const grandParentChildren = grandParentComponent?.components || rootComponentCopy.components;
           const parentIndex = grandParentChildren.findIndex((x: ComponentSchemaWithId) => x.id === parentComponent?.id);
           const isAfter = componentEl.isAfter === true;
           insertNewComponentAtIndex(rootComponentCopy, grandParentChildren, newComponent, parentIndex + (isAfter ? 1 : 0));
@@ -124,7 +124,7 @@ const Designer = (props: DesignerProps) => {
         return;
       }
 
-      removeComponent(oldParentComponent?.getComponents() || rootComponentCopy.components, component.id);
+      removeComponent(oldParentComponent?.components || rootComponentCopy.components, component.id);
 
       if (componentEl.parent === ROOT_ID) {
         insertNewComponentAtIndex(rootComponentCopy, rootComponentCopy.components, component, -1);
@@ -135,12 +135,12 @@ const Designer = (props: DesignerProps) => {
           return;
         }
 
-        const newParentChildren = newParent.getComponents();
+        const newParentChildren = newParent.components;
 
         if (newParentChildren) {
           insertNewComponentAtIndex(rootComponentCopy, newParentChildren, component, -1);
         } else {
-          const newGrandParentChildren = newGrandParentComponent?.getComponents() || rootComponentCopy.components;
+          const newGrandParentChildren = newGrandParentComponent?.components || rootComponentCopy.components;
           const parentIndex = newGrandParentChildren.findIndex((x: ComponentSchemaWithId) => x.id === newParent.id);
           insertNewComponentAtIndex(rootComponentCopy, newGrandParentChildren, component, parentIndex);
         }
@@ -185,7 +185,7 @@ const Designer = (props: DesignerProps) => {
       return;
     }
 
-    const parentChildren = parent?.getComponents() || rootComponentCopy.components;
+    const parentChildren = parent?.components || rootComponentCopy.components;
     removeComponent(parentChildren, component.id);
     
     updateRootComponent(rootComponentCopy);
@@ -202,7 +202,7 @@ const Designer = (props: DesignerProps) => {
     if (!oldParentComponent) {
       removeComponent(rootComponentCopy.components, id);
     } else {
-      removeComponent(oldParentComponent.getComponents()!, id);
+      removeComponent(oldParentComponent.components!, id);
     }
 
     const { parent: newParent } = findComponentById(newParentId, rootComponentCopy.components);
@@ -210,7 +210,7 @@ const Designer = (props: DesignerProps) => {
       return;
     }
 
-    const newParentChildren = (newParent.getComponents()!);
+    const newParentChildren = (newParent.components!);
     insertComponent(newParentChildren, newParentChildren.length, component);
     updateRootComponent(rootComponentCopy);
   };
@@ -224,7 +224,7 @@ const Designer = (props: DesignerProps) => {
     }
 
     /// --> Remove from old parent
-    const oldParentChildren = oldParentComponent?.getComponents() || rootComponentCopy.components;
+    const oldParentChildren = oldParentComponent?.components || rootComponentCopy.components;
     if (isAlreadyAdjacent(id, adjacentComponentId, oldParentChildren, after)) {
       return;
     }
@@ -237,7 +237,7 @@ const Designer = (props: DesignerProps) => {
       return;
     }
 
-    const newParentChildren = newParent?.getComponents() || rootComponentCopy.components;
+    const newParentChildren = newParent?.components || rootComponentCopy.components;
     insertComponent(newParentChildren, newParentChildren.indexOf(adjacentComponent) + (after ? 1 : 0), component); 
 
     updateRootComponent(rootComponentCopy);
@@ -297,7 +297,7 @@ const Designer = (props: DesignerProps) => {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let _ = findInSchema.some(c => {
-      let childChildren = c.getComponents();
+      let childChildren = c.components;
       if (!childChildren) {
         return false;
       }
@@ -389,7 +389,7 @@ const Designer = (props: DesignerProps) => {
     }
 
     updatedComponentSchema.id = component.id;
-    const parentComponentChildren = parentComponent?.getComponents() || rootComponentCopy.components;
+    const parentComponentChildren = parentComponent?.components || rootComponentCopy.components;
     const componentIdx = parentComponentChildren.findIndex((x: ComponentSchemaWithId) => x.id === component.id);
     parentComponentChildren.splice(componentIdx, 1, cloneDeep(updatedComponentSchema));
 

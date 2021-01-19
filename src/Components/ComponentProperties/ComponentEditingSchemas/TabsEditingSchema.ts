@@ -36,7 +36,7 @@ export const TabsEditingSchema: ComponentSchema[] = [
             },
             "data": {
               "path": "$.components",
-              "addNewDefault": "let tab = ({ \"id\": uuid(), components: [] }); tab.getComponents = function() { return this.components };  tab.setComponents = function(components) { this.components = components; }; tab;",
+              "addNewDefault": "let tab = ({ \"id\": uuid(), components: [] }); tab;",
               "columns": [
                 {
                   "type": "text",

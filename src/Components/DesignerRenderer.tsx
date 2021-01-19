@@ -44,8 +44,7 @@ export type ComponentSchemaWithId = ComponentSchema & {
   id: string;
   isEditing: boolean;
   previewComponent?: PreviewComponentSchema;
-  getComponents: () => ComponentSchemaWithId[] | undefined;
-  setComponents: (components: ComponentSchemaWithId[]) => void;
+  components?: ComponentSchemaWithId[];
 }
 
 interface DesignerRendererProps extends RendererProps {
@@ -117,7 +116,7 @@ export class DesignerRenderer extends Renderer<DesignerRendererProps> {
         // if this component can render children, we'll skip showing preview
         // in the DraggableDroppableComponent and rather show it in Droppable area 
         // of the component
-        previewComponent={component.getComponents() ? undefined : component.previewComponent}
+        previewComponent={component.components ? undefined : component.previewComponent}
         addPreview={this.props.addPreview}
         moveComponent={this.props.moveComponent} 
         moveAdjacent={this.props.moveAdjacent}
