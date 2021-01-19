@@ -107,17 +107,12 @@ const Designer = (props: DesignerProps) => {
 
         if (parentChildComponents) {
           insertNewComponentAtIndex(rootComponentCopy, parentChildComponents, newComponent, -1);
-        } else if (grandParentComponent) {
-          // grand parents children should obviously be there
-          // otherwise we would have not got this
-          const grandParentChildren = grandParentComponent.getComponents()!;
+        } else {
+          // grand parents children or if not present the root components
+          const grandParentChildren = grandParentComponent?.getComponents() || rootComponentCopy.components;
           const parentIndex = grandParentChildren.findIndex((x: ComponentSchemaWithId) => x.id === parentComponent?.id);
           const isAfter = componentEl.isAfter === true;
           insertNewComponentAtIndex(rootComponentCopy, grandParentChildren, newComponent, parentIndex + (isAfter ? 1 : 0));
-        } else {
-          const parentIndex = rootComponentCopy.components.findIndex((x: ComponentSchemaWithId) => x.id === parentComponent?.id);
-          const isAfter = componentEl.isAfter === true;
-          insertNewComponentAtIndex(rootComponentCopy, rootComponentCopy.components, newComponent, parentIndex + (isAfter ? 1 : 0));
         }
       }
     }
@@ -144,13 +139,10 @@ const Designer = (props: DesignerProps) => {
 
         if (newParentChildren) {
           insertNewComponentAtIndex(rootComponentCopy, newParentChildren, component, -1);
-        } else if (newGrandParentComponent) {
-          const newGrandParentChildren = newGrandParentComponent.getComponents()!;
+        } else {
+          const newGrandParentChildren = newGrandParentComponent?.getComponents() || rootComponentCopy.components;
           const parentIndex = newGrandParentChildren.findIndex((x: ComponentSchemaWithId) => x.id === newParent.id);
           insertNewComponentAtIndex(rootComponentCopy, newGrandParentChildren, component, parentIndex);
-        } else {
-          const parentIndex = rootComponentCopy.components.findIndex((x: ComponentSchemaWithId) => x.id === newParent.id);
-          insertNewComponentAtIndex(rootComponentCopy, rootComponentCopy.components, component, parentIndex);
         }
       }
     }
