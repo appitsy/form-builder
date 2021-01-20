@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Renderer } from '@appitsy/forms';
+import { Form } from '@appitsy/forms';
 import { getDisplayNameForType } from '@appitsy/forms/types/Types';
 import styled from '@emotion/styled';
 
@@ -70,7 +70,7 @@ export const NewComponentConfirmForm = (props: NewComponentConfirmFormProps) => 
 	return (
     <>
       <Heading>New Component: {getDisplayNameForType(props.componentType)}</Heading>
-      <Renderer 
+      <Form 
         schema={nameAndLabelFormSchema}
         data={data}
         onSubmit={onSubmit}

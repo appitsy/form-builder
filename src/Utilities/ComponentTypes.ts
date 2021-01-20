@@ -10,7 +10,7 @@ import {
   Types,
 } from '@appitsy/forms/types/Types';
 
-import { ComponentSchemaWithId } from '../Components/DesignerRenderer';
+import { ComponentSchemaWithId } from '../Components/FormDesigner';
 
 export const BasicComponentTypes = [
   Types.TextField,

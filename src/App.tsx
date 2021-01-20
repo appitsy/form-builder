@@ -4,11 +4,11 @@ import React, { useState } from 'react';
 
 import classNames from 'classnames';
 
-import { Renderer } from '@appitsy/forms';
+import { Form } from '@appitsy/forms';
 import styled from '@emotion/styled';
 
 import Designer from './Components/Designer';
-import { ComponentSchemaWithId } from './Components/DesignerRenderer';
+import { ComponentSchemaWithId } from './Components/FormDesigner';
 import { SchemaEditor } from './Components/SchemaEditor';
 import { prepareJsonSchema } from './Utilities/ComponentTypes';
 
@@ -99,7 +99,7 @@ const App = () => {
 
           <TabPane className={tabPaneClasses(2)} style={tabPanelStyle} id='preview'>
             <Card className="card card-body bg-light">
-              <Renderer
+              <Form
                 schema={prepareJsonSchema(schema)}
                 data={data}
                 onDataChange={setData}

@@ -4,9 +4,9 @@ import _ from 'lodash';
 
 import Icon from '@appitsy/forms/components/Basic/Icon';
 import {
-  Renderer,
-  RendererProps,
-} from '@appitsy/forms/components/Renderer/Renderer';
+  Form,
+  FormProps,
+} from '@appitsy/forms/components/Form/Form';
 import { ComponentSchema } from '@appitsy/forms/types/ComponentSchema';
 import { TableSchema } from '@appitsy/forms/types/DataComponentSchema';
 import { Types } from '@appitsy/forms/types/Types';
@@ -47,7 +47,7 @@ export type ComponentSchemaWithId = ComponentSchema & {
   components?: ComponentSchemaWithId[];
 }
 
-interface DesignerRendererProps extends RendererProps {
+interface FormDesignerProps extends FormProps {
   schema: ComponentSchemaWithId[];
   onEdit(componentId: string): void;
   onDelete(componentId: string): void;
@@ -57,7 +57,7 @@ interface DesignerRendererProps extends RendererProps {
   moveAdjacent: (id: string, adjacentComponentId: string, after: boolean) => void;
 }
 
-export class DesignerRenderer extends Renderer<DesignerRendererProps> {
+export class FormDesigner extends Form<FormDesignerProps> {
   dropFieldsHereComponent = (<DropFieldsHere>Drop fields here!</DropFieldsHere>);
 
   renderDesignerComponent = (component: ComponentSchemaWithId) => {

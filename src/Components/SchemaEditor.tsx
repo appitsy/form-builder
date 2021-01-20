@@ -10,7 +10,7 @@ import {
   parseComponentJson,
   prepareJsonSchema,
 } from '../Utilities/ComponentTypes';
-import { ComponentSchemaWithId } from './DesignerRenderer';
+import { ComponentSchemaWithId } from './FormDesigner';
 
 const SchemaActions = styled.div`
   text-align: right;

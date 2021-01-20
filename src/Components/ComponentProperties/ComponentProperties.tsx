@@ -3,10 +3,10 @@ import React from 'react';
 import classNames from 'classnames';
 import _ from 'lodash';
 
-import { Renderer } from '@appitsy/forms';
+import { Form } from '@appitsy/forms';
 import styled from '@emotion/styled';
 
-import { ComponentSchemaWithId } from '../DesignerRenderer';
+import { ComponentSchemaWithId } from '../FormDesigner';
 import { ComponentEditingSchemas } from './ComponentEditingSchemas';
 
 interface ComponentPropertiesProps {
@@ -33,7 +33,11 @@ export const ComponentProperties = React.memo<ComponentPropertiesProps>((props) 
           componentEditingSchema ? (
             <>
               <span>Component Properties</span>
-              <Renderer schema={componentEditingSchema} data={props.component} onDataChange={props.updateComponentSchema}></Renderer>
+              <Form 
+                schema={componentEditingSchema} 
+                data={props.component} 
+                onDataChange={props.updateComponentSchema} 
+              />
             </>
           ): (
             <h6>Select a component to continue edit it..</h6>

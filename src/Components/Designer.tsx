@@ -10,8 +10,8 @@ import styled from '@emotion/styled';
 
 import { getDefaultPropsForType } from '../Utilities/ComponentTypes';
 import ComponentList from './ComponentList';
-import { ComponentSchemaWithId } from './DesignerRenderer';
-import { DroppableRenderer } from './DroppableRenderer';
+import { DroppableForm } from './DroppableForm';
+import { ComponentSchemaWithId } from './FormDesigner';
 import { NewComponentConfirmForm } from './NewComponentConfirmForm';
 import { PreviewComponentSchema } from './PreviewComponent';
 
@@ -428,7 +428,7 @@ const Designer = (props: DesignerProps) => {
         </ComponentListContainer>
 
         <DesignerPreview>
-          <DroppableRenderer
+          <DroppableForm
             rootComponent={rootComponent}
             data={data}
             editingComponent={editingComponent}

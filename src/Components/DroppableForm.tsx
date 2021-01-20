@@ -4,13 +4,13 @@ import styled from '@emotion/styled';
 
 import { ComponentProperties } from './ComponentProperties/ComponentProperties';
 import { RootComponent } from './Designer';
+import { DroppableComponent } from './DroppableComponent';
 import {
   ComponentSchemaWithId,
-  DesignerRenderer,
-} from './DesignerRenderer';
-import { DroppableComponent } from './DroppableComponent';
+  FormDesigner,
+} from './FormDesigner';
 
-const RendererAndProperties = styled.div`
+const FormAndProperties = styled.div`
   height: 100%;
   display: flex;
   flex-direction: row;
@@ -40,16 +40,16 @@ interface DroppableRendererProps {
   updateComponentSchema: (componentSchema: any) => void;
 }
 
-export const DroppableRenderer: React.FC<DroppableRendererProps> = (props) => {
+export const DroppableForm: React.FC<DroppableRendererProps> = (props) => {
   return (
-    <RendererAndProperties>
+    <FormAndProperties>
       <StyledDroppableComponent 
         id="root"
         onDrop={props.onDrop} 
         previewComponent={props.rootComponent.preview}
         addPreview={props.addPreview}
       >
-          <DesignerRenderer 
+          <FormDesigner 
             schema={props.rootComponent.components} 
             data={props.data} 
             onEdit={props.onEdit} 
@@ -62,6 +62,6 @@ export const DroppableRenderer: React.FC<DroppableRendererProps> = (props) => {
           />
       </StyledDroppableComponent>
       <StyledComponentProperties component={props.editingComponent} updateComponentSchema={props.updateComponentSchema} />
-    </RendererAndProperties>
+    </FormAndProperties>
   )
 }
