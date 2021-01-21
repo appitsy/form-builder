@@ -93,7 +93,7 @@ const App = () => {
 
           <TabPane className={tabPaneClasses(1)} style={tabPanelStyle} id='schemaEditor'>
             <Card>
-              <SchemaEditor schema={schema} onSchemaChange={setSchema} />
+              <SchemaEditor schema={schema} onSchemaChange={(s) => setSchema(s)} />
             </Card>
           </TabPane>
 

@@ -61,13 +61,13 @@ export const SchemaEditor = (props: SchemaEditorProps) => {
 				{ 
 					isSchemaEditable
 						// eslint-disable-next-line react/style-prop-object
-						? (<SchemaActionButton name='saveSchema' display={{ leftIcon: 'save' }} onClick={endSchemaEditing} text='Save' style='secondary' />)
+						? (<SchemaActionButton name='saveSchema' display={{ label:'Save', leftIcon: 'save' }} onClick={endSchemaEditing} style='secondary' />)
 						// eslint-disable-next-line react/style-prop-object
-						: (<SchemaActionButton name='editSchema' display={{ leftIcon: 'pen' }} onClick={startSchemaEditing} text='Edit' style='secondary' />)
+						: (<SchemaActionButton name='editSchema' display={{ label: 'Edit', leftIcon: 'pen' }} onClick={startSchemaEditing} style='secondary' />)
 				}
 				
 				{ /*eslint-disable-next-line react/style-prop-object */ }
-				<SchemaActionButton name='copyToClipboard' display={{ leftIcon: 'clipboard' }} onClick={() => copyToClipboard(jsonFormattedString())} text='Copy' style='primary' />
+				<SchemaActionButton name='copyToClipboard' display={{ label: 'Copy', leftIcon: 'clipboard' }} onClick={() => copyToClipboard(jsonFormattedString())} style='primary' />
 			</SchemaActions>
 			<div className="card card-body bg-light">
 				{ 

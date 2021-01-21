@@ -13,13 +13,6 @@ export const ButtonEditingSchema: ComponentSchema[] = [
   },
   {
     "type": "text",
-    "name": "text",
-    "display": {
-      "label": "Text"
-    }
-  },
-  {
-    "type": "text",
     "name": "style",
     "display": {
       "label": "Style",
@@ -48,6 +41,13 @@ export const ButtonEditingSchema: ComponentSchema[] = [
           "label": "Display"
         },
         "components": [
+          {
+            "type": "text",
+            "name": "label",
+            "display": {
+              "label": "Label"
+            }
+          },
           {
             "type": "text",
             "name": "leftIcon",

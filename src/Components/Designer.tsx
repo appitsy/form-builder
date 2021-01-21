@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import React, {
+  useEffect,
+  useState,
+} from 'react';
 
 import { remove } from 'lodash-es';
 import cloneDeep from 'lodash-es/cloneDeep';
@@ -73,6 +76,10 @@ const Designer = (props: DesignerProps) => {
   const [previewComponentState, setPreviewComponentState] = useState<any>(undefined);
   const [newComponentDropped, setNewComponentDropped] = useState<NewComponentDroppedInfo | undefined>(undefined);
 
+  useEffect(() => {
+    setRootComponent({ components: props.schema });
+  }, [props.schema])
+
   const updateRootComponent = (root: RootComponent, newEditComponent?: ComponentSchemaWithId): void => {
     setRootComponent(root);
     
@@ -100,19 +107,19 @@ const Designer = (props: DesignerProps) => {
       const rootComponentCopy = cloneDeep(rootComponent);
 
       if (componentEl.parent === ROOT_PATH) {
-        insertNewComponentAtIndex(rootComponentCopy, rootComponentCopy.components, newComponent, -1);
+        insertComponentAtIndex(rootComponentCopy, rootComponentCopy.components, newComponent, -1, true);
       } else {
         const { component: parentComponent, parent: grandParentComponent } = findComponentById(componentEl.parent, rootComponentCopy.components);
         const parentChildComponents = parentComponent?.components;
 
         if (parentChildComponents) {
-          insertNewComponentAtIndex(rootComponentCopy, parentChildComponents, newComponent, -1);
+          insertComponentAtIndex(rootComponentCopy, parentChildComponents, newComponent, -1, true);
         } else {
           // grand parents children or if not present the root components
           const grandParentChildren = grandParentComponent?.components || rootComponentCopy.components;
           const parentIndex = grandParentChildren.findIndex((x: ComponentSchemaWithId) => x.id === parentComponent?.id);
           const isAfter = componentEl.isAfter === true;
-          insertNewComponentAtIndex(rootComponentCopy, grandParentChildren, newComponent, parentIndex + (isAfter ? 1 : 0));
+          insertComponentAtIndex(rootComponentCopy, grandParentChildren, newComponent, parentIndex + (isAfter ? 1 : 0), true);
         }
       }
     }
@@ -127,7 +134,7 @@ const Designer = (props: DesignerProps) => {
       removeComponent(oldParentComponent?.components || rootComponentCopy.components, component.id);
 
       if (componentEl.parent === ROOT_ID) {
-        insertNewComponentAtIndex(rootComponentCopy, rootComponentCopy.components, component, -1);
+        insertComponentAtIndex(rootComponentCopy, rootComponentCopy.components, component, -1, false);
       } else {
         const { component: newParent, parent: newGrandParentComponent } = findComponentById(componentEl.parent, rootComponentCopy.components);
 
@@ -138,11 +145,11 @@ const Designer = (props: DesignerProps) => {
         const newParentChildren = newParent.components;
 
         if (newParentChildren) {
-          insertNewComponentAtIndex(rootComponentCopy, newParentChildren, component, -1);
+          insertComponentAtIndex(rootComponentCopy, newParentChildren, component, -1, false);
         } else {
           const newGrandParentChildren = newGrandParentComponent?.components || rootComponentCopy.components;
           const parentIndex = newGrandParentChildren.findIndex((x: ComponentSchemaWithId) => x.id === newParent.id);
-          insertNewComponentAtIndex(rootComponentCopy, newGrandParentChildren, component, parentIndex);
+          insertComponentAtIndex(rootComponentCopy, newGrandParentChildren, component, parentIndex, false);
         }
       }
     }
@@ -324,12 +331,14 @@ const Designer = (props: DesignerProps) => {
     componentArray.splice(atIndex, 0, component);
   }
 
-  const insertNewComponentAtIndex = (rootComponentCopy: RootComponent, componentArray: ComponentSchemaWithId[], component: ComponentSchemaWithId, atIndex: number) => {
-    // ask the name & label from the user
-    setNewComponentDropped({
-      componentId: component.id,
-      componentType: component.type,
-    });
+  const insertComponentAtIndex = (rootComponentCopy: RootComponent, componentArray: ComponentSchemaWithId[], component: ComponentSchemaWithId, atIndex: number, isNew: boolean) => {
+    if (isNew) {
+      // ask the name & label from the user
+      setNewComponentDropped({
+        componentId: component.id,
+        componentType: component.type,
+      });
+    }
 
     if (atIndex === -1) {
       componentArray.push(component);

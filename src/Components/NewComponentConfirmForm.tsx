@@ -9,7 +9,7 @@ const nameAndLabelFormSchema = [
     "type": "text",
     "name": "name",
     "display": {
-      "label": "Name",
+      "label": "Name"
     },
     "validations": {
       "required": true
@@ -19,28 +19,38 @@ const nameAndLabelFormSchema = [
     "type": "text",
     "name": "label",
     "display": {
-      "label": "Label",
+      "label": "Label"
     },
     "validations": {
       "required": true
     }
   },
   {
-    "text": "OK",
-    "style": "primary",
-    "type": "button",
-    "name": "ok",
+    "components": [
+      {
+        "text": "Submit",
+        "style": "primary",
+        "type": "button",
+        "name": "ok",
+        "display": {
+          "label": "OK"
+        }
+      },
+      {
+        "text": "Submit",
+        "style": "secondary",
+        "type": "button",
+        "name": "cancel",
+        "display": {
+          "label": "Cancel",
+          "disableOnInvalidForm": false
+        }
+      }
+    ],
+    "type": "columns",
+    "name": "buttonColumns",
     "display": {
-      "label": "Button",
-    }
-  },
-  {
-    "text": "Cancel",
-    "style": "secondary",
-    "type": "button",
-    "name": "cancel",
-    "display": {
-      "label": "Button"
+      "label": ""
     }
   }
 ];
