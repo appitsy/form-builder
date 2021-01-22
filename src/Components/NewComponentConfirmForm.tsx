@@ -20,9 +20,6 @@ const nameAndLabelFormSchema = [
     "name": "label",
     "display": {
       "label": "Label"
-    },
-    "validations": {
-      "required": true
     }
   },
   {
