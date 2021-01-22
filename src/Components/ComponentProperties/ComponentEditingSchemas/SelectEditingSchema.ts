@@ -58,27 +58,25 @@ export const SelectEditingSchema: ComponentSchema[] = [
             "display": {
               "label": "Table 1"
             },
-            "data": {
-              "columns": [
-                {
-                  "type": "text",
-                  "name": "value",
-                  "display": {
-                    "label": "Value",
-                    "placeholder": "",
-                    "prefix": "",
-                    "suffix": ""
-                  }
-                },
-                {
-                  "type": "text",
-                  "name": "label",
-                  "display": {
-                    "label": "Label"
-                  }
+            "components": [
+              {
+                "type": "text",
+                "name": "value",
+                "display": {
+                  "label": "Value",
+                  "placeholder": "",
+                  "prefix": "",
+                  "suffix": ""
                 }
-              ]
-            }
+              },
+              {
+                "type": "text",
+                "name": "label",
+                "display": {
+                  "label": "Label"
+                }
+              }
+            ]
           }
         ],
         "name": "data",
