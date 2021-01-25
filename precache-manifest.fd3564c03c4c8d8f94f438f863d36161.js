@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "4283a3a5c7afafb161c3dfe44c00e7ad",
+    "revision": "eacee124c0a3a221c1ee15a5e991a61f",
     "url": "/form-builder/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/form-builder/static/css/2.87163e29.chunk.css"
   },
   {
-    "revision": "819d9448a09f064204ec",
+    "revision": "309767e171a69d05b3ad",
     "url": "/form-builder/static/css/main.b1761480.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/form-builder/static/js/2.a9218f1b.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "819d9448a09f064204ec",
-    "url": "/form-builder/static/js/main.6abc6903.chunk.js"
+    "revision": "309767e171a69d05b3ad",
+    "url": "/form-builder/static/js/main.48c8642a.chunk.js"
   },
   {
     "revision": "2fc96a7f21d72347b2ff",
