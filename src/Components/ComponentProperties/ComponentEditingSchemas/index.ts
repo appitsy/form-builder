@@ -1,8 +1,5 @@
 import { ComponentSchema } from '@appitsy/forms/types/ComponentSchema';
-import {
-  TabsProps,
-  TabsTypeName,
-} from '@appitsy/forms/types/LayoutComponentSchema';
+import { TabsTypeName } from '@appitsy/forms/types/LayoutComponentSchema';
 import { Types } from '@appitsy/forms/types/Types';
 
 import { ButtonEditingSchema } from './ButtonEditingSchema';
@@ -52,14 +49,14 @@ const AddLogicTab = (type: string, schema: ComponentSchema[]) => {
 	if (schema[rootElementsLength - 1].type !== TabsTypeName) {
 		throw new Error(`schema for component type '${type}' doesn't contain a tabs component`);
 	}
-	const configTabForComponent = schema[rootElementsLength - 1] as TabsProps;
-	configTabForComponent.components?.push({
-		name: "logic",
-		display: {
-			label: "Logic"
-		},
-		components: logicTabComponents
-	});
+	// const configTabForComponent = schema[rootElementsLength - 1] as TabsProps;
+	// configTabForComponent.components?.push({
+	// 	name: "logic",
+	// 	display: {
+	// 		label: "Logic"
+	// 	},
+	// 	components: logicTabComponents
+	// });
 
 	return schema;
 }
