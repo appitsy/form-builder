@@ -37,7 +37,7 @@ export const TableEditingSchema: ComponentSchema[] = [
         "components": [
           {
             "type": "checkbox",
-            "name": "atleastOneRow",
+            "name": "minOneRow",
             "display": {
               "label": "At Least 1 Row"
             }

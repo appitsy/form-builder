@@ -88,7 +88,7 @@ export class FormDesigner extends Form<FormDesignerProps> {
           tableComponentSchema.display = {};
         }
 
-        tableComponentSchema.display.atleastOneRow = true;
+        tableComponentSchema.display.minOneRow = true;
         tableComponentSchema.display.allowAddRemove = false;
         tableComponentSchema.display.allowSorting = false;
         renderedComponent = super.renderComponent(tableComponentSchema, key);
@@ -142,7 +142,7 @@ export class FormDesigner extends Form<FormDesignerProps> {
     }
 
 
-    const inner = childComponents?.map((panelChild) => this.renderDesignerComponent(panelChild)) || [];
+    const inner = childComponents?.map((child) => this.renderDesignerComponent(child)) || [];
 
     // ---- SPECIFIC COMPONENT OVERRIDE ----
     if (parentComponent.type === Types.Table || parentComponent.type === Types.Columns) {
@@ -154,6 +154,7 @@ export class FormDesigner extends Form<FormDesignerProps> {
           onDrop={this.props.onDrop}
           previewComponent={parentComponent.previewComponent}
           addPreview={this.props.addPreview}
+          className='appitsy-table-drop-here'
         >
           {this.dropFieldsHereComponent}
         </StyledDroppableComponent>
