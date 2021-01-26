@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "http://appitsy.github.io/form-builder",
   "dependencies": {
-    "@appitsy/forms": "^0.1.9",
+    "@appitsy/forms": "file:../appitsy/appitsy-forms-0.1.10.tgz",
     "@emotion/core": "^10.0.35",
     "@emotion/styled": "^10.0.27",
     "@testing-library/jest-dom": "^4.2.4",

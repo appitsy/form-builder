@@ -176,7 +176,7 @@ export class FormDesigner extends Form<FormDesignerProps> {
 
   renderRoot() {
     return (
-      <StyledPage>
+      <StyledPage className='appitsy-droppable-form'>
         { this.renderChildren() }
       </StyledPage>
     );

@@ -1,0 +1,20 @@
+.appitsy-component {
+  margin: 7px;
+  width: calc(100% - 14px);
+}
+
+.appitsy-droppable-form {
+  .appitsy-columns {
+
+    // the drop here component wrapped inside the droppable component should not
+    // be more than 150 px inside columns component
+    & > div > div:not(:nth-of-type(1)):last-of-type {
+      max-width: 200px;
+    }
+  
+    // others should have the rest of the width
+    & > div > div:not(:last-of-type) {
+      flex: 1;
+    }
+  }
+}
