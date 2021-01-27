@@ -1,91 +1,36 @@
 import { ComponentSchema } from '@appitsy/forms/types/ComponentSchema';
 
-export const CheckboxEditingSchema: ComponentSchema[] = [
-  {
-    "type": "text",
-    "name": "name",
-    "display": {
-      "label": "Name",
-      "placeholder": "",
-      "prefix": "",
-      "suffix": ""
-    }
-  },
-  {
-    "type": "tabs",
-    "name": "tabs1",
-    "display": {
-      "label": "Tabs "
-    },
-    "components": [
-      {
-        "name": "display",
-        "display": {
-          "label": "Display"
-        },
-        "components": [
-          {
-            "type": "text",
-            "name": "label",
-            "display": {
-              "label": "Label",
-              "placeholder": "",
-              "prefix": "",
-              "suffix": ""
-            },
-            "validations": {
-              "maxLength": "",
-              "checkbox1": true
-            }
-          }
-        ]
-      },
-      {
-        "components": [
-          {
-            "type": "text",
-            "name": "path",
-            "display": {
-              "label": "Path",
-              "placeholder": "",
-              "prefix": "",
-              "suffix": ""
-            },
-            "data": {
-              "defaultValue": ""
-            },
-            "validations": {
-              "maxLength": ""
-            }
-          },
-          {
-            "type": "checkbox",
-            "name": "defaultValue",
-            "display": {
-              "label": "Default Value"
-            }
-          }
-        ],
-        "name": "data",
-        "display": {
-          "label": "Data"
-        }
-      },
-      {
-        "components": [
-          {
-            "type": "checkbox",
-            "name": "required",
-            "display": {
-              "label": "Required"
-            }
-          }
-        ],
-        "name": "validations",
-        "display": {
-          "label": "Validations"
-        }
-      }
-    ]
+import {
+  DataTab,
+  DisplayTab,
+  Label,
+  Name,
+  Path,
+  RequiredCheckbox,
+  Tabs,
+  ValidationsTab,
+} from './templates/common';
+
+const DefaultValueCheckbox = {
+  type: "checkbox",
+  name: "defaultValue",
+  display: {
+    label: "Default Value"
   }
-]
+};
+
+export const CheckboxEditingSchema: ComponentSchema[] = [
+  Name,
+  Tabs([
+    DisplayTab([
+      Label,
+    ]),
+    DataTab([
+      Path,
+      DefaultValueCheckbox
+    ]),
+    ValidationsTab([
+      RequiredCheckbox,
+    ])
+  ])
+];

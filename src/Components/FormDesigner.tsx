@@ -72,7 +72,6 @@ export class FormDesigner extends Form<FormDesignerProps> {
       }
       case Types.Panel: {
         let panelComponentSchema = component as any;
-        panelComponentSchema.display = { ...panelComponentSchema.display, expandable: false };
         let panel = super.renderComponent(panelComponentSchema, key);
         renderedComponent = panel;
         break;

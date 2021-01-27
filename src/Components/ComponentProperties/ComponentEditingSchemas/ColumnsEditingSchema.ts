@@ -1,18 +1,17 @@
 import { ComponentSchema } from '@appitsy/forms/types/ComponentSchema';
 
+import {
+  DisplayTab,
+  Label,
+  Name,
+  Tabs,
+} from './templates/common';
+
 export const ColumnsEditingSchema: ComponentSchema[] = [
-  {
-    type: 'text',
-    name: 'name',
-    display: {
-      label: 'Name'
-    }
-  },
-  {
-    "type": "tabs",
-    "name": "textFieldEditing",
-    "components": [
-      
-    ]
-  }
+  Name,
+  Tabs([
+    DisplayTab([
+      Label,
+    ])
+  ]),
 ]

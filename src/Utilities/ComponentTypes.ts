@@ -129,14 +129,25 @@ export const getDefaultPropsForType = (type: string): ComponentSchemaWithId | un
       return multiCheckbox as any as ComponentSchemaWithId;
     }
     case Types.Columns:
-    case Types.Panel: 
     {
-      let panelOrColumns: any = { 
+      let columns: any = { 
         ...commonProperties,
         components: [],
       }
 
-      return panelOrColumns as ComponentSchemaWithId;
+      return columns as ComponentSchemaWithId;
+    }
+    case Types.Panel: 
+    {
+      let panel: any = { 
+        ...commonProperties,
+        components: [],
+      }
+
+      panel.display.expandable = true;
+      panel.display.expanded = true;
+
+      return panel as ComponentSchemaWithId;
     }
     case Types.Tabs: {
       const tab1 = createNewTab({

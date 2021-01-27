@@ -1,5 +1,3 @@
-import { ComponentSchema } from '@appitsy/forms/types/ComponentSchema';
-import { TabsTypeName } from '@appitsy/forms/types/LayoutComponentSchema';
 import { Types } from '@appitsy/forms/types/Types';
 
 import { ButtonEditingSchema } from './ButtonEditingSchema';
@@ -18,66 +16,23 @@ import { TabsEditingSchema } from './TabsEditingSchema';
 import { TextAreaEditingSchema } from './TextAreaEditingSchema';
 import { TextFieldEditingSchema } from './TextFieldEditingSchema';
 
-const logicTabComponents: any[] = [
-//   {
-//     "type": "text",
-//     "name": "name",
-//     "display": {
-//       "label": "Name",
-//       "placeholder": "",
-//       "prefix": "",
-//       "suffix": ""
-//     },
-//     "validations": {
-//       "maxLength": ""
-//     }
-//   },
-//   {
-//     "type": "text",
-//     "name": "code",
-//     "display": {
-//       "label": "Expression",
-//       "placeholder": "",
-//       "prefix": "",
-//       "suffix": ""
-//     }
-//   }
-];
-
-const AddLogicTab = (type: string, schema: ComponentSchema[]) => {
-	const rootElementsLength = schema.length;
-	if (schema[rootElementsLength - 1].type !== TabsTypeName) {
-		throw new Error(`schema for component type '${type}' doesn't contain a tabs component`);
-	}
-	// const configTabForComponent = schema[rootElementsLength - 1] as TabsProps;
-	// configTabForComponent.components?.push({
-	// 	name: "logic",
-	// 	display: {
-	// 		label: "Logic"
-	// 	},
-	// 	components: logicTabComponents
-	// });
-
-	return schema;
-}
-
 const ComponentEditingSchemas = {
-	[Types.TextField]: AddLogicTab(Types.TextField, TextFieldEditingSchema),
-	[Types.TextArea]: AddLogicTab(Types.TextArea, TextAreaEditingSchema),
-	[Types.Email]: AddLogicTab(Types.Email, EmailEditingSchema),
-	[Types.Number]: AddLogicTab(Types.Number, NumberEditingSchema),
-	[Types.Checkbox]: AddLogicTab(Types.Checkbox, CheckboxEditingSchema),
-	[Types.MultiCheckbox]: AddLogicTab(Types.MultiCheckbox, MultiCheckboxEditingSchema),
-	[Types.Password]: AddLogicTab(Types.Password, PasswordEditingSchema),
-	[Types.Select]: AddLogicTab(Types.Select, SelectEditingSchema),
-	[Types.Radio]: AddLogicTab(Types.Radio, RadioEditingSchema),
-	[Types.Button]: AddLogicTab(Types.Button, ButtonEditingSchema),
-	[Types.Panel]: AddLogicTab(Types.Panel, PanelEditingSchema),
-	[Types.Columns]: AddLogicTab(Types.Columns, ColumnsEditingSchema),
-	[Types.Tabs]: AddLogicTab(Types.Tabs, TabsEditingSchema),
+	[Types.TextField]: TextFieldEditingSchema,
+	[Types.TextArea]: TextAreaEditingSchema,
+	[Types.Email]: EmailEditingSchema,
+	[Types.Number]: NumberEditingSchema,
+	[Types.Checkbox]: CheckboxEditingSchema,
+	[Types.MultiCheckbox]: MultiCheckboxEditingSchema,
+	[Types.Password]: PasswordEditingSchema,
+	[Types.Select]: SelectEditingSchema,
+	[Types.Radio]: RadioEditingSchema,
+	[Types.Button]: ButtonEditingSchema,
+	[Types.Panel]: PanelEditingSchema,
+	[Types.Columns]: ColumnsEditingSchema,
+	[Types.Tabs]: TabsEditingSchema,
 
-	[Types.Table]: AddLogicTab(Types.Table, TableEditingSchema),
-	[Types.ObjectComponent]: AddLogicTab(Types.ObjectComponent, ObjectEditingSchema),
+	[Types.Table]: TableEditingSchema,
+	[Types.ObjectComponent]: ObjectEditingSchema,
 }
 
 export { ComponentEditingSchemas };

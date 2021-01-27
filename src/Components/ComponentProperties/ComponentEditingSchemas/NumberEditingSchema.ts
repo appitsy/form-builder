@@ -1,61 +1,52 @@
 import { ComponentSchema } from '@appitsy/forms/types/ComponentSchema';
 
+import {
+  ColumnNoLabel,
+  DataTab,
+  DefaultValueNumberInput,
+  Description,
+  Disabled,
+  DisplayTab,
+  Hidden,
+  Label,
+  MaxLength,
+  MaxValue,
+  MinLength,
+  MinValue,
+  Name,
+  Prefix,
+  RequiredCheckbox,
+  Suffix,
+  Tabs,
+  Tooltip,
+  ValidationsTab,
+} from './templates/common';
+
 export const NumberEditingSchema: ComponentSchema[] = [
-  {
-    "type": "text",
-    "name": "name",
-    "display": {
-      "label": "Name",
-      "placeholder": "",
-      "prefix": "",
-      "suffix": ""
-    }
-  },
-  {
-    "type": "tabs",
-    "name": "tabs1",
-    "display": {
-      "label": ""
-    },
-    "components": [
-      {
-        "name": "display",
-        "display": {
-          "label": "Display"
-        },
-        "components": [
-          {
-            "type": "text",
-            "name": "label",
-            "display": {
-              "label": "Label",
-              "placeholder": "",
-              "prefix": "",
-              "suffix": ""
-            },
-            "data": {
-              "defaultValue": ""
-            },
-            "validations": {
-              "maxLength": ""
-            }
-          }
-        ]
-      },
-      {
-        "components": [],
-        "name": "data",
-        "display": {
-          "label": "Data"
-        }
-      },
-      {
-        "components": [],
-        "name": "validations",
-        "display": {
-          "label": "Validations"
-        }
-      }
-    ]
-  }
+  Name,
+  Tabs([
+    DisplayTab([
+      Label,
+      Description,
+      Prefix,
+      Suffix,
+      Tooltip,
+      Disabled,
+      Hidden,
+    ]),
+    DataTab([
+      DefaultValueNumberInput,
+    ]),
+    ValidationsTab([
+      RequiredCheckbox,
+      ColumnNoLabel([
+        MinValue,
+        MaxValue,
+      ]),
+      ColumnNoLabel([
+        MinLength,
+        MaxLength,
+      ])
+    ]),
+  ])
 ]

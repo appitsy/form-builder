@@ -1,41 +1,18 @@
 import { ComponentSchema } from '@appitsy/forms/types/ComponentSchema';
 
+import {
+  BaseComponentDataProperties,
+  BaseComponentDisplayProperties,
+  DataTab,
+  DisplayTab,
+  Name,
+  Tabs,
+} from './templates/common';
+
 export const ObjectEditingSchema: ComponentSchema[] = [
-  {
-    "type": "text",
-    "name": "name",
-    "display": {
-      "label": "Name",
-      "placeholder": "",
-      "prefix": "",
-      "suffix": ""
-    }
-  },
-  {
-    "type": "tabs",
-    "name": "objectComponentConfig",
-    "display": {
-      "label": ""
-    },
-    "components": [
-      {
-        "name": "display",
-        "display": {
-          "label": "Display"
-        },
-        "components": [
-          {
-            "type": "text",
-            "name": "label",
-            "display": {
-              "label": "Label",
-              "placeholder": "",
-              "prefix": "",
-              "suffix": ""
-            }
-          }
-        ]
-      }
-    ]
-  }
+  Name,
+  Tabs([
+    DisplayTab(BaseComponentDisplayProperties),
+    DataTab(BaseComponentDataProperties),
+  ]),
 ]

@@ -1,106 +1,32 @@
 import { ComponentSchema } from '@appitsy/forms/types/ComponentSchema';
 
+import {
+  BaseTextInputDataProperties,
+  BaseTextInputDisplayProperties,
+  ColumnNoLabel,
+  DataTab,
+  DisplayTab,
+  InvalidChars,
+  MaxLength,
+  MinLength,
+  Name,
+  RequiredCheckbox,
+  Tabs,
+  ValidationsTab,
+} from './templates/common';
+
 export const TextFieldEditingSchema: ComponentSchema[] = [
-  {
-    "type": "text",
-    "name": "name",
-    "display": {
-      "label": "Name"
-    }
-  },
-  {
-    "type": "tabs",
-    "name": "textFieldEditing",
-    "components": [
-      {
-        "name": "display",
-        "display": {
-          "label": "Display"
-        },
-        "components": [
-          {
-            "type": "text",
-            "name": "label",
-            "display": {
-              "label": "Label"
-            }
-          },
-          {
-            "type": "text",
-            "name": "placeholder",
-            "display": {
-              "label": "Placeholder"
-            }
-          },
-          {
-            "type": "text",
-            "name": "prefix",
-            "display": {
-              "label": "Prefix",
-              "placeholder": ""
-            }
-          },
-          {
-            "type": "text",
-            "name": "suffix",
-            "display": {
-              "label": "Suffix"
-            }
-          }
-        ]
-      },
-      {
-        "name": "data",
-        "display": {
-          "label": "Data"
-        },
-        "components": [
-          {
-            "type": "text",
-            "name": "path",
-            "display": {
-              "label": "Data Path"
-            }
-          },
-          {
-            "type": "text",
-            "name": "defaultValue",
-            "display": {
-              "label": "Default Value"
-            }
-          }
-        ]
-      },
-      {
-        "components": [
-          {
-            "type": "checkbox",
-            "name": "required",
-            "display": {
-              "label": "Required"
-            }
-          },
-          {
-            "type": "text",
-            "name": "minLength",
-            "display": {
-              "label": "Min Length",
-              "placeholder": ""
-            }
-          },
-          {
-            "type": "text",
-            "name": "maxLength",
-            "display": {
-              "label": "Max Length"
-            }
-          }
-        ],
-        "name": "validations",
-        "display": {
-          "label": "Validations"
-        }
-      }
-    ]
-  }
-]
+  Name,
+  Tabs([
+    DisplayTab(BaseTextInputDisplayProperties),
+    DataTab(BaseTextInputDataProperties),
+    ValidationsTab([
+      RequiredCheckbox,
+      ColumnNoLabel([
+        MinLength,
+        MaxLength
+      ]),
+      InvalidChars,
+    ])
+  ])
+];
