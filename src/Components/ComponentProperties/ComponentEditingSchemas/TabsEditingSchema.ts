@@ -85,9 +85,6 @@ export const TabsEditingSchema: ComponentSchema[] = [
           "label": "Data"
         }
       }
-    ],
-    "data": {
-      "path": "$"
-    }
+    ]
   }
 ]

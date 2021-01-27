@@ -100,9 +100,6 @@ export const PasswordEditingSchema: ComponentSchema[] = [
           "label": "Validations"
         }
       }
-    ],
-    "data": {
-      "path": "$"
-    }
+    ]
   }
 ]

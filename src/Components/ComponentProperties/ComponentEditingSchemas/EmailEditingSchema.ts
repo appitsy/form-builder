@@ -101,9 +101,6 @@ export const EmailEditingSchema: ComponentSchema[] = [
           "label": "Validations"
         }
       }
-    ],
-    "data": {
-      "path": "$"
-    }
+    ]
   }
 ]

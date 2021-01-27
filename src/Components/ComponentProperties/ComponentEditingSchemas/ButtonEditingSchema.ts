@@ -64,9 +64,6 @@ export const ButtonEditingSchema: ComponentSchema[] = [
           }
         ]
       }
-    ],
-    "data": {
-      "path": "$"
-    }
+    ]
   }
 ]

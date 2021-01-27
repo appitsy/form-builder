@@ -86,9 +86,6 @@ export const CheckboxEditingSchema: ComponentSchema[] = [
           "label": "Validations"
         }
       }
-    ],
-    "data": {
-      "path": "$"
-    }
+    ]
   }
 ]

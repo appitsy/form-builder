@@ -92,9 +92,6 @@ export const RadioEditingSchema: ComponentSchema[] = [
           "label": "Validations"
         }
       }
-    ],
-    "data": {
-      "path": "$"
-    }
+    ]
   }
 ]

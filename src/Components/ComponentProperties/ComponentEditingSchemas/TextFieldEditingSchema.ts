@@ -101,9 +101,6 @@ export const TextFieldEditingSchema: ComponentSchema[] = [
           "label": "Validations"
         }
       }
-    ],
-    "data": {
-      "path": "$"
-    }
+    ]
   }
 ]

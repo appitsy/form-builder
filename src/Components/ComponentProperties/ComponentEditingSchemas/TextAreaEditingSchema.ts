@@ -59,9 +59,6 @@ export const TextAreaEditingSchema: ComponentSchema[] = [
           }
         ]
       }
-    ],
-    "data": {
-      "path": "$"
-    }
+    ]
   }
 ]

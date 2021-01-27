@@ -62,9 +62,6 @@ export const TableEditingSchema: ComponentSchema[] = [
           "label": "Data"
         }
       }
-    ],
-    "data": {
-      "path": "$"
-    }
+    ]
   }
 ]
